@@ -82,6 +82,9 @@ data/uploads/
 tmp/
 temp/
 *.tmp
+data/debug/
+data/ocr_cache/
+tools/tessdata/
 
 # OS
 Thumbs.db

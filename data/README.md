@@ -26,7 +26,9 @@ Tinh den lan chay gan nhat:
 - `data/raw/documents/dav_otc_manifest.jsonl`: manifest 60 tai lieu PDF da tai tu DAV.
 - `data/processed/dav_otc_pdf_text.jsonl`: 60 PDF da extract; 10 file co text layer doc duoc, 50 file can OCR.
 - `data/chunks/dav_otc_pdf_chunks.jsonl`: 88 chunks tu PDF huong dan su dung/nhan doc duoc.
-- `data/chunks/rag_corpus.jsonl`: 19,330 chunks tong hop de ingest vao vector store.
+- `data/processed/dav_otc_pdf_ocr_text.jsonl`: 50 PDF scan da OCR bang Tesseract `vie+eng`, tong 458,631 ky tu.
+- `data/chunks/dav_otc_pdf_ocr_chunks.jsonl`: 784 chunks OCR tu PDF scan.
+- `data/chunks/rag_corpus.jsonl`: 20,114 chunks tong hop de ingest vao vector store.
 - `data/processed/rag_corpus_manifest.json`: thong ke thanh phan corpus tong hop.
 
 Da lay du danh muc OTC dang ky cong khai tu DAV tai thoi diem chay script. PDF/nhan/HDSD da duoc tai theo mau uu tien top hoat chat pho bien; chua tai toan bo 4,191 thuoc co tai lieu vi dung luong lon va nhieu file scan can OCR.
@@ -44,6 +46,7 @@ Dataset nay dung cho:
 2. Danh muc thuoc khong ke don: filter `thongTinThuocCoBan_LoaiThuocId = 1`
 3. Cong van thu hoi thuoc DAV: `https://dav.gov.vn/cong-van-thu-hoi-thuoc-cn89.html`
 4. Canh giac Duoc: ADR va thong tin an toan thuoc.
+5. Duoc dien Viet Nam: chi nen dung bo sung cho chuan hoa ten dang bao che, tieu chuan/chat luong, phu luc va chuyen luan can thiet; khong thay the HDSD/nhan thuoc trong tu van su dung.
 
 ## Lenh mau
 
@@ -86,6 +89,14 @@ python scripts/extract_dav_pdf_chunks.py --manifest data/raw/documents/dav_otc_m
 ```
 
 Luu y: mot so PDF DAV la file scan/anh nen `pypdf` se khong doc duoc text. Output `data/processed/dav_otc_pdf_text.jsonl` co truong `extraction_status=needs_ocr` de danh dau cac file can OCR sau.
+
+OCR cac PDF scan bang Tesseract. Tai lieu DAV chu yeu la tieng Viet, co xen tieng Anh o ten hoat chat/nhan/manufacturer, nen dung `vie+eng`:
+
+```bash
+python scripts/ocr_dav_documents.py --dpi 200 --lang vie+eng
+```
+
+Script can `pdftoppm` va `tesseract`. Neu thieu model tieng Viet, script se tai `vie.traineddata` vao `tools/tessdata/`.
 
 Chon tap PDF uu tien theo hoat chat pho bien:
 

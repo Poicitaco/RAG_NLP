@@ -1,20 +1,23 @@
 {
   "output": "data/chunks/rag_corpus.jsonl",
-  "total_chunks": 19330,
+  "total_chunks": 20114,
   "inputs": [
     "data/chunks/dav_otc_drugs_chunks.jsonl",
     "data/chunks/dav_otc_pdf_chunks.jsonl",
+    "data/chunks/dav_otc_pdf_ocr_chunks.jsonl",
     "data/chunks/dav_recalls_chunks.jsonl"
   ],
   "source_counts": {
     "dav_otc": 19158,
     "dav_pdf": 88,
+    "dav_pdf_ocr": 784,
     "dav_recall": 84
   },
   "type_counts": {
-    "drug_info": 19227,
-    "safety": 2,
-    "dosage": 17,
+    "drug_info": 19788,
+    "safety": 124,
+    "dosage": 82,
+    "interaction": 36,
     "safety_recall": 84
   }
 }
