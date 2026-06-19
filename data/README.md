@@ -20,12 +20,16 @@ Tinh den lan chay gan nhat:
 - `data/chunks/dav_otc_drugs_chunks.jsonl`: 19,158 chunks dang truong thong tin thuoc, dung de index vao vector store.
 - `data/raw/dav/otc_raw.jsonl`: raw API snapshot, giu lai de tai lap preprocessing.
 - `data/processed/dav_otc_profile.md`: thong ke dataset cho bao cao NLP.
-- `data/processed/dav_recalls.jsonl`: 8 dong cong van thu hoi thuoc mau.
-- `data/raw/documents/dav_otc_manifest.jsonl`: manifest tai lieu PDF da tai thu.
-- `data/processed/dav_otc_pdf_text.jsonl`: 3 PDF da extract; 1 file co text layer doc duoc, 2 file can OCR.
-- `data/chunks/dav_otc_pdf_chunks.jsonl`: 25 chunks tu PDF huong dan su dung doc duoc.
+- `data/processed/dav_recalls.jsonl`: 84 dong cong van thu hoi thuoc tu DAV.
+- `data/chunks/dav_recalls_chunks.jsonl`: 84 chunks canh bao/thu hoi thuoc.
+- `data/processed/dav_otc_document_priority.jsonl`: 40 thuoc uu tien tai HDSD/nhan theo 20 hoat chat OTC pho bien.
+- `data/raw/documents/dav_otc_manifest.jsonl`: manifest 60 tai lieu PDF da tai tu DAV.
+- `data/processed/dav_otc_pdf_text.jsonl`: 60 PDF da extract; 10 file co text layer doc duoc, 50 file can OCR.
+- `data/chunks/dav_otc_pdf_chunks.jsonl`: 88 chunks tu PDF huong dan su dung/nhan doc duoc.
+- `data/chunks/rag_corpus.jsonl`: 19,330 chunks tong hop de ingest vao vector store.
+- `data/processed/rag_corpus_manifest.json`: thong ke thanh phan corpus tong hop.
 
-Da lay du danh muc OTC dang ky cong khai tu DAV tai thoi diem chay script. Chua tai toan bo PDF/nhan/HDSD kem theo vi phan nay co dung luong lon va nhieu file scan can OCR.
+Da lay du danh muc OTC dang ky cong khai tu DAV tai thoi diem chay script. PDF/nhan/HDSD da duoc tai theo mau uu tien top hoat chat pho bien; chua tai toan bo 4,191 thuoc co tai lieu vi dung luong lon va nhieu file scan can OCR.
 
 Dataset nay dung cho:
 
@@ -82,3 +86,17 @@ python scripts/extract_dav_pdf_chunks.py --manifest data/raw/documents/dav_otc_m
 ```
 
 Luu y: mot so PDF DAV la file scan/anh nen `pypdf` se khong doc duoc text. Output `data/processed/dav_otc_pdf_text.jsonl` co truong `extraction_status=needs_ocr` de danh dau cac file can OCR sau.
+
+Chon tap PDF uu tien theo hoat chat pho bien:
+
+```bash
+python scripts/select_dav_document_sample.py --top-ingredients 20 --per-ingredient 2
+python scripts/download_dav_documents.py --input data/processed/dav_otc_document_priority.jsonl --limit 60 --reset-manifest
+```
+
+Tao corpus RAG tong hop:
+
+```bash
+python scripts/prepare_recall_chunks.py
+python scripts/build_rag_corpus.py
+```

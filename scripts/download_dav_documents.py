@@ -100,6 +100,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--delay", type=float, default=0.4)
     parser.add_argument("--manifest", default="data/raw/documents/dav_otc_manifest.jsonl")
+    parser.add_argument("--reset-manifest", action="store_true")
     args = parser.parse_args()
 
     output_dir = Path(args.output_dir)
@@ -107,11 +108,20 @@ def main() -> None:
     manifest_path = Path(args.manifest)
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
+    mode = "w" if args.reset_manifest else "a"
     count = 0
-    with manifest_path.open("a", encoding="utf-8") as manifest:
+    seen = set()
+    if manifest_path.exists() and not args.reset_manifest:
+        for row in read_jsonl(manifest_path):
+            seen.add((row.get("registration_number"), row.get("document_type")))
+
+    with manifest_path.open(mode, encoding="utf-8") as manifest:
         for row in read_jsonl(Path(args.input)):
             reg = safe_name(row.get("registration_number") or row.get("dav_id"))
             for label, url in iter_urls(row):
+                key = (row.get("registration_number"), label)
+                if key in seen:
+                    continue
                 if args.limit is not None and count >= args.limit:
                     print(f"downloaded {count} documents")
                     return
@@ -137,6 +147,7 @@ def main() -> None:
                     "error": error,
                 }
                 manifest.write(json.dumps(record, ensure_ascii=False) + "\n")
+                seen.add(key)
                 print(f"{status}: {reg} {label}")
                 count += 1
 
