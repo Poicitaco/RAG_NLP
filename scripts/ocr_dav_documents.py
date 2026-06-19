@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List
 from urllib.request import urlretrieve
 
-from extract_dav_pdf_chunks import chunk_text, section_to_type, split_sections
+from extract_dav_pdf_chunks import chunk_text, normalize_text, section_to_type, split_sections
 
 
 TESSERACT_EXE_CANDIDATES = [
@@ -113,7 +113,7 @@ def ocr_image(tesseract: str, image_path: Path, tessdata_dir: Path, lang: str, p
         str(psm),
     ]
     result = subprocess.run(cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding="utf-8")
-    return result.stdout.strip()
+    return normalize_text(result.stdout.strip())
 
 
 def ocr_pdf(record: Dict[str, Any], pdftoppm: str, tesseract: str, tessdata_dir: Path, lang: str, dpi: int, psm: int, max_pages: int | None) -> Dict[str, Any]:

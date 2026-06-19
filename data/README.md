@@ -28,6 +28,8 @@ Tinh den lan chay gan nhat:
 - `data/chunks/dav_otc_pdf_chunks.jsonl`: 88 chunks tu PDF huong dan su dung/nhan doc duoc.
 - `data/processed/dav_otc_pdf_ocr_text.jsonl`: 50 PDF scan da OCR bang Tesseract `vie+eng`, tong 458,631 ky tu.
 - `data/chunks/dav_otc_pdf_ocr_chunks.jsonl`: 784 chunks OCR tu PDF scan.
+- `data/processed/dav_otc_ocr_validation.jsonl`: report doi chieu OCR voi DAV registry.
+- `data/processed/dav_otc_ocr_validation.csv`: bang review thu cong cho cac OCR doc can kiem tra.
 - `data/chunks/rag_corpus.jsonl`: 20,114 chunks tong hop de ingest vao vector store.
 - `data/processed/rag_corpus_manifest.json`: thong ke thanh phan corpus tong hop.
 
@@ -97,6 +99,16 @@ python scripts/ocr_dav_documents.py --dpi 200 --lang vie+eng
 ```
 
 Script can `pdftoppm` va `tesseract`. Neu thieu model tieng Viet, script se tai `vie.traineddata` vao `tools/tessdata/`.
+
+Doi chieu OCR voi DAV registry de danh dau rui ro:
+
+```bash
+python scripts/validate_ocr_against_registry.py
+python scripts/annotate_ocr_chunks.py
+python scripts/build_rag_corpus.py
+```
+
+Tat ca chunk OCR duoc gan `trust_level=unverified_ocr` va `requires_human_review=true`. File CSV validation la noi de review cac mismatch ve hoat chat, ham luong, so lieu va don vi.
 
 Chon tap PDF uu tien theo hoat chat pho bien:
 
