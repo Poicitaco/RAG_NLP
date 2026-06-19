@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pharma_rag_backend
+    environment:
+      - ENVIRONMENT=production
+      - CHROMA_PERSIST_DIR=/app/data/embeddings/chroma
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000

@@ -1,0 +1,307 @@
+{
+  "input_file": "data\\processed\\dav_otc_drugs.jsonl",
+  "total_rows": 4989,
+  "unique_registration_numbers": 4988,
+  "unique_drug_names": 4491,
+  "unique_active_ingredients": 2341,
+  "document_coverage": {
+    "leaflet_url": 4181,
+    "label_url": 4189,
+    "label_leaflet_url": 4,
+    "raw_document_json": 0,
+    "any_document": 4191,
+    "any_document_rate": 0.84
+  },
+  "missing_fields": {
+    "drug_name": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "registration_number": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "active_ingredient": {
+      "missing": 42,
+      "coverage": 0.9916
+    },
+    "strength": {
+      "missing": 1551,
+      "coverage": 0.6891
+    },
+    "dosage_form": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "packaging": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "decision_number": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "registration_date": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "expiry_date": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "manufacturer_name": {
+      "missing": 0,
+      "coverage": 1.0
+    },
+    "manufacturer_country": {
+      "missing": 0,
+      "coverage": 1.0
+    }
+  },
+  "top_active_ingredients": [
+    {
+      "value": "Paracetamol",
+      "count": 488
+    },
+    {
+      "value": "Fexofenadin hydroclorid",
+      "count": 115
+    },
+    {
+      "value": "Acetylcystein",
+      "count": 100
+    },
+    {
+      "value": "Ibuprofen",
+      "count": 98
+    },
+    {
+      "value": "Desloratadin",
+      "count": 66
+    },
+    {
+      "value": "Loratadin",
+      "count": 64
+    },
+    {
+      "value": "Ambroxol hydroclorid",
+      "count": 52
+    },
+    {
+      "value": "Natri clorid",
+      "count": 47
+    },
+    {
+      "value": "Bromhexin hydroclorid",
+      "count": 40
+    },
+    {
+      "value": "Clorpheniramin maleat",
+      "count": 38
+    },
+    {
+      "value": "Clotrimazol",
+      "count": 37
+    },
+    {
+      "value": "Carbocistein",
+      "count": 36
+    },
+    {
+      "value": "Cetirizin dihydroclorid",
+      "count": 36
+    },
+    {
+      "value": "Ibuprofen 200mg; Paracetamol 325mg",
+      "count": 32
+    },
+    {
+      "value": "Cafein 65mg; Paracetamol 500mg",
+      "count": 31
+    },
+    {
+      "value": "Desloratadine",
+      "count": 30
+    },
+    {
+      "value": "Levonorgestrel",
+      "count": 30
+    },
+    {
+      "value": "Fexofenadine hydrochloride",
+      "count": 28
+    },
+    {
+      "value": "Xylometazolin hydroclorid",
+      "count": 27
+    },
+    {
+      "value": "Acetaminophen",
+      "count": 23
+    }
+  ],
+  "top_dosage_forms": [
+    {
+      "value": "Viên nén bao phim",
+      "count": 999
+    },
+    {
+      "value": "Viên nén",
+      "count": 686
+    },
+    {
+      "value": "Viên nang cứng",
+      "count": 438
+    },
+    {
+      "value": "Hỗn dịch uống",
+      "count": 247
+    },
+    {
+      "value": "Dung dịch uống",
+      "count": 243
+    },
+    {
+      "value": "Viên nang mềm",
+      "count": 220
+    },
+    {
+      "value": "Kem bôi da",
+      "count": 123
+    },
+    {
+      "value": "Viên nén sủi bọt",
+      "count": 111
+    },
+    {
+      "value": "Viên nén nhai",
+      "count": 110
+    },
+    {
+      "value": "Dung dịch dùng ngoài",
+      "count": 100
+    },
+    {
+      "value": "Sirô",
+      "count": 84
+    },
+    {
+      "value": "Thuốc bột uống",
+      "count": 83
+    },
+    {
+      "value": "Thuốc cốm",
+      "count": 76
+    },
+    {
+      "value": "Siro",
+      "count": 70
+    },
+    {
+      "value": "Nguyên liệu làm thuốc",
+      "count": 62
+    },
+    {
+      "value": "Viên nén bao đường",
+      "count": 52
+    },
+    {
+      "value": "Thuốc cốm sủi bọt",
+      "count": 43
+    },
+    {
+      "value": "Thuốc bột pha hỗn dịch uống",
+      "count": 35
+    },
+    {
+      "value": "Viên nén phân tán trong miệng",
+      "count": 34
+    },
+    {
+      "value": "Dung dịch nhỏ mắt",
+      "count": 34
+    }
+  ],
+  "top_manufacturer_countries": [
+    {
+      "value": "Việt Nam",
+      "count": 4472
+    },
+    {
+      "value": "India",
+      "count": 134
+    },
+    {
+      "value": "Thailand",
+      "count": 36
+    },
+    {
+      "value": "France",
+      "count": 30
+    },
+    {
+      "value": "Korea",
+      "count": 29
+    },
+    {
+      "value": "Germany",
+      "count": 24
+    },
+    {
+      "value": "Portugal",
+      "count": 21
+    },
+    {
+      "value": "Bangladesh",
+      "count": 20
+    },
+    {
+      "value": "Poland",
+      "count": 20
+    },
+    {
+      "value": "Malaysia",
+      "count": 16
+    },
+    {
+      "value": "Turkey",
+      "count": 16
+    },
+    {
+      "value": "Republic of Korea",
+      "count": 14
+    },
+    {
+      "value": "Australia",
+      "count": 14
+    },
+    {
+      "value": "Spain",
+      "count": 13
+    },
+    {
+      "value": "Cyprus",
+      "count": 11
+    },
+    {
+      "value": "Belgium",
+      "count": 10
+    },
+    {
+      "value": "Taiwan",
+      "count": 10
+    },
+    {
+      "value": "Greece",
+      "count": 8
+    },
+    {
+      "value": "Romania",
+      "count": 6
+    },
+    {
+      "value": "Japan",
+      "count": 6
+    }
+  ]
+}
