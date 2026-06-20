@@ -242,3 +242,19 @@ Priority corpus gan nhat co 14,156 chunks:
 - CanhGiacDuoc safety: 1,200 chunks.
 
 Ket qua hybrid priority index tren benchmark 15 cau: Hit@5 = 1.0, Strict Hit@5 = 1.0, MRR = 0.95, Strict MRR = 0.8833. Chroma index directory nam trong `data/embeddings/chroma_priority/` va khong commit len Git.
+
+## Evidence guardrail evaluation
+
+Evidence guardrail chay sau retrieval de quyet dinh bang chung co du an toan de sinh cau tra loi hay khong:
+
+```bash
+.\.venv\Scripts\python.exe scripts\evaluate_evidence_guardrails.py --input data\evaluation\hybrid_priority_retrieval_results.json
+```
+
+Ket qua gan nhat tren 15 cau benchmark:
+
+- `allow`: 11 cau.
+- `allow_with_caution`: 2 cau.
+- `handoff`: 2 cau.
+
+Hai ca bi handoff la cac cau rui ro cao ma bang chung chua du loai nguon da xac minh: cau hoi lieu dung dua vao OCR va cau hoi tuong tac chi co OCR. Day la hanh vi mong muon cho chatbot duoc pham an toan.
