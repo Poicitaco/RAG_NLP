@@ -47,11 +47,27 @@ Bot không được dùng để:
 
 ## API chính
 
+Tạo môi trường và cài dependency:
+
+```bash
+py -3.11 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+Build index local nếu chưa có:
+
+```bash
+.\.venv\Scripts\python.exe scripts\build_bm25_index.py
+.\.venv\Scripts\python.exe scripts\ingest_rag_corpus.py --inputs data\chunks\chroma_priority_corpus.jsonl --batch-size 128 --reset --persist-dir data\embeddings\chroma_priority --collection pharmaceutical_priority
+```
+
 Chạy backend:
 
 ```bash
-uvicorn backend.main:app --reload --port 8000
+.\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
+
+Backend hiện dùng safe RAG deterministic cho `/api/v1/chat/`: hybrid BM25 + Chroma priority, evidence guardrail, rồi trả lời có citation. Không cần `OPENAI_API_KEY` để demo phần retrieval/guardrail.
 
 Gửi câu hỏi chat:
 
@@ -60,6 +76,20 @@ curl -X POST http://localhost:8000/api/v1/chat/ ^
   -H "Content-Type: application/json" ^
   -d "{\"message\":\"Paracetamol 500mg dùng như thế nào?\",\"session_id\":\"demo\"}"
 ```
+
+Smoke test toàn bộ API:
+
+```bash
+.\.venv\Scripts\python.exe scripts\smoke_api.py
+```
+
+Kết quả kỳ vọng:
+
+- Thu hồi Aceclofenac: `allow`, intent `recall`, có citation.
+- Paracetamol là thuốc gì: `allow_with_caution`, intent `drug_info`.
+- Paracetamol dùng thế nào: `handoff`, intent `dosage`.
+- Aspirin cùng ibuprofen: `handoff`, intent `interaction`.
+- Khó thở sau uống thuốc: `emergency`, bypass retrieval.
 
 Ví dụ context bệnh nhân để cho phép RAG trả lời sâu hơn:
 

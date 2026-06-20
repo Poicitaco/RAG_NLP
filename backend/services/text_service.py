@@ -2,8 +2,8 @@
 Text processing service - Dịch vụ xử lý văn bản
 """
 from typing import Dict, Any, Optional
-from backend.models import ChatRequest, ChatResponse
-from backend.agents import get_orchestrator
+from backend.models import ChatResponse
+from backend.services.safe_rag_service import get_safe_rag_service
 from backend.utils import app_logger, sanitize_input
 import time
 
@@ -13,7 +13,7 @@ class TextService:
     
     def __init__(self):
         """Khởi tạo text service"""
-        self.orchestrator = get_orchestrator()
+        self.safe_rag = get_safe_rag_service()
         app_logger.info("Initialized text service")
     
     async def process_message(
@@ -49,16 +49,12 @@ class TextService:
                     confidence=0.0
                 )
             
-            # Tạo request
-            request = ChatRequest(
+            response = await self.safe_rag.answer(
                 message=clean_message,
                 session_id=session_id,
                 conversation_id=conversation_id,
-                context=context
+                context=context,
             )
-            
-            # Xử lý với orchestrator
-            response = await self.orchestrator.process_request(request)
             
             duration = time.time() - start_time
             app_logger.info(f"Processed text message in {duration:.3f}s")

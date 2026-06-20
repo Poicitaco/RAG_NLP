@@ -1,0 +1,282 @@
+"""Safe deterministic RAG service used by the chat API.
+
+The service intentionally does not call an LLM. It retrieves evidence, applies
+evidence guardrails, then returns a concise answer preview with citations. This
+keeps the demo reproducible and prevents unsupported dosing or interaction
+claims from leaking into responses.
+"""
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from backend.models import AgentType, ChatResponse, Citation
+from backend.safety.evidence_guardrails import (
+    EvidenceAction,
+    evaluate_evidence,
+    is_unverified_ocr,
+    mentioned_common_drugs,
+    normalize_text,
+)
+from backend.utils import format_medical_disclaimer
+
+
+ROOT_DIR = Path(__file__).resolve().parents[2]
+SCRIPTS_DIR = ROOT_DIR / "scripts"
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+
+from hybrid_search_rag import chroma_search, combine_results, load_bm25_index  # noqa: E402
+from smoke_search_bm25 import search as bm25_search  # noqa: E402
+
+
+DEFAULT_BM25_INDEX = ROOT_DIR / "data" / "embeddings" / "bm25" / "rag_bm25.pkl.gz"
+DEFAULT_CHROMA_DIR = ROOT_DIR / "data" / "embeddings" / "chroma_priority"
+DEFAULT_COLLECTION = "pharmaceutical_priority"
+DEFAULT_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+
+SOURCE_PRIORITY = {
+    "dav_recall": 0,
+    "canhgiacduoc": 1,
+    "dav_all": 2,
+    "dav_otc": 2,
+    "dav_pdf": 3,
+    "dav_pdf_ocr": 5,
+}
+
+
+def _metadata(row: Dict[str, Any]) -> Dict[str, Any]:
+    return row.get("metadata") or {}
+
+
+def _source(row: Dict[str, Any]) -> str:
+    metadata = _metadata(row)
+    return str(metadata.get("source") or metadata.get("source_dataset") or row.get("source") or "")
+
+
+def _row_text(row: Dict[str, Any]) -> str:
+    metadata = _metadata(row)
+    values = [
+        row.get("document_preview"),
+        row.get("document"),
+        metadata.get("title"),
+        metadata.get("drug_name"),
+        metadata.get("active_ingredients"),
+        metadata.get("main_ingredient"),
+    ]
+    return normalize_text(" ".join(str(value) for value in values if value))
+
+
+def _rank_for_answer(question: str, results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    question_drugs = mentioned_common_drugs(question)
+
+    def key(row: Dict[str, Any]) -> tuple:
+        text = _row_text(row)
+        drug_match = 0 if not question_drugs or any(term in text for term in question_drugs) else 1
+        ocr_penalty = 1 if is_unverified_ocr(row) else 0
+        return (
+            drug_match,
+            ocr_penalty,
+            SOURCE_PRIORITY.get(_source(row), 4),
+            row.get("rank") or 999,
+        )
+
+    return sorted(results, key=key)
+
+
+def _citation_from_row(index: int, row: Dict[str, Any]) -> Citation:
+    metadata = _metadata(row)
+    return Citation(
+        id=f"S{index}",
+        source=_source(row) or "unknown",
+        title=metadata.get("title") or metadata.get("drug_name"),
+        url=metadata.get("source_url") or metadata.get("url"),
+        page=metadata.get("page"),
+        section=metadata.get("section") or metadata.get("type"),
+        similarity=row.get("hybrid_score"),
+    )
+
+
+def _preview(row: Dict[str, Any], max_len: int = 280) -> str:
+    text = (row.get("document_preview") or row.get("document") or "").strip()
+    if len(text) > max_len:
+        return text[:max_len].rstrip() + "..."
+    return text
+
+
+class SafeRagService:
+    """Hybrid retrieval + evidence guardrail + deterministic answer builder."""
+
+    def __init__(
+        self,
+        bm25_index_path: Path = DEFAULT_BM25_INDEX,
+        chroma_dir: Path = DEFAULT_CHROMA_DIR,
+        collection: str = DEFAULT_COLLECTION,
+        model: str = DEFAULT_MODEL,
+    ) -> None:
+        self.bm25_index_path = bm25_index_path
+        self.chroma_dir = chroma_dir
+        self.collection = collection
+        self.model = model
+        self._bm25_index: Optional[Dict[str, Any]] = None
+
+    def _load_bm25(self) -> Dict[str, Any]:
+        if self._bm25_index is None:
+            self._bm25_index = load_bm25_index(self.bm25_index_path)
+        return self._bm25_index
+
+    def retrieve(self, question: str, top_k: int = 5) -> List[Dict[str, Any]]:
+        bm25_results = bm25_search(self._load_bm25(), question, top_k=10)
+        chroma_results = chroma_search(
+            question,
+            str(self.chroma_dir),
+            self.collection,
+            "sentence-transformers",
+            self.model,
+            top_k=10,
+        )
+        return combine_results(
+            question,
+            bm25_results,
+            chroma_results,
+            bm25_weight=0.65,
+            vector_weight=0.35,
+            top_k=top_k,
+        )
+
+    async def answer(
+        self,
+        message: str,
+        session_id: str,
+        conversation_id: Optional[str] = None,
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ChatResponse:
+        conversation = conversation_id or session_id
+        early_decision = evaluate_evidence(message, [])
+        if early_decision.action == EvidenceAction.EMERGENCY:
+            return ChatResponse(
+                message=self._emergency_message(),
+                conversation_id=conversation,
+                agent_type=AgentType.SAFETY_MONITOR,
+                confidence=1.0,
+                warnings=early_decision.warnings,
+                suggestions=["Gọi 115 hoặc đến cơ sở y tế gần nhất ngay."],
+                metadata={
+                    "rag_action": early_decision.action.value,
+                    "intent": early_decision.intent.value,
+                    "retrieval_bypassed": True,
+                },
+            )
+
+        results = self.retrieve(message)
+        decision = evaluate_evidence(message, results)
+        ranked = _rank_for_answer(message, results)
+        citations = [_citation_from_row(index, row) for index, row in enumerate(ranked[:5], 1)]
+
+        if decision.action in {EvidenceAction.HANDOFF, EvidenceAction.INSUFFICIENT_EVIDENCE}:
+            answer = self._handoff_message(decision.message, citations)
+            confidence = 0.25
+            agent_type = AgentType.SAFETY_MONITOR
+        else:
+            answer = self._allowed_answer(decision.action, ranked[:3], citations[:3])
+            confidence = 0.72 if decision.action == EvidenceAction.ALLOW else 0.55
+            agent_type = self._agent_type(decision.intent.value)
+
+        warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
+        suggestions = self._suggestions(decision.action.value)
+
+        return ChatResponse(
+            message=answer,
+            conversation_id=conversation,
+            agent_type=agent_type,
+            confidence=confidence,
+            sources=citations,
+            suggestions=suggestions,
+            warnings=warnings,
+            metadata={
+                "rag_action": decision.action.value,
+                "intent": decision.intent.value,
+                "should_answer": decision.should_answer,
+                "usable_sources": decision.usable_sources,
+                "blocked_sources": decision.blocked_sources,
+                "retrieved_count": len(results),
+                "retriever": "hybrid_bm25_chroma_priority",
+                "context_provided": bool(context),
+            },
+        )
+
+    def _allowed_answer(
+        self,
+        action: EvidenceAction,
+        rows: List[Dict[str, Any]],
+        citations: List[Citation],
+    ) -> str:
+        lines = [
+            "Mình tìm thấy bằng chứng phù hợp để trả lời ở mức thông tin tham khảo.",
+            "Các điểm dựa trên nguồn đã truy xuất:",
+        ]
+        for index, row in enumerate(rows, 1):
+            citation_id = citations[index - 1].id if index <= len(citations) else f"S{index}"
+            metadata = _metadata(row)
+            title = metadata.get("title") or metadata.get("drug_name") or row.get("title_or_drug") or "Nguồn dữ liệu"
+            lines.append(f"- [{citation_id}] {title}: {_preview(row)}")
+
+        if action == EvidenceAction.ALLOW_WITH_CAUTION:
+            lines.append(
+                "Vì có yếu tố cần thận trọng, chỉ nên xem đây là thông tin chung; "
+                "không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa."
+            )
+        lines.append("Khi dùng thuốc thật, hãy đối chiếu toa/nhãn thuốc và hỏi dược sĩ nếu còn chưa chắc.")
+        return "\n".join(lines)
+
+    def _handoff_message(self, reason: str, citations: List[Citation]) -> str:
+        lines = [
+            "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.",
+            reason,
+            "Với câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.",
+        ]
+        if citations:
+            lines.append("Các nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:")
+            for citation in citations[:3]:
+                title = citation.title or citation.source
+                lines.append(f"- [{citation.id}] {title} ({citation.source})")
+        return "\n".join(lines)
+
+    def _emergency_message(self) -> str:
+        return (
+            "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. "
+            "Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. "
+            "Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+        )
+
+    def _suggestions(self, action: str) -> List[str]:
+        if action in {"handoff", "insufficient_evidence"}:
+            return [
+                "Cung cấp tên thuốc, hàm lượng, dạng dùng và toa thuốc nếu có.",
+                "Cho biết tuổi, thai kỳ/cho con bú, dị ứng, bệnh gan/thận và thuốc đang dùng.",
+                "Hỏi trực tiếp bác sĩ/dược sĩ trước khi dùng hoặc phối hợp thuốc.",
+            ]
+        return [
+            "Đối chiếu tên thuốc, số đăng ký, hàm lượng trên bao bì/toa thuốc.",
+            "Hỏi dược sĩ nếu cần liều dùng cá nhân hóa hoặc đang dùng nhiều thuốc.",
+        ]
+
+    def _agent_type(self, intent: str) -> AgentType:
+        if intent == "dosage":
+            return AgentType.DOSAGE_ADVISOR
+        if intent == "interaction":
+            return AgentType.INTERACTION_CHECK
+        if intent in {"recall", "counterfeit", "general_safety", "high_risk_context"}:
+            return AgentType.SAFETY_MONITOR
+        return AgentType.DRUG_INFO
+
+
+_safe_rag_service: Optional[SafeRagService] = None
+
+
+def get_safe_rag_service() -> SafeRagService:
+    global _safe_rag_service
+    if _safe_rag_service is None:
+        _safe_rag_service = SafeRagService()
+    return _safe_rag_service

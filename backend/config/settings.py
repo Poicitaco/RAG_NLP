@@ -115,6 +115,20 @@ class Settings(BaseSettings):
     # Giới hạn tốc độ
     RATE_LIMIT_PER_MINUTE: int = Field(default=60, env="RATE_LIMIT_PER_MINUTE")
     RATE_LIMIT_PER_HOUR: int = Field(default=1000, env="RATE_LIMIT_PER_HOUR")
+
+    @validator("DEBUG", pre=True)
+    def parse_debug_value(cls, v):
+        """Accept common deployment strings from host environments."""
+        if isinstance(v, bool):
+            return v
+        if v is None:
+            return True
+        value = str(v).strip().lower()
+        if value in {"1", "true", "yes", "on", "debug", "development", "dev"}:
+            return True
+        if value in {"0", "false", "no", "off", "release", "production", "prod"}:
+            return False
+        return v
     
     @validator("DATABASE_URL", pre=True, always=True)
     def assemble_db_connection(cls, v: Optional[str], values: dict) -> str:
