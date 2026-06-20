@@ -152,3 +152,18 @@ python scripts/smoke_search_bm25.py "Nafacolex 400 liều dùng ibuprofen" --top
 ```
 
 BM25 index duoc luu o `data/embeddings/bm25/` va khong commit len Git. Day la baseline rat huu ich cho ten thuoc, so dang ky, hoat chat va canh bao thu hoi. Chroma/vector embedding co the dung sau khi moi truong Python ho tro `chromadb`/`chroma-hnswlib` phu hop.
+
+## Retrieval evaluation
+
+Danh gia retrieval BM25 bang benchmark co rang buoc source/type/trust:
+
+```bash
+python scripts/evaluate_bm25_retrieval.py --top-k 5
+```
+
+Output:
+
+- `data/evaluation/bm25_retrieval_results.json`: ket qua chi tiet tung cau hoi.
+- `data/evaluation/bm25_retrieval_report.md`: bang tom tat Hit@K, Strict Hit@K, MRR va cac ca fail can toi uu.
+
+Ket qua baseline gan nhat voi 15 cau hoi: Hit@5 = 0.8667, Strict Hit@5 = 0.8667, MRR = 0.8, Strict MRR = 0.7222. Hai loi can uu tien la truy van thu hoi bi registry lan at va cau hoi high-risk bi lay chunk OCR/interaction chua du an toan.
