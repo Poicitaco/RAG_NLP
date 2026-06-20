@@ -46,6 +46,7 @@ ENV/
 *.sqlite3
 data/embeddings/chroma/
 data/embeddings/faiss/
+data/embeddings/bm25/
 
 # Logs
 logs/

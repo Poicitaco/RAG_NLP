@@ -142,3 +142,13 @@ python scripts/prepare_recall_chunks.py
 python scripts/build_rag_corpus.py
 python scripts/split_jsonl.py --input data/chunks/rag_corpus.jsonl --output-dir data/chunks/rag_corpus_parts --prefix rag_corpus --max-mb 80 --manifest data/processed/rag_corpus_parts_manifest.json
 ```
+
+Build lexical BM25 index local de smoke-test retrieval khong can OpenAI API:
+
+```bash
+python scripts/build_bm25_index.py
+python scripts/smoke_search_bm25.py "Aceclofenac Stella 100mg thu hồi" --top-k 3
+python scripts/smoke_search_bm25.py "Nafacolex 400 liều dùng ibuprofen" --top-k 3
+```
+
+BM25 index duoc luu o `data/embeddings/bm25/` va khong commit len Git. Day la baseline rat huu ich cho ten thuoc, so dang ky, hoat chat va canh bao thu hoi. Chroma/vector embedding co the dung sau khi moi truong Python ho tro `chromadb`/`chroma-hnswlib` phu hop.
