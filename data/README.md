@@ -190,3 +190,14 @@ Sua ky tu dieu khien/mojibake co the phuc hoi:
 ```
 
 Ket qua audit gan nhat: 30 file JSON/JSONL, 886,753 rows, 0 parse error, 0 repairable mojibake, 7 replacement-char tu PDF extraction va 2,402 OCR rows can human review/guardrail.
+
+## Chroma smoke index
+
+Sau khi tao `.venv` bang Python 3.11, co the kiem tra vector store voi 1,000 chunks truoc khi build full index:
+
+```bash
+.\.venv\Scripts\python.exe scripts\ingest_rag_corpus.py --limit 1000 --batch-size 64 --reset --persist-dir data\embeddings\chroma_smoke --collection pharmaceutical_smoke
+.\.venv\Scripts\python.exe scripts\smoke_search_rag.py "Vocinti 10mg hoạt chất" --persist-dir data\embeddings\chroma_smoke --collection pharmaceutical_smoke --top-k 3
+```
+
+Kiem tra gan nhat: Chroma ingest thanh cong 1,000 chunks voi model `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`. Query exact-name co the kem BM25, vi vay huong toi uu nen la hybrid retrieval: BM25 cho exact match ten thuoc/SDK/hoat chat, vector search cho cau hoi dien dat tu nhien.

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any, List
 
@@ -10,6 +11,9 @@ from ingest_rag_corpus import embed_texts, load_embedding_model
 
 
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser()
     parser.add_argument("query")
     parser.add_argument("--persist-dir", default="data/embeddings/chroma")
