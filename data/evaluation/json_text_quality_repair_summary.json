@@ -1,0 +1,163 @@
+{
+  "dry_run": false,
+  "files": 31,
+  "rows": 886754,
+  "changed_values": 88,
+  "results": [
+    {
+      "path": "data\\evaluation\\bm25_retrieval_results.json",
+      "rows": 1,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\evaluation\\json_text_quality_audit.json",
+      "rows": 1,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_all_drugs_chunks_parts_manifest.json",
+      "rows": 1,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_all_profile.json",
+      "rows": 1,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_otc_profile.json",
+      "rows": 1,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\rag_corpus_manifest.json",
+      "rows": 1,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\rag_corpus_parts_manifest.json",
+      "rows": 1,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\chunks\\canhgiacduoc_safety_chunks.jsonl",
+      "rows": 1200,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\chunks\\dav_all_drugs_chunks.jsonl",
+      "rows": 185487,
+      "changed_values": 17
+    },
+    {
+      "path": "data\\chunks\\dav_all_drugs_chunks_parts\\dav_all_drugs_chunks_part001.jsonl",
+      "rows": 121944,
+      "changed_values": 17
+    },
+    {
+      "path": "data\\chunks\\dav_all_drugs_chunks_parts\\dav_all_drugs_chunks_part002.jsonl",
+      "rows": 63543,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\chunks\\dav_otc_drugs_chunks.jsonl",
+      "rows": 19158,
+      "changed_values": 8
+    },
+    {
+      "path": "data\\chunks\\dav_otc_pdf_chunks.jsonl",
+      "rows": 88,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\chunks\\dav_otc_pdf_ocr_chunks.jsonl",
+      "rows": 784,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\chunks\\dav_recalls_chunks.jsonl",
+      "rows": 84,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\chunks\\rag_corpus.jsonl",
+      "rows": 187643,
+      "changed_values": 17
+    },
+    {
+      "path": "data\\chunks\\rag_corpus_parts\\rag_corpus_part001.jsonl",
+      "rows": 121935,
+      "changed_values": 17
+    },
+    {
+      "path": "data\\chunks\\rag_corpus_parts\\rag_corpus_part002.jsonl",
+      "rows": 65708,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\evaluation\\bm25_retrieval_benchmark.jsonl",
+      "rows": 15,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\evaluation\\seed_questions.jsonl",
+      "rows": 5,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\canhgiacduoc_safety_articles.jsonl",
+      "rows": 459,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_all_drugs.jsonl",
+      "rows": 54186,
+      "changed_values": 5
+    },
+    {
+      "path": "data\\processed\\dav_otc_document_priority.jsonl",
+      "rows": 40,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_otc_drugs.jsonl",
+      "rows": 4989,
+      "changed_values": 1
+    },
+    {
+      "path": "data\\processed\\dav_otc_ocr_validation.jsonl",
+      "rows": 50,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_otc_pdf_ocr_text.jsonl",
+      "rows": 50,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_otc_pdf_text.jsonl",
+      "rows": 60,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\processed\\dav_recalls.jsonl",
+      "rows": 84,
+      "changed_values": 0
+    },
+    {
+      "path": "data\\raw\\dav\\all_raw.jsonl",
+      "rows": 54186,
+      "changed_values": 5
+    },
+    {
+      "path": "data\\raw\\dav\\otc_raw.jsonl",
+      "rows": 4989,
+      "changed_values": 1
+    },
+    {
+      "path": "data\\raw\\documents\\dav_otc_manifest.jsonl",
+      "rows": 60,
+      "changed_values": 0
+    }
+  ]
+}

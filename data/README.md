@@ -167,3 +167,26 @@ Output:
 - `data/evaluation/bm25_retrieval_report.md`: bang tom tat Hit@K, Strict Hit@K, MRR va cac ca fail can toi uu.
 
 Ket qua baseline gan nhat voi 15 cau hoi: Hit@5 = 0.8667, Strict Hit@5 = 0.8667, MRR = 0.8, Strict MRR = 0.7222. Hai loi can uu tien la truy van thu hoi bi registry lan at va cau hoi high-risk bi lay chunk OCR/interaction chua du an toan.
+
+## JSON quality audit
+
+Tao va dung virtual environment:
+
+```bash
+py -3.14 -m venv .venv
+.\.venv\Scripts\python.exe --version
+```
+
+Quet chat luong JSON/JSONL:
+
+```bash
+.\.venv\Scripts\python.exe scripts\audit_json_text_quality.py --roots data
+```
+
+Sua ky tu dieu khien/mojibake co the phuc hoi:
+
+```bash
+.\.venv\Scripts\python.exe scripts\repair_json_text_quality.py data
+```
+
+Ket qua audit gan nhat: 30 file JSON/JSONL, 886,753 rows, 0 parse error, 0 repairable mojibake, 7 replacement-char tu PDF extraction va 2,402 OCR rows can human review/guardrail.
