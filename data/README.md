@@ -168,6 +168,34 @@ Output:
 
 Ket qua baseline gan nhat voi 15 cau hoi: Hit@5 = 0.8667, Strict Hit@5 = 0.8667, MRR = 0.8, Strict MRR = 0.7222. Hai loi can uu tien la truy van thu hoi bi registry lan at va cau hoi high-risk bi lay chunk OCR/interaction chua du an toan.
 
+## Large generated RAG test set
+
+Tao bo test lon hon 1000 cau hoi tu du lieu that:
+
+```bash
+.\.venv\Scripts\python.exe scripts\generate_rag_testset.py --count 1200
+```
+
+Output:
+
+- `data/evaluation/generated_rag_testset_1200.jsonl`: 1,200 cau hoi evaluation.
+- `data/evaluation/generated_rag_testset_1200_manifest.json`: phan bo category/action/intent.
+- `data/evaluation/generated_rag_testset_1200_bm25_results.json`: ket qua BM25 baseline.
+- `data/evaluation/generated_rag_testset_1200_bm25_report.md`: report Markdown.
+
+Phan bo bo test 1,200 cau:
+
+- `drug_registry`: 420.
+- `recall`: 120.
+- `safety_warning`: 141.
+- `counterfeit`: 3.
+- `dosage_handoff`: 216.
+- `high_risk_context`: 144.
+- `interaction`: 96.
+- `emergency`: 60.
+
+Ket qua BM25 baseline tren bo 1,200 cau: Hit@5 = 0.9083, Strict Hit@5 = 0.8142, MRR = 0.8644, Strict MRR = 0.736. Interaction strict hien = 0 vi du lieu hien tai moi dinh danh tung thuoc trong registry, chua co nguon tuong tac da xac minh chua ca hai thuoc; day la diem yeu can bo sung trong giai doan tiep theo.
+
 ## JSON quality audit
 
 Tao va dung virtual environment:
