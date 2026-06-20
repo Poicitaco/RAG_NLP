@@ -222,3 +222,23 @@ Ket qua gan nhat tren benchmark 15 cau:
 - Hybrid BM25 + Chroma smoke + source adjustment: Hit@5 = 1.0, MRR = 0.9556.
 
 Luu y: Chroma hien moi la smoke index 1,000 chunks, nen ket qua nay dung de chung minh pipeline hybrid va source reranking. Khi build full Chroma index, can chay lai evaluation de lay so lieu chinh thuc cho bao cao.
+
+## Chroma priority index
+
+De tranh full vector index bi registry DAV lan at safety/recall evidence, tao priority corpus cho Chroma:
+
+```bash
+.\.venv\Scripts\python.exe scripts\build_chroma_priority_corpus.py --max-registry 12000
+.\.venv\Scripts\python.exe scripts\ingest_rag_corpus.py --inputs data\chunks\chroma_priority_corpus.jsonl --batch-size 128 --reset --persist-dir data\embeddings\chroma_priority --collection pharmaceutical_priority
+.\.venv\Scripts\python.exe scripts\evaluate_hybrid_retrieval.py --chroma-dir data\embeddings\chroma_priority --collection pharmaceutical_priority --top-k 5 --json-output data\evaluation\hybrid_priority_retrieval_results.json --md-output data\evaluation\hybrid_priority_retrieval_report.md
+```
+
+Priority corpus gan nhat co 14,156 chunks:
+
+- DAV registry slice: 12,000 chunks.
+- DAV PDF text: 88 chunks.
+- DAV OCR PDF: 784 chunks.
+- DAV recall: 84 chunks.
+- CanhGiacDuoc safety: 1,200 chunks.
+
+Ket qua hybrid priority index tren benchmark 15 cau: Hit@5 = 1.0, Strict Hit@5 = 1.0, MRR = 0.95, Strict MRR = 0.8833. Chroma index directory nam trong `data/embeddings/chroma_priority/` va khong commit len Git.

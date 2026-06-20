@@ -1,0 +1,23 @@
+{
+  "output": "data\\chunks\\chroma_priority_corpus.jsonl",
+  "inputs": [
+    "data/chunks/rag_corpus_parts"
+  ],
+  "total_chunks": 14156,
+  "max_registry": 12000,
+  "source_counts": {
+    "dav_all": 12000,
+    "dav_pdf": 88,
+    "dav_pdf_ocr": 784,
+    "dav_recall": 84,
+    "canhgiacduoc": 1200
+  },
+  "type_counts": {
+    "drug_info": 12630,
+    "safety": 124,
+    "dosage": 82,
+    "interaction": 36,
+    "safety_recall": 84,
+    "safety_article": 1200
+  }
+}
