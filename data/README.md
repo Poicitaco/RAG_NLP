@@ -173,7 +173,7 @@ Ket qua baseline gan nhat voi 15 cau hoi: Hit@5 = 0.8667, Strict Hit@5 = 0.8667,
 Tao va dung virtual environment:
 
 ```bash
-py -3.14 -m venv .venv
+py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe --version
 ```
 
@@ -251,10 +251,28 @@ Evidence guardrail chay sau retrieval de quyet dinh bang chung co du an toan de 
 .\.venv\Scripts\python.exe scripts\evaluate_evidence_guardrails.py --input data\evaluation\hybrid_priority_retrieval_results.json
 ```
 
-Ket qua gan nhat tren 15 cau benchmark:
+Ket qua gan nhat tren 15 cau benchmark sau khi siết relevance theo thuốc trong câu hỏi:
 
 - `allow`: 11 cau.
-- `allow_with_caution`: 2 cau.
-- `handoff`: 2 cau.
+- `allow_with_caution`: 1 cau.
+- `handoff`: 3 cau.
 
-Hai ca bi handoff la cac cau rui ro cao ma bang chung chua du loai nguon da xac minh: cau hoi lieu dung dua vao OCR va cau hoi tuong tac chi co OCR. Day la hanh vi mong muon cho chatbot duoc pham an toan.
+Ba ca bi handoff la cac cau rui ro cao ma bang chung chua du loai nguon da xac minh hoac chua lien quan truc tiep toi thuoc duoc hoi: cau hoi lieu dung dua vao OCR, cau hoi mang thai/ibuprofen chi co nguon safety khong dung thuoc, va cau hoi tuong tac chi co OCR. Day la hanh vi mong muon cho chatbot duoc pham an toan.
+
+## Safe RAG answer preview
+
+Preview end-to-end khong goi LLM, dung de chung minh luong production trong bao cao:
+
+```bash
+.\.venv\Scripts\python.exe scripts\rag_answer_preview.py "Aceclofenac Stella 100mg thu hồi" --json-output data\evaluation\rag_answer_preview_recall.json
+.\.venv\Scripts\python.exe scripts\rag_answer_preview.py "Nafacolex 400 liều dùng ibuprofen như thế nào?" --json-output data\evaluation\rag_answer_preview_dosage.json
+.\.venv\Scripts\python.exe scripts\rag_answer_preview.py "Tôi uống aspirin cùng ibuprofen được không?" --json-output data\evaluation\rag_answer_preview_interaction.json
+.\.venv\Scripts\python.exe scripts\rag_answer_preview.py --questions-file data\evaluation\seed_questions.jsonl --json-output data\evaluation\rag_answer_preview_seed.json
+```
+
+Luong preview hien tai:
+
+1. Cau cap cuu nhu "kho tho sau khi uong thuoc" duoc bypass retrieval va tra ve `emergency`, khong co citation ngau nhien.
+2. Cau thu hoi Aceclofenac duoc `allow` vi co DAV recall va CanhGiacDuoc.
+3. Cau lieu dung/tương tác neu chi co OCR hoac registry dinh danh thi `handoff`, khong sinh lieu/tương tác.
+4. Cau thong tin dinh danh thuoc duoc uu tien citation tu DAV registry; OCR neu co chi la bang chung can than trong prompt.

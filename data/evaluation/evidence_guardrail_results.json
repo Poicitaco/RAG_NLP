@@ -3,8 +3,8 @@
     "case_count": 15,
     "action_counts": {
       "allow": 11,
-      "allow_with_caution": 2,
-      "handoff": 2
+      "allow_with_caution": 1,
+      "handoff": 3
     },
     "intent_counts": {
       "drug_info": 6,
@@ -498,20 +498,22 @@
       "category": "high_risk_context",
       "retrieval_hit": true,
       "decision": {
-        "action": "allow_with_caution",
+        "action": "handoff",
         "intent": "high_risk_context",
-        "should_answer": true,
-        "message": "Co the tra loi muc thong tin chung kem citation, nhung khong dua ra lieu ca nhan hoa hoac thay doi toa thuoc.",
+        "should_answer": false,
+        "message": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.",
         "warnings": [
           "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac.",
-          "High-risk answer must include handoff language and avoid personalized dosing."
+          "High-risk question lacks verified relevant evidence."
         ],
         "usable_sources": [
           "canhgiacduoc",
           "dav_pdf_ocr",
           "dav_pdf"
         ],
-        "blocked_sources": [],
+        "blocked_sources": [
+          "dav_pdf_ocr"
+        ],
         "metadata": {
           "sources": [
             "canhgiacduoc",

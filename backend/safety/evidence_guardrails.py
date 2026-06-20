@@ -64,7 +64,22 @@ HIGH_RISK_TERMS = {
     "suy gan",
     "suy than",
 }
-DOSAGE_TERMS = {"lieu", "lieu dung", "cach dung", "uong may vien", "tan suat"}
+DOSAGE_TERMS = {
+    "lieu",
+    "lieu dung",
+    "cach dung",
+    "cach su dung",
+    "su dung nhu the nao",
+    "dung nhu the nao",
+    "dung the nao",
+    "uong nhu the nao",
+    "uong the nao",
+    "uong may vien",
+    "dung bao nhieu",
+    "uong bao nhieu",
+    "ngay may lan",
+    "tan suat",
+}
 INTERACTION_TERMS = {"tuong tac", "dung chung", "uong cung", "ket hop"}
 COMMON_DRUG_TERMS = {
     "aspirin",
@@ -138,6 +153,31 @@ def result_type(result: Dict[str, Any]) -> str:
     return str(result_metadata(result).get("type") or "")
 
 
+def result_text(result: Dict[str, Any]) -> str:
+    metadata = result_metadata(result)
+    fields = [
+        result.get("document_preview"),
+        result.get("document"),
+        metadata.get("title"),
+        metadata.get("drug_name"),
+        metadata.get("active_ingredients"),
+        metadata.get("main_ingredient"),
+    ]
+    return normalize_text(" ".join(str(value) for value in fields if value))
+
+
+def mentioned_common_drugs(question: str) -> List[str]:
+    normalized = normalize_text(question)
+    return [term for term in COMMON_DRUG_TERMS if term in normalized]
+
+
+def is_relevant_to_question_drugs(result: Dict[str, Any], question_drugs: List[str]) -> bool:
+    if not question_drugs:
+        return True
+    text = result_text(result)
+    return any(term in text for term in question_drugs)
+
+
 def trust_level(result: Dict[str, Any]) -> str:
     return str(result_metadata(result).get("trust_level") or "official_registry")
 
@@ -181,6 +221,7 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
     intent = classify_question_intent(question)
     summary = evidence_summary(results)
     sources = list(dict.fromkeys(summary["sources"]))
+    question_drugs = mentioned_common_drugs(question)
     warnings: List[str] = []
 
     if intent == QuestionIntent.EMERGENCY:
@@ -239,12 +280,29 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
         )
 
     if intent in HIGH_RISK_INTENTS:
+        verified_relevant = [
+            row
+            for row in results
+            if not is_unverified_ocr(row) and is_relevant_to_question_drugs(row, question_drugs)
+        ]
         if intent == QuestionIntent.DOSAGE:
-            has_relevant_verified = summary["has_verified_dosage"] or summary["has_verified_safety"]
+            has_relevant_verified = any(
+                result_type(row) in {"dosage", "safety", "safety_article", "safety_recall"}
+                or result_source(row) in SAFETY_SOURCES
+                for row in verified_relevant
+            )
         elif intent == QuestionIntent.INTERACTION:
-            has_relevant_verified = summary["has_verified_interaction"] or summary["has_verified_safety"]
+            has_relevant_verified = any(
+                result_type(row) in {"interaction", "safety", "safety_article", "safety_recall"}
+                or result_source(row) in SAFETY_SOURCES
+                for row in verified_relevant
+            )
         else:
-            has_relevant_verified = summary["has_verified_safety"] or summary["has_pdf_source"]
+            has_relevant_verified = any(
+                result_type(row) in {"safety", "safety_article", "safety_recall"}
+                or result_source(row) in SAFETY_SOURCES | PDF_SOURCES
+                for row in verified_relevant
+            )
 
         if not has_relevant_verified:
             return EvidenceDecision(

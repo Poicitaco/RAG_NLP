@@ -1,0 +1,158 @@
+{
+  "results": [
+    {
+      "question": "Tôi uống aspirin cùng ibuprofen được không?",
+      "decision": {
+        "action": "handoff",
+        "intent": "interaction",
+        "should_answer": false,
+        "message": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.",
+        "warnings": [
+          "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac.",
+          "High-risk question lacks verified relevant evidence."
+        ],
+        "usable_sources": [
+          "dav_pdf_ocr"
+        ],
+        "blocked_sources": [
+          "dav_pdf_ocr"
+        ]
+      },
+      "answer_preview": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.\n\nLưu ý: Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac. High-risk question lacks verified relevant evidence.",
+      "citations": [
+        {
+          "id": "S1",
+          "source": "dav_pdf_ocr",
+          "title": "Nafacolex 400 mg",
+          "url": "https://dichvucong.dav.gov.vn/File/GoToViewTaiLieu?url=TT89%5Cthanh-pho-ho-chi-minh%5C0304026070%5CHOSO_20240725_164634%5Ctepdinhkem%5C3_PI-proposed_stamped_0001_30432_20250807_133209.pdf",
+          "type": "interaction",
+          "trust_level": "unverified_ocr"
+        },
+        {
+          "id": "S2",
+          "source": "dav_pdf_ocr",
+          "title": "Ruudbasten",
+          "url": "https://dichvucong.dav.gov.vn/File/GoToViewTaiLieu?url=TT89%5Cben-tre%5C1300337479%5CHOSO_20210603_153850%5Ctepdinhkem%5CTo-HDSD-moi_30242_20250325_130817.pdf",
+          "type": "safety",
+          "trust_level": "unverified_ocr"
+        },
+        {
+          "id": "S3",
+          "source": "dav_pdf_ocr",
+          "title": "Nafacolex 400 mg",
+          "url": "https://dichvucong.dav.gov.vn/File/GoToViewTaiLieu?url=TT89%5Cthanh-pho-ho-chi-minh%5C0304026070%5CHOSO_20240725_164634%5Ctepdinhkem%5C3_PI-proposed_stamped_0001_30432_20250807_133209.pdf",
+          "type": "safety",
+          "trust_level": "unverified_ocr"
+        },
+        {
+          "id": "S4",
+          "source": "dav_pdf_ocr",
+          "title": "Fexosin 30",
+          "url": "https://dichvucong.dav.gov.vn/File/GoToViewTaiLieu?url=TT89%5Cthanh-pho-ho-chi-minh%5C0311876329%5CHOSO_20210907_232243%5Ctepdinhkem%5C5_30817_20250319_100708.pdf",
+          "type": "safety",
+          "trust_level": "unverified_ocr"
+        },
+        {
+          "id": "S5",
+          "source": "dav_pdf_ocr",
+          "title": "Levonorgestrel \n1,5 mg",
+          "url": "https://dichvucong.dav.gov.vn/File/GoToViewTaiLieu?url=TT89%5Cha-noi%5C0100679733%5CHOSO_20230105_100140%5Ctepdinhkem%5CHDSD_30389_20250418_135519.pdf",
+          "type": "drug_info",
+          "trust_level": "unverified_ocr"
+        }
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "531100059726:leaflet:ocr:p5:interactions:3",
+          "hybrid_score": 1.0,
+          "source": "dav_pdf_ocr",
+          "type": "interaction",
+          "trust_level": "unverified_ocr",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 21.4963
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.35982
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "id": "893100485425:leaflet:ocr:p4:overdose:3",
+          "hybrid_score": 0.325,
+          "source": "dav_pdf_ocr",
+          "type": "safety",
+          "trust_level": "unverified_ocr",
+          "title_or_drug": "Fexosin 30",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 21.4544
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "id": "893100471725:leaflet:ocr:p1:indications:2",
+          "hybrid_score": 0.216667,
+          "source": "dav_pdf_ocr",
+          "type": "drug_info",
+          "trust_level": "unverified_ocr",
+          "title_or_drug": "Levonorgestrel \n1,5 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 3,
+              "score": 19.6018
+            }
+          ]
+        },
+        {
+          "rank": 4,
+          "id": "893100018526:leaflet:ocr:p1:contraindications:8",
+          "hybrid_score": 0.175,
+          "source": "dav_pdf_ocr",
+          "type": "safety",
+          "trust_level": "unverified_ocr",
+          "title_or_drug": "Ruudbasten",
+          "retrievers": [
+            {
+              "retriever": "chroma",
+              "rank": 2,
+              "distance": 0.510253
+            }
+          ]
+        },
+        {
+          "rank": 5,
+          "id": "531100059726:leaflet:ocr:p5:side_effects:4",
+          "hybrid_score": 0.162857,
+          "source": "dav_pdf_ocr",
+          "type": "safety",
+          "trust_level": "unverified_ocr",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 7,
+              "score": 17.7355
+            },
+            {
+              "retriever": "chroma",
+              "rank": 5,
+              "distance": 0.542161
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

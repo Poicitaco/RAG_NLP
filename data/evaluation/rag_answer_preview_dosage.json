@@ -1,0 +1,154 @@
+{
+  "results": [
+    {
+      "question": "Nafacolex 400 liều dùng ibuprofen như thế nào?",
+      "decision": {
+        "action": "handoff",
+        "intent": "dosage",
+        "should_answer": false,
+        "message": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.",
+        "warnings": [
+          "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac.",
+          "High-risk question lacks verified relevant evidence."
+        ],
+        "usable_sources": [
+          "dav_all",
+          "dav_pdf_ocr"
+        ],
+        "blocked_sources": [
+          "dav_pdf_ocr"
+        ]
+      },
+      "answer_preview": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.\n\nLưu ý: Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac. High-risk question lacks verified relevant evidence.",
+      "citations": [
+        {
+          "id": "S1",
+          "source": "dav_all",
+          "title": "Nafacolex 400 mg",
+          "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+          "type": "drug_info",
+          "trust_level": "official_registry"
+        },
+        {
+          "id": "S2",
+          "source": "dav_all",
+          "title": "Ibuprofen 400mg",
+          "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+          "type": "drug_info",
+          "trust_level": "official_registry"
+        },
+        {
+          "id": "S3",
+          "source": "dav_all",
+          "title": "Ibufil F 400",
+          "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+          "type": "drug_info",
+          "trust_level": "official_registry"
+        },
+        {
+          "id": "S4",
+          "source": "dav_pdf_ocr",
+          "title": "Nafacolex 400 mg",
+          "url": "https://dichvucong.dav.gov.vn/File/GoToViewTaiLieu?url=TT89%5Cthanh-pho-ho-chi-minh%5C0304026070%5CHOSO_20240725_164634%5Ctepdinhkem%5C3_PI-proposed_stamped_0001_30432_20250807_133209.pdf",
+          "type": "dosage",
+          "trust_level": "unverified_ocr"
+        },
+        {
+          "id": "S5",
+          "source": "dav_all",
+          "title": "Nafacolex 400 mg",
+          "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+          "type": "drug_info",
+          "trust_level": "official_registry"
+        }
+      ],
+      "retrieved": [
+        {
+          "rank": 1,
+          "id": "531100059726:identity",
+          "hybrid_score": 0.666667,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 3,
+              "score": 36.9408
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.256007
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "id": "531100059726:leaflet:ocr:p1:dosage_administration:9",
+          "hybrid_score": 0.3,
+          "source": "dav_pdf_ocr",
+          "type": "dosage",
+          "trust_level": "unverified_ocr",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 41.2133
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "id": "893100267625:identity",
+          "hybrid_score": 0.216667,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ibuprofen 400mg",
+          "retrievers": [
+            {
+              "retriever": "chroma",
+              "rank": 3,
+              "distance": 0.33944
+            }
+          ]
+        },
+        {
+          "rank": 4,
+          "id": "531100059726:manufacturer",
+          "hybrid_score": 0.18125,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 8,
+              "score": 34.8984
+            }
+          ]
+        },
+        {
+          "rank": 5,
+          "id": "890100304625:identity",
+          "hybrid_score": 0.17,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ibufil F 400",
+          "retrievers": [
+            {
+              "retriever": "chroma",
+              "rank": 5,
+              "distance": 0.343545
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
