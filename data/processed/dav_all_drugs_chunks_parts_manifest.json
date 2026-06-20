@@ -1,0 +1,18 @@
+{
+  "source": "data\\chunks\\dav_all_drugs_chunks.jsonl",
+  "max_mb": 80,
+  "parts": [
+    {
+      "path": "data/chunks/dav_all_drugs_chunks_parts/dav_all_drugs_chunks_part001.jsonl",
+      "rows": 121944,
+      "bytes": 84007834
+    },
+    {
+      "path": "data/chunks/dav_all_drugs_chunks_parts/dav_all_drugs_chunks_part002.jsonl",
+      "rows": 63543,
+      "bytes": 42698968
+    }
+  ],
+  "total_rows": 185487,
+  "total_bytes": 126706802
+}

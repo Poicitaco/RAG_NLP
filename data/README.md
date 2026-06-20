@@ -20,8 +20,14 @@ Tinh den lan chay gan nhat:
 - `data/chunks/dav_otc_drugs_chunks.jsonl`: 19,158 chunks dang truong thong tin thuoc, dung de index vao vector store.
 - `data/raw/dav/otc_raw.jsonl`: raw API snapshot, giu lai de tai lap preprocessing.
 - `data/processed/dav_otc_profile.md`: thong ke dataset cho bao cao NLP.
+- `data/processed/dav_all_drugs.jsonl`: 54,186 thuoc dang ky cong khai tu DAV, phu hop ho tro thuoc da duoc bac si ke.
+- `data/processed/dav_all_drugs.csv`: ban CSV cua toan bo registry DAV.
+- `data/processed/dav_all_profile.md`: thong ke full DAV registry.
+- `data/chunks/dav_all_drugs_chunks_parts/`: 185,487 chunks registry DAV all, duoc tach shard de GitHub chap nhan.
 - `data/processed/dav_recalls.jsonl`: 84 dong cong van thu hoi thuoc tu DAV.
 - `data/chunks/dav_recalls_chunks.jsonl`: 84 chunks canh bao/thu hoi thuoc.
+- `data/processed/canhgiacduoc_safety_articles.jsonl`: 459 bai safety/ADR/canh giac duoc.
+- `data/chunks/canhgiacduoc_safety_chunks.jsonl`: 1,200 chunks an toan thuoc tu CanhGiacDuoc.
 - `data/processed/dav_otc_document_priority.jsonl`: 40 thuoc uu tien tai HDSD/nhan theo 20 hoat chat OTC pho bien.
 - `data/raw/documents/dav_otc_manifest.jsonl`: manifest 60 tai lieu PDF da tai tu DAV.
 - `data/processed/dav_otc_pdf_text.jsonl`: 60 PDF da extract; 10 file co text layer doc duoc, 50 file can OCR.
@@ -30,10 +36,11 @@ Tinh den lan chay gan nhat:
 - `data/chunks/dav_otc_pdf_ocr_chunks.jsonl`: 784 chunks OCR tu PDF scan.
 - `data/processed/dav_otc_ocr_validation.jsonl`: report doi chieu OCR voi DAV registry.
 - `data/processed/dav_otc_ocr_validation.csv`: bang review thu cong cho cac OCR doc can kiem tra.
-- `data/chunks/rag_corpus.jsonl`: 20,114 chunks tong hop de ingest vao vector store.
+- `data/chunks/rag_corpus_parts/`: 187,643 chunks tong hop de ingest vao vector store, duoc tach shard de GitHub chap nhan.
 - `data/processed/rag_corpus_manifest.json`: thong ke thanh phan corpus tong hop.
+- `data/processed/rag_corpus_parts_manifest.json`: manifest cac shard corpus tong hop.
 
-Da lay du danh muc OTC dang ky cong khai tu DAV tai thoi diem chay script. PDF/nhan/HDSD da duoc tai theo mau uu tien top hoat chat pho bien; chua tai toan bo 4,191 thuoc co tai lieu vi dung luong lon va nhieu file scan can OCR.
+Da lay du danh muc OTC va full registry DAV cong khai tai thoi diem chay script. PDF/nhan/HDSD da duoc tai theo mau uu tien top hoat chat pho bien; chua tai toan bo tai lieu PDF vi dung luong lon va nhieu file scan can OCR.
 
 Dataset nay dung cho:
 
@@ -62,6 +69,15 @@ Lay toan bo OTC:
 
 ```bash
 python scripts/collect_dav_drugs.py --dataset otc --page-size 500
+```
+
+Lay toan bo registry DAV:
+
+```bash
+python scripts/collect_dav_drugs.py --dataset all --page-size 1000
+python scripts/rebuild_dav_processed_from_raw.py --dataset all
+python scripts/profile_drug_dataset.py --input data/processed/dav_all_drugs.jsonl --json-output data/processed/dav_all_profile.json --md-output data/processed/dav_all_profile.md
+python scripts/prepare_drug_chunks.py --input data/processed/dav_all_drugs.jsonl
 ```
 
 Tao chunks tu file processed:
@@ -120,6 +136,9 @@ python scripts/download_dav_documents.py --input data/processed/dav_otc_document
 Tao corpus RAG tong hop:
 
 ```bash
+python scripts/collect_canhgiacduoc_articles.py --pages 18
+python scripts/prepare_safety_article_chunks.py
 python scripts/prepare_recall_chunks.py
 python scripts/build_rag_corpus.py
+python scripts/split_jsonl.py --input data/chunks/rag_corpus.jsonl --output-dir data/chunks/rag_corpus_parts --prefix rag_corpus --max-mb 80 --manifest data/processed/rag_corpus_parts_manifest.json
 ```

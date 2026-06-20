@@ -1,0 +1,18 @@
+{
+  "source": "data\\chunks\\rag_corpus.jsonl",
+  "max_mb": 80,
+  "parts": [
+    {
+      "path": "data/chunks/rag_corpus_parts/rag_corpus_part001.jsonl",
+      "rows": 121935,
+      "bytes": 84007923
+    },
+    {
+      "path": "data/chunks/rag_corpus_parts/rag_corpus_part002.jsonl",
+      "rows": 65708,
+      "bytes": 46316076
+    }
+  ],
+  "total_rows": 187643,
+  "total_bytes": 130323999
+}
