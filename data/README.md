@@ -201,3 +201,24 @@ Sau khi tao `.venv` bang Python 3.11, co the kiem tra vector store voi 1,000 chu
 ```
 
 Kiem tra gan nhat: Chroma ingest thanh cong 1,000 chunks voi model `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`. Query exact-name co the kem BM25, vi vay huong toi uu nen la hybrid retrieval: BM25 cho exact match ten thuoc/SDK/hoat chat, vector search cho cau hoi dien dat tu nhien.
+
+## Hybrid retrieval
+
+Chay hybrid search BM25 + Chroma:
+
+```bash
+.\.venv\Scripts\python.exe scripts\hybrid_search_rag.py "Aceclofenac Stella 100mg thu hồi" --chroma-dir data\embeddings\chroma_smoke --collection pharmaceutical_smoke --top-k 3
+```
+
+Danh gia hybrid tren benchmark:
+
+```bash
+.\.venv\Scripts\python.exe scripts\evaluate_hybrid_retrieval.py --chroma-dir data\embeddings\chroma_smoke --collection pharmaceutical_smoke --top-k 5
+```
+
+Ket qua gan nhat tren benchmark 15 cau:
+
+- BM25 baseline: Hit@5 = 0.8667, MRR = 0.8.
+- Hybrid BM25 + Chroma smoke + source adjustment: Hit@5 = 1.0, MRR = 0.9556.
+
+Luu y: Chroma hien moi la smoke index 1,000 chunks, nen ket qua nay dung de chung minh pipeline hybrid va source reranking. Khi build full Chroma index, can chay lai evaluation de lay so lieu chinh thuc cho bao cao.
