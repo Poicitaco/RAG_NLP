@@ -261,7 +261,7 @@ def _clarification_response_blocks(
                 "title": "LÝ DO CHUYÊN KHOA DỄ HIỂU",
                 "items": [
                     "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
-                    f"Lý do hệ thống hỏi lại: {reason}.",
+                    "Mình hỏi lại để tránh chọn nhầm thuốc theo tuổi, bệnh nền, dị ứng hoặc thuốc đang dùng.",
                 ],
             },
             "citations": {

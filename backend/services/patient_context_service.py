@@ -183,6 +183,13 @@ class PatientContextService:
             patient_context["pregnant"] = True
         if conditions:
             patient_context["conditions_confirmed"] = True
+        if (
+            "khong co benh nen" in normalized
+            or "khong benh nen" in normalized
+            or "khong mac benh nen" in normalized
+            or "khong co benh man tinh" in normalized
+        ):
+            patient_context["conditions_confirmed"] = True
         if "khong di ung" in normalized or "khong co di ung" in normalized:
             patient_context["allergies_confirmed"] = True
         if (

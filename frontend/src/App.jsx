@@ -55,6 +55,29 @@ const openingMessages = [
   },
 ];
 
+const conditionOptions = [
+  { id: "diabetes", label: "Tiểu đường", text: "tiểu đường" },
+  { id: "hypertension", label: "Tăng huyết áp", text: "tăng huyết áp" },
+  { id: "kidney_disease", label: "Bệnh thận", text: "suy thận" },
+  { id: "liver_disease", label: "Bệnh gan", text: "bệnh gan" },
+  { id: "heart_disease", label: "Tim mạch", text: "bệnh tim mạch" },
+  { id: "stomach_ulcer", label: "Dạ dày", text: "đau bao tử" },
+  { id: "asthma", label: "Hen/suyễn", text: "hen suyễn" },
+];
+
+const medicationOptions = [
+  { id: "none", label: "Không dùng thuốc khác", text: "không đang dùng thuốc khác" },
+  { id: "bp", label: "Thuốc huyết áp", text: "đang dùng thuốc huyết áp" },
+  { id: "diabetes", label: "Thuốc tiểu đường", text: "đang dùng thuốc tiểu đường" },
+  { id: "blood_thinner", label: "Thuốc chống đông", text: "đang dùng thuốc chống đông" },
+];
+
+const allergyOptions = [
+  { id: "none", label: "Không dị ứng thuốc", text: "không dị ứng thuốc" },
+  { id: "penicillin", label: "Penicillin", text: "dị ứng penicillin" },
+  { id: "nsaid", label: "Aspirin/NSAID", text: "dị ứng aspirin hoặc thuốc giảm đau NSAID" },
+];
+
 function uid(prefix = "msg") {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
@@ -67,6 +90,8 @@ function actionMeta(action) {
     needs_clarification: { label: "Cần hỏi thêm", tone: "question", icon: MagnifyingGlass },
     allow_with_caution: { label: "Dùng thận trọng", tone: "caution", icon: WarningCircle },
     allowed: { label: "Có thể trả lời", tone: "safe", icon: CheckCircle },
+    allow: { label: "Có thể trả lời", tone: "safe", icon: CheckCircle },
+    handoff: { label: "Cần hỏi dược sĩ/bác sĩ", tone: "caution", icon: FirstAidKit },
     ready: { label: "Sẵn sàng", tone: "safe", icon: ShieldCheck },
   };
   return map[normalized] || { label: normalized, tone: "neutral", icon: Heartbeat };
@@ -122,6 +147,17 @@ function extractPatientContext(messages) {
     .reverse()
     .find((msg) => msg.role === "assistant" && msg.metadata?.patient_context);
   return latest?.metadata?.patient_context || {};
+}
+
+function cleanAnswerLine(line) {
+  const withFriendlyConditions = conditionOptions.reduce(
+    (value, option) => value.replaceAll(option.id, option.label.toLowerCase()),
+    line
+  );
+  return withFriendlyConditions
+    .replace(/^-+\s*/, "")
+    .replace(/Lý do hệ thống hỏi lại:.*/i, "Mình hỏi lại để tránh chọn nhầm thuốc theo tuổi, bệnh nền, dị ứng hoặc thuốc đang dùng.")
+    .replace(/missing_patient_context_for_safe_medication_advice/gi, "thiếu thông tin an toàn cần xác nhận");
 }
 
 function App() {
@@ -340,7 +376,7 @@ function App() {
 
           <div className="message-list" ref={listRef} aria-live="polite">
             {messages.map((message) => (
-              <MessageBubble key={message.id} item={message} />
+              <MessageBubble key={message.id} item={message} onSubmitClarification={sendMessage} loading={loading} />
             ))}
             {loading && <TypingBubble />}
           </div>
@@ -422,9 +458,12 @@ function App() {
 }
 
 function PatientContext({ context }) {
+  const conditionLabels = Array.isArray(context.conditions)
+    ? context.conditions.map((condition) => conditionOptions.find((option) => option.id === condition)?.label || condition)
+    : context.conditions;
   const fields = [
     ["Tuổi", context.age || context.age_months],
-    ["Bệnh nền", Array.isArray(context.conditions) ? context.conditions.join(", ") : context.conditions],
+    ["Bệnh nền", Array.isArray(conditionLabels) ? conditionLabels.join(", ") : conditionLabels],
     ["Đang dùng thuốc", Array.isArray(context.current_medications) ? context.current_medications.join(", ") : context.current_medications],
     ["Dị ứng", Array.isArray(context.allergies) ? context.allergies.join(", ") : context.allergies],
   ];
@@ -472,12 +511,19 @@ function AgentTrace({ metadata }) {
   );
 }
 
-function MessageBubble({ item }) {
+function MessageBubble({ item, onSubmitClarification, loading }) {
   const isUser = item.role === "user";
   const action = actionMeta(item.metadata?.rag_action || item.metadata?.action);
   const ActionIcon = action.icon;
   const blocks = splitResponse(item.message);
   const sources = item.sources || [];
+  const ragAction = item.metadata?.rag_action || item.metadata?.action;
+  const needsClarification = !isUser && ragAction === "needs_clarification";
+  const showSources =
+    !isUser &&
+    sources.length > 0 &&
+    !["handoff", "needs_clarification", "emergency"].includes(ragAction) &&
+    !(item.message || "").includes("Chưa có nguồn đủ chuẩn");
 
   return (
     <article className={`message ${isUser ? "user" : "assistant"}`}>
@@ -496,14 +542,22 @@ function MessageBubble({ item }) {
               <section className={blockClass(block.title)} key={block.title + block.body.join("")}>
                 <h3>{block.title}</h3>
                 {block.body.map((line) => (
-                  <p key={line}>{line}</p>
+                  <p key={line}>{cleanAnswerLine(line)}</p>
                 ))}
               </section>
             ))}
           </div>
         )}
       </div>
-      {!isUser && sources.length > 0 && (
+      {needsClarification && (
+        <ClarificationForm
+          disabled={loading}
+          missing={item.metadata?.missing_context || []}
+          patientContext={item.metadata?.patient_context || {}}
+          onSubmit={onSubmitClarification}
+        />
+      )}
+      {showSources && (
         <div className="source-strip">
           {sources.slice(0, 4).map((source, index) => (
             <a
@@ -518,6 +572,169 @@ function MessageBubble({ item }) {
         </div>
       )}
     </article>
+  );
+}
+
+function ClarificationForm({ disabled, missing, patientContext, onSubmit }) {
+  const knownConditions = Array.isArray(patientContext.conditions) ? patientContext.conditions : [];
+  const [age, setAge] = useState(patientContext.age ? String(patientContext.age) : "");
+  const [conditions, setConditions] = useState(
+    knownConditions.filter((condition) => conditionOptions.some((option) => option.id === condition))
+  );
+  const [noConditions, setNoConditions] = useState(false);
+  const [medicationChoice, setMedicationChoice] = useState("none");
+  const [otherMedications, setOtherMedications] = useState("");
+  const [allergyChoice, setAllergyChoice] = useState("none");
+  const [otherAllergies, setOtherAllergies] = useState("");
+  const [pregnancy, setPregnancy] = useState("");
+
+  const needsAge = missing.includes("age") || missing.includes("age_or_age_months");
+  const needsPregnancy = missing.includes("pregnancy_breastfeeding_confirmed");
+
+  function toggleCondition(option) {
+    setNoConditions(false);
+    setConditions((current) =>
+      current.includes(option.id) ? current.filter((item) => item !== option.id) : [...current, option.id]
+    );
+  }
+
+  function buildContextMessage() {
+    const parts = [];
+    if (age) parts.push(`Tôi ${age} tuổi`);
+
+    if (noConditions) {
+      parts.push("không có bệnh nền");
+    } else {
+      const selected = conditionOptions.filter((option) => conditions.includes(option.id));
+      if (selected.length) parts.push(`có bệnh nền: ${selected.map((option) => option.text).join(", ")}`);
+    }
+
+    const medication = medicationOptions.find((option) => option.id === medicationChoice);
+    if (medication) parts.push(medication.text);
+    if (otherMedications.trim()) parts.push(`thuốc khác đang dùng: ${otherMedications.trim()}`);
+
+    const allergy = allergyOptions.find((option) => option.id === allergyChoice);
+    if (allergy) parts.push(allergy.text);
+    if (otherAllergies.trim()) parts.push(`dị ứng khác: ${otherAllergies.trim()}`);
+
+    if (needsPregnancy && pregnancy) parts.push(pregnancy);
+    return parts.join(", ") + ".";
+  }
+
+  const canSubmit = !disabled && (!needsAge || age.trim()) && (noConditions || conditions.length > 0);
+
+  return (
+    <form
+      className="clarification-card"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (canSubmit) onSubmit(buildContextMessage());
+      }}
+    >
+      <div className="clarification-head">
+        <strong>Trả lời nhanh để bot tư vấn tiếp</strong>
+        <span>Không cần gõ câu dài. Chọn thông tin đúng với bạn.</span>
+      </div>
+
+      {needsAge && (
+        <label className="field-label">
+          Tuổi người dùng thuốc
+          <input
+            inputMode="numeric"
+            min="0"
+            max="120"
+            onChange={(event) => setAge(event.target.value.replace(/[^\d]/g, "").slice(0, 3))}
+            placeholder="Ví dụ: 45"
+            type="text"
+            value={age}
+          />
+        </label>
+      )}
+
+      <div className="choice-group">
+        <div className="choice-title">Bệnh nền</div>
+        <button
+          className={`choice-chip ${noConditions ? "selected" : ""}`}
+          onClick={() => {
+            setNoConditions(true);
+            setConditions([]);
+          }}
+          type="button"
+        >
+          Không có bệnh nền
+        </button>
+        {conditionOptions.map((option) => (
+          <button
+            className={`choice-chip ${conditions.includes(option.id) ? "selected" : ""}`}
+            key={option.id}
+            onClick={() => toggleCondition(option)}
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="choice-group">
+        <div className="choice-title">Thuốc đang dùng</div>
+        {medicationOptions.map((option) => (
+          <button
+            className={`choice-chip ${medicationChoice === option.id ? "selected" : ""}`}
+            key={option.id}
+            onClick={() => setMedicationChoice(option.id)}
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
+        <input
+          className="inline-input"
+          onChange={(event) => setOtherMedications(event.target.value)}
+          placeholder="Nhập thêm nếu có, ví dụ: metformin"
+          value={otherMedications}
+        />
+      </div>
+
+      <div className="choice-group">
+        <div className="choice-title">Dị ứng thuốc</div>
+        {allergyOptions.map((option) => (
+          <button
+            className={`choice-chip ${allergyChoice === option.id ? "selected" : ""}`}
+            key={option.id}
+            onClick={() => setAllergyChoice(option.id)}
+            type="button"
+          >
+            {option.label}
+          </button>
+        ))}
+        <input
+          className="inline-input"
+          onChange={(event) => setOtherAllergies(event.target.value)}
+          placeholder="Nhập thêm nếu có"
+          value={otherAllergies}
+        />
+      </div>
+
+      {needsPregnancy && (
+        <div className="choice-group">
+          <div className="choice-title">Mang thai hoặc cho con bú</div>
+          {["không mang thai hoặc cho con bú", "đang mang thai", "đang cho con bú"].map((option) => (
+            <button
+              className={`choice-chip ${pregnancy === option ? "selected" : ""}`}
+              key={option}
+              onClick={() => setPregnancy(option)}
+              type="button"
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <button className="clarification-submit" disabled={!canSubmit} type="submit">
+        Gửi thông tin và tư vấn tiếp
+      </button>
+    </form>
   );
 }
 
