@@ -203,6 +203,37 @@ def _agent_pipeline(
     }
 
 
+def _augment_with_patient_context(message: str, patient_context: Dict[str, Any]) -> str:
+    context_terms = []
+    age = patient_context.get("age")
+    age_months = patient_context.get("age_months")
+    weight = patient_context.get("weight_kg")
+    conditions = patient_context.get("conditions") or []
+    current_medications = patient_context.get("current_medications") or []
+    allergies = patient_context.get("allergies") or []
+
+    if age is not None:
+        context_terms.append(f"age: {age}")
+    if age_months is not None:
+        context_terms.append(f"age_months: {age_months}")
+    if weight is not None:
+        context_terms.append(f"weight_kg: {weight}")
+    if conditions:
+        context_terms.append("conditions: " + "; ".join(str(item) for item in conditions))
+    if current_medications:
+        context_terms.append("current_medications: " + "; ".join(str(item) for item in current_medications))
+    if allergies:
+        context_terms.append("allergies: " + "; ".join(str(item) for item in allergies))
+    if patient_context.get("pregnant") is True:
+        context_terms.append("pregnant: true")
+    if patient_context.get("breastfeeding") is True:
+        context_terms.append("breastfeeding: true")
+
+    if not context_terms:
+        return message
+    return message + "\nPatient context: " + "; ".join(context_terms)
+
+
 def _clarification_response_blocks(
     *,
     intent: str,
@@ -331,6 +362,7 @@ class SafeRagService:
                 metadata={
                     "rag_action": early_decision.action.value,
                     "intent": early_decision.intent.value,
+                    "original_query": message,
                     "retrieval_bypassed": True,
                     "selected_agents": selected_agents,
                     "agent_pipeline": _agent_pipeline(trace),
@@ -394,6 +426,7 @@ class SafeRagService:
                 metadata={
                     "rag_action": "needs_clarification",
                     "intent": early_decision.intent.value,
+                    "original_query": message,
                     "retrieval_bypassed": True,
                     "should_answer": False,
                     "patient_context": context_assessment.patient_context,
@@ -450,8 +483,9 @@ class SafeRagService:
             )
 
         started_at = time.perf_counter()
-        alignment = self.name_alignment.align(message)
-        effective_message = alignment["augmented_query"] if alignment.get("used") else message
+        context_message = _augment_with_patient_context(message, context_assessment.patient_context)
+        alignment = self.name_alignment.align(context_message)
+        effective_message = alignment["augmented_query"] if alignment.get("used") else context_message
         _add_trace_step(
             trace,
             "drug_name_alignment_agent",
@@ -523,6 +557,9 @@ class SafeRagService:
             answer = graph_warning + "\n\n" + answer
             confidence = max(confidence, 0.78)
             agent_type = AgentType.SAFETY_MONITOR
+        final_action = decision.action
+        if graph_result["should_warn"] and final_action == EvidenceAction.ALLOW:
+            final_action = EvidenceAction.ALLOW_WITH_CAUTION
         _add_trace_step(
             trace,
             "graph_rag_join_node",
@@ -539,7 +576,7 @@ class SafeRagService:
             selected_agents.insert(1, "patient_context_collector")
             selected_agents = list(dict.fromkeys(selected_agents))
         response_blocks = build_response_blocks(
-            action=decision.action.value,
+            action=final_action.value,
             intent=decision.intent.value,
             graph_result=graph_result,
             citations=citations[:5],
@@ -571,7 +608,7 @@ class SafeRagService:
             suggestions=suggestions,
             warnings=warnings,
             metadata={
-                "rag_action": decision.action.value,
+                "rag_action": final_action.value,
                 "intent": decision.intent.value,
                 "should_answer": decision.should_answer,
                 "usable_sources": decision.usable_sources,
@@ -579,6 +616,7 @@ class SafeRagService:
                 "retrieved_count": len(results),
                 "retriever": "hybrid_bm25_chroma_priority",
                 "original_query": message,
+                "context_augmented_query": context_message,
                 "effective_query": effective_message,
                 "entity_alignment": alignment,
                 "patient_context": context_assessment.patient_context,

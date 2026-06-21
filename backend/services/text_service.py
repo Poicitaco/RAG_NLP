@@ -3,6 +3,7 @@ Text processing service - Dịch vụ xử lý văn bản
 """
 from typing import Dict, Any, Optional
 from backend.models import ChatResponse
+from backend.services.conversation_context_service import ConversationContextService
 from backend.services.safe_rag_service import get_safe_rag_service
 from backend.utils import app_logger, sanitize_input
 import time
@@ -14,6 +15,7 @@ class TextService:
     def __init__(self):
         """Khởi tạo text service"""
         self.safe_rag = get_safe_rag_service()
+        self.conversation_context = ConversationContextService()
         app_logger.info("Initialized text service")
     
     async def process_message(
@@ -49,11 +51,30 @@ class TextService:
                     confidence=0.0
                 )
             
-            response = await self.safe_rag.answer(
+            session_context = self.conversation_context.build_context(
+                session_id=session_id,
                 message=clean_message,
+                incoming_context=context,
+            )
+            processing_message = self.conversation_context.message_for_processing(
+                session_id=session_id,
+                message=clean_message,
+                context=session_context,
+            )
+
+            response = await self.safe_rag.answer(
+                message=processing_message,
                 session_id=session_id,
                 conversation_id=conversation_id,
-                context=context,
+                context=session_context,
+            )
+            if session_context.get("resume_pending_question"):
+                response.metadata["resumed_from_pending_question"] = True
+                response.metadata["resumed_from_user_message"] = clean_message
+            self.conversation_context.update_from_response(
+                session_id=session_id,
+                user_message=processing_message,
+                response_metadata=response.metadata,
             )
             
             duration = time.time() - start_time
