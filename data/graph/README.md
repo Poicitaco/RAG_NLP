@@ -45,3 +45,20 @@ Expected behavior:
 
 - Diabetes + cold medicine returns oral decongestants: pseudoephedrine, phenylephrine, ephedrine.
 - Warfarin + aspirin returns DDInter Major interaction.
+
+## Integrated Safe RAG Smoke
+
+The API-facing `SafeRagService` now runs graph safety checks before building the
+RAG answer. If graph findings exist, the answer starts with a structured safety
+warning and the findings are stored in response metadata under `graph_safety`.
+
+Latest smoke output:
+
+```text
+data/evaluation/safe_rag_graph_smoke.json
+```
+
+Current generation mode is deterministic: the backend does not call ChatGPT/LLM
+to write medical advice. This is intentional for the safety milestone. A future
+LLM layer should only rewrite the already-approved `graph_safety` findings and
+RAG citations, not invent new dosage, interaction, or contraindication claims.

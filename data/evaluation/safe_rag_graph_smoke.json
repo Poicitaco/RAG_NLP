@@ -1,0 +1,278 @@
+[
+  {
+    "query": "Tui bị tiểu đường, giờ muốn mua thuốc cảm thì nên tránh loại nào?",
+    "message": "Cảnh báo an toàn từ graph:\n- Bệnh nền/OTC: nên tránh hoặc hỏi dược sĩ trước khi dùng pseudoephedrine, phenylephrine, ephedrine.\n  Lý do: Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.\n\nMình tìm thấy bằng chứng phù hợp để trả lời ở mức thông tin tham khảo.\nCác điểm dựa trên nguồn đã truy xuất:\n- [S1] tiểu đường/đái tháo đường - thuốc cảm cần thận trọng: Hỏi đáp OTC theo bệnh nền\nBệnh nền: tiểu đường/đái tháo đường (diabetes).\nNhu cầu: mua thuốc cảm/cúm, đặc biệt khi có nghẹt mũi/cảm cúm.\nHoạt chất cần tránh hoặc hỏi dược sĩ/bác sĩ trước: pseudoephedrine, phenylephrine, ephedrine.\nKhuyến nghị: Người có tiểu đường nên tránh tự mua...\n- [S2] Nikethamide: Nikethamide\n8 Cách bảo quản\nNikethamide dùng đường nào cũng phải được để trong điều kiện khô ráo, tránh khu vực nóng ẩm, mưa nhiều.\nĐể thuốc xa tầm tay trẻ, nơi kín đáo, không bị tác động gây đổ vỡ, nên để nơi <30 độ.\n- [S3] Chlordiazepoxide: Chlordiazepoxide\n6 Tác dụng không mong muốn\nLD 50 = 537 ​​mg/kg (dùng đường uống ở chuột).\nSử dụng Chlordiazepoxide có thể gây ra tình trạng suy tủy xương , giảm thị lực, hạ huyết áp, các rối loạn tiêu hóa khác.\nTiết niệu sinh dục: Bí tiểu, hoặc tiểu nhiều, bất thường ở đường tiế...\nKhi dùng thuốc thật, hãy đối chiếu toa/nhãn thuốc và hỏi dược sĩ nếu còn chưa chắc.",
+    "agent_type": "safety_monitor",
+    "confidence": 0.78,
+    "warnings": [
+      "Graph safety check found structured medication safety warnings.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "sources": [
+      {
+        "id": "S1",
+        "source": "otc_condition_guardrail",
+        "title": "tiểu đường/đái tháo đường - thuốc cảm cần thận trọng",
+        "url": "https://www.law.cornell.edu/cfr/text/21/341.80",
+        "page": null,
+        "section": "condition_otc_safety",
+        "updated_at": null,
+        "similarity": 1.716667
+      },
+      {
+        "id": "S2",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Nikethamide",
+        "url": "https://trungtamthuoc.com/hoat-chat/nikethamide",
+        "page": null,
+        "section": "8 Cách bảo quản",
+        "updated_at": null,
+        "similarity": 0.65
+      },
+      {
+        "id": "S3",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Chlordiazepoxide",
+        "url": "https://trungtamthuoc.com/hoat-chat/chlordiazepoxide",
+        "page": null,
+        "section": "6 Tác dụng không mong muốn",
+        "updated_at": null,
+        "similarity": 0.325
+      },
+      {
+        "id": "S4",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Aceclofenac",
+        "url": "https://trungtamthuoc.com/hoat-chat/aceclofenac",
+        "page": null,
+        "section": "9 Tác dụng không mong muốn",
+        "updated_at": null,
+        "similarity": 0.1625
+      },
+      {
+        "id": "S5",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Voriconazole",
+        "url": "https://trungtamthuoc.com/hoat-chat/voriconazole",
+        "page": null,
+        "section": "10.1.1 Đường uống",
+        "updated_at": null,
+        "similarity": 0.13
+      }
+    ],
+    "graph_safety": {
+      "detected_drugs": [],
+      "findings": [
+        {
+          "type": "condition_otc_caution",
+          "severity": "caution",
+          "condition": "diabetes",
+          "otc_category": "cold_flu",
+          "ingredients_to_avoid_or_check": [
+            "pseudoephedrine",
+            "phenylephrine",
+            "ephedrine"
+          ],
+          "recommendation": "Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.",
+          "safer_options": [
+            "xịt/rửa mũi bằng nước muối sinh lý",
+            "thuốc chỉ chứa paracetamol để hạ sốt/đau nếu không có chống chỉ định và không dùng quá liều",
+            "hỏi dược sĩ để chọn thuốc không đường nếu cần siro"
+          ],
+          "red_flags": [
+            "sốt cao hoặc kéo dài",
+            "khó thở, đau ngực",
+            "đường huyết tăng cao bất thường",
+            "đang dùng nhiều thuốc điều trị tiểu đường/tim mạch/huyết áp"
+          ],
+          "citations": [
+            {
+              "title": "21 CFR 341.80 OTC nasal decongestant warnings",
+              "url": "https://www.law.cornell.edu/cfr/text/21/341.80",
+              "note": "US OTC monograph warnings mention diabetes for decongestant products unless directed by a doctor."
+            },
+            {
+              "title": "Mayo Clinic Q and A: Decongestants can sometimes cause more harm than good",
+              "url": "https://newsnetwork.mayoclinic.org/discussion/mayo-clinic-q-and-a-decongestants-can-sometimes-cause-more-harm-than-good/",
+              "note": "Oral decongestants can raise blood pressure and blood sugar and may affect diabetes medicines."
+            },
+            {
+              "title": "FDA proposes ending oral phenylephrine as OTC nasal decongestant",
+              "url": "https://www.fda.gov/news-events/press-announcements/fda-proposes-ending-use-oral-phenylephrine-otc-monograph-nasal-decongestant-active-ingredient-after",
+              "note": "FDA states oral phenylephrine is proposed for removal from OTC monograph due to lack of effectiveness."
+            }
+          ],
+          "source": "otc_condition_guardrail"
+        }
+      ],
+      "highest_risk": "caution",
+      "should_warn": true
+    },
+    "rag_action": "allow"
+  },
+  {
+    "query": "Tôi đang dùng warfarin có uống aspirin được không?",
+    "message": "Cảnh báo an toàn từ graph:\n- Tương tác thuốc: Acetylsalicylic acid + Warfarin mức Major. Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau.\n\nMình tìm thấy bằng chứng phù hợp để trả lời ở mức thông tin tham khảo.\nCác điểm dựa trên nguồn đã truy xuất:\n- [S1] Acetylsalicylic acid - Warfarin: Tương tác thuốc DDInter\nCặp thuốc: Acetylsalicylic acid và Warfarin.\nMức độ: Major.\n\nTên thường gặp/alias: acid acetylsalicylic, aspirin.\nÝ nghĩa sử dụng: khi người dùng đang dùng một trong hai thuốc, cần kiểm tra trước khi dùng thuốc còn lại. Nếu mức độ Major hoặc Moderate, bot...\n- [S2] Aspirin Vidipha 81: Thông tin sản xuất/đăng ký của Aspirin Vidipha 81: Cơ sở sản xuất: Chi nhánh công ty cổ phần dược phẩm Trung ương Vidipha Bình Dương, nước sản xuất: Việt Nam. Công ty đăng ký: Công ty cổ phần dược phẩm trung ương Vidipha, nước đăng ký: Việt Nam.\n- [S3] Warfarin Natri: Warfarin Natri\n11.1 Cách dùng\nCó thể uống hoặc tiêm tĩnh mạch. Khi không uống được thuốc (nôn sau phẫu thuật) thì tiêm tĩnh mạch. Tiêm bắp không được khuyến cáo. Liều uống và liều tiêm tĩnh mạch đều giống nhau. Phải tiêm chậm và liên tục trong 1 - 2 phút vào một tĩnh mạch ngoại b...\nKhi dùng thuốc thật, hãy đối chiếu toa/nhãn thuốc và hỏi dược sĩ nếu còn chưa chắc.",
+    "agent_type": "safety_monitor",
+    "confidence": 0.78,
+    "warnings": [
+      "Graph safety check found structured medication safety warnings.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "sources": [
+      {
+        "id": "S1",
+        "source": "ddinter",
+        "title": "Acetylsalicylic acid - Warfarin",
+        "url": "https://ddinter.scbdd.com/download/",
+        "page": null,
+        "section": "drug_drug_interaction",
+        "updated_at": null,
+        "similarity": 2.353611
+      },
+      {
+        "id": "S2",
+        "source": "dav_all",
+        "title": "Aspirin Vidipha 81",
+        "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+        "page": null,
+        "section": "manufacturer",
+        "updated_at": null,
+        "similarity": 0.6625
+      },
+      {
+        "id": "S3",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Warfarin Natri",
+        "url": "https://trungtamthuoc.com/hoat-chat/warfarin",
+        "page": null,
+        "section": "11.1 Cách dùng",
+        "updated_at": null,
+        "similarity": 1.2
+      },
+      {
+        "id": "S4",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Warfarin Natri",
+        "url": "https://trungtamthuoc.com/hoat-chat/warfarin",
+        "page": null,
+        "section": "3.1 Hấp thu",
+        "updated_at": null,
+        "similarity": 0.875
+      },
+      {
+        "id": "S5",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Warfarin Natri",
+        "url": "https://trungtamthuoc.com/hoat-chat/warfarin",
+        "page": null,
+        "section": "7.3 Phẫu thuật",
+        "updated_at": null,
+        "similarity": 0.766667
+      }
+    ],
+    "graph_safety": {
+      "detected_drugs": [
+        "aspirin",
+        "warfarin"
+      ],
+      "findings": [
+        {
+          "type": "drug_drug_interaction",
+          "severity": "Major",
+          "drug_a": "Acetylsalicylic acid",
+          "drug_b": "Warfarin",
+          "source": "ddinter",
+          "source_url": "https://ddinter.scbdd.com/download/",
+          "recommendation": "Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau."
+        }
+      ],
+      "highest_risk": "Major",
+      "should_warn": true
+    },
+    "rag_action": "allow"
+  },
+  {
+    "query": "Tôi uống aspirin cùng ibuprofen được không?",
+    "message": "Cảnh báo an toàn từ graph:\n- Tương tác thuốc: Acetylsalicylic acid + Ibuprofen mức Major. Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau.\n\nMình tìm thấy bằng chứng phù hợp để trả lời ở mức thông tin tham khảo.\nCác điểm dựa trên nguồn đã truy xuất:\n- [S1] Acetylsalicylic acid - Ibuprofen: Tương tác thuốc DDInter\nCặp thuốc: Acetylsalicylic acid và Ibuprofen.\nMức độ: Major.\n\nTên thường gặp/alias: acid acetylsalicylic, aspirin.\nÝ nghĩa sử dụng: khi người dùng đang dùng một trong hai thuốc, cần kiểm tra trước khi dùng thuốc còn lại. Nếu mức độ Major hoặc Moderate, bot...\n- [S2] Aspirin 100: Tên thuốc: Aspirin 100. Số đăng ký/GPLH: 893110271300. Hoạt chất chính: Aspirin. Hàm lượng: 100mg. Dạng bào chế: Thuốc bột pha dung dịch uống. Quy cách đóng gói: Hộp 12 gói x 1,5g.\n- [S3] Aspirin Vidipha 81: Thông tin sản xuất/đăng ký của Aspirin Vidipha 81: Cơ sở sản xuất: Chi nhánh công ty cổ phần dược phẩm Trung ương Vidipha Bình Dương, nước sản xuất: Việt Nam. Công ty đăng ký: Công ty cổ phần dược phẩm trung ương Vidipha, nước đăng ký: Việt Nam.\nVì có yếu tố cần thận trọng, chỉ nên xem đây là thông tin chung; không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\nKhi dùng thuốc thật, hãy đối chiếu toa/nhãn thuốc và hỏi dược sĩ nếu còn chưa chắc.",
+    "agent_type": "safety_monitor",
+    "confidence": 0.78,
+    "warnings": [
+      "Graph safety check found structured medication safety warnings.",
+      "High-risk answer must include handoff language and avoid personalized dosing.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "sources": [
+      {
+        "id": "S1",
+        "source": "ddinter",
+        "title": "Acetylsalicylic acid - Ibuprofen",
+        "url": "https://ddinter.scbdd.com/download/",
+        "page": null,
+        "section": "drug_drug_interaction",
+        "updated_at": null,
+        "similarity": 2.351429
+      },
+      {
+        "id": "S2",
+        "source": "dav_all",
+        "title": "Aspirin 100",
+        "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+        "page": null,
+        "section": "identity",
+        "updated_at": null,
+        "similarity": 0.654545
+      },
+      {
+        "id": "S3",
+        "source": "dav_all",
+        "title": "Aspirin Vidipha 81",
+        "url": "https://dichvucong.dav.gov.vn/congbothuoc/index",
+        "page": null,
+        "section": "manufacturer",
+        "updated_at": null,
+        "similarity": 0.653591
+      },
+      {
+        "id": "S4",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Ibuprofen",
+        "url": "https://trungtamthuoc.com/hoat-chat/ibuprofen",
+        "page": null,
+        "section": "9 Tương tác thuốc",
+        "updated_at": null,
+        "similarity": 1.2
+      },
+      {
+        "id": "S5",
+        "source": "trungtamthuoc_duocthu",
+        "title": "Ibuprofen",
+        "url": "https://trungtamthuoc.com/hoat-chat/ibuprofen",
+        "page": null,
+        "section": "3 Dược động học",
+        "updated_at": null,
+        "similarity": 0.766667
+      }
+    ],
+    "graph_safety": {
+      "detected_drugs": [
+        "aspirin",
+        "ibuprofen"
+      ],
+      "findings": [
+        {
+          "type": "drug_drug_interaction",
+          "severity": "Major",
+          "drug_a": "Acetylsalicylic acid",
+          "drug_b": "Ibuprofen",
+          "source": "ddinter",
+          "source_url": "https://ddinter.scbdd.com/download/",
+          "recommendation": "Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau."
+        }
+      ],
+      "highest_risk": "Major",
+      "should_warn": true
+    },
+    "rag_action": "allow_with_caution"
+  }
+]

@@ -341,3 +341,20 @@ Luong preview hien tai:
 2. Cau thu hoi Aceclofenac duoc `allow` vi co DAV recall va CanhGiacDuoc.
 3. Cau lieu dung/tương tác neu chi co OCR hoac registry dinh danh thi `handoff`, khong sinh lieu/tương tác.
 4. Cau thong tin dinh danh thuoc duoc uu tien citation tu DAV registry; OCR neu co chi la bang chung can than trong prompt.
+
+## Graph-first safety answering
+
+The chat API now runs a graph safety check before composing the deterministic
+RAG answer. Graph warnings are added before retrieved evidence, and the raw
+findings are stored in response metadata as `graph_safety`.
+
+Smoke result:
+
+```bash
+data/evaluation/safe_rag_graph_smoke.json
+```
+
+Important design note: the current system intentionally does not use ChatGPT or
+another LLM to freely generate medical advice. For the safety milestone, answers
+are deterministic and evidence-first. Later, an LLM can be added as a constrained
+rewriter over graph findings and citations only.

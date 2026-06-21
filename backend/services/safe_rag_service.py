@@ -19,6 +19,7 @@ from backend.safety.evidence_guardrails import (
     mentioned_common_drugs,
     normalize_text,
 )
+from backend.services.graph_safety_service import GraphSafetyService, format_graph_warning
 from backend.utils import format_medical_disclaimer
 
 
@@ -123,6 +124,7 @@ class SafeRagService:
         self.collection = collection
         self.model = model
         self._bm25_index: Optional[Dict[str, Any]] = None
+        self.graph_safety = GraphSafetyService()
 
     def _load_bm25(self) -> Dict[str, Any]:
         if self._bm25_index is None:
@@ -172,6 +174,7 @@ class SafeRagService:
                 },
             )
 
+        graph_result = self.graph_safety.check(message)
         results = self.retrieve(message)
         decision = evaluate_evidence(message, results)
         ranked = _rank_for_answer(message, results)
@@ -186,7 +189,15 @@ class SafeRagService:
             confidence = 0.72 if decision.action == EvidenceAction.ALLOW else 0.55
             agent_type = self._agent_type(decision.intent.value)
 
+        graph_warning = format_graph_warning(graph_result["findings"])
+        if graph_warning:
+            answer = graph_warning + "\n\n" + answer
+            confidence = max(confidence, 0.78)
+            agent_type = AgentType.SAFETY_MONITOR
+
         warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
+        if graph_result["should_warn"]:
+            warnings.insert(0, "Graph safety check found structured medication safety warnings.")
         suggestions = self._suggestions(decision.action.value)
 
         return ChatResponse(
@@ -205,6 +216,7 @@ class SafeRagService:
                 "blocked_sources": decision.blocked_sources,
                 "retrieved_count": len(results),
                 "retriever": "hybrid_bm25_chroma_priority",
+                "graph_safety": graph_result,
                 "context_provided": bool(context),
             },
         )
