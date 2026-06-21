@@ -21,6 +21,7 @@ from backend.safety.evidence_guardrails import (
 from backend.services.final_response_builder import build_response_blocks, format_response_blocks
 from backend.services.graph_safety_service import GraphSafetyService, format_graph_warning
 from backend.services.llm_answer_service import LLMAnswerService
+from backend.services.drug_name_alignment_service import DrugNameAlignmentService
 from backend.utils import format_medical_disclaimer
 
 
@@ -150,8 +151,14 @@ def _preview(row: Dict[str, Any], max_len: int = 280) -> str:
     return text
 
 
-def _selected_agents(intent: str, graph_result: Dict[str, Any]) -> List[str]:
+def _selected_agents(
+    intent: str,
+    graph_result: Dict[str, Any],
+    alignment: Optional[Dict[str, Any]] = None,
+) -> List[str]:
     agents = ["triage_risk_agent", "retrieval_agent", "final_response_builder"]
+    if alignment and alignment.get("used"):
+        agents.insert(1, "drug_name_alignment_agent")
     if graph_result.get("should_warn"):
         agents.insert(1, "graph_safety_agent")
     if intent == "dosage":
@@ -182,6 +189,7 @@ class SafeRagService:
         self._bm25_index: Optional[Dict[str, Any]] = None
         self.graph_safety = GraphSafetyService()
         self.llm_answer = LLMAnswerService()
+        self.name_alignment = DrugNameAlignmentService()
 
     def _load_bm25(self) -> Dict[str, Any]:
         if self._bm25_index is None:
@@ -265,10 +273,13 @@ class SafeRagService:
                 },
             )
 
-        graph_result = self.graph_safety.check(message)
-        results = self.retrieve(message)
-        decision = evaluate_evidence(message, results)
-        ranked = _rank_for_answer(message, results)
+        alignment = self.name_alignment.align(message)
+        effective_message = alignment["augmented_query"] if alignment.get("used") else message
+
+        graph_result = self.graph_safety.check(effective_message)
+        results = self.retrieve(effective_message)
+        decision = evaluate_evidence(effective_message, results)
+        ranked = _rank_for_answer(effective_message, results)
         answer_rows = _select_answer_rows(graph_result, ranked)
         citations = [_citation_from_row(index, row) for index, row in enumerate(answer_rows[:5], 1)]
 
@@ -293,7 +304,7 @@ class SafeRagService:
             intent=decision.intent.value,
             graph_result=graph_result,
             citations=citations[:5],
-            selected_agents=_selected_agents(decision.intent.value, graph_result),
+            selected_agents=_selected_agents(decision.intent.value, graph_result, alignment),
         )
         answer = format_response_blocks(response_blocks)
         llm_answer = None
@@ -319,6 +330,9 @@ class SafeRagService:
                 "blocked_sources": decision.blocked_sources,
                 "retrieved_count": len(results),
                 "retriever": "hybrid_bm25_chroma_priority",
+                "original_query": message,
+                "effective_query": effective_message,
+                "entity_alignment": alignment,
                 "graph_safety": graph_result,
                 "llm_answer_enabled": self.llm_answer.enabled,
                 "llm_answer_used": bool(llm_answer),
