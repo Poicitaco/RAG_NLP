@@ -214,6 +214,24 @@ class SafeRagService:
                     "retrieval_bypassed": True,
                 },
             )
+        if early_decision.action == EvidenceAction.HANDOFF:
+            return ChatResponse(
+                message=self._handoff_message(early_decision.message, []),
+                conversation_id=conversation,
+                agent_type=AgentType.SAFETY_MONITOR,
+                confidence=0.95,
+                warnings=early_decision.warnings + [format_medical_disclaimer()],
+                suggestions=self._suggestions(early_decision.action.value),
+                metadata={
+                    "rag_action": early_decision.action.value,
+                    "intent": early_decision.intent.value,
+                    "retrieval_bypassed": True,
+                    "should_answer": early_decision.should_answer,
+                    "llm_answer_enabled": self.llm_answer.enabled,
+                    "llm_answer_used": False,
+                    "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                },
+            )
 
         graph_result = self.graph_safety.check(message)
         results = self.retrieve(message)

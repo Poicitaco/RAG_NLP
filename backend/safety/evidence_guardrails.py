@@ -1,15 +1,15 @@
 """Evidence-aware guardrails for pharmaceutical RAG answers.
 
-These rules run after retrieval. They decide whether the retrieved evidence is
-appropriate for the user's question, especially when the evidence is OCR-derived
-or when the question asks about dosage, interactions, pregnancy, children,
-overdose, recall, or counterfeit products.
+These rules run before and after retrieval. They decide whether the system is
+allowed to answer, especially when the question involves children, red flags,
+dosage, interactions, pregnancy, chronic disease, or unverified OCR evidence.
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, Iterable, List
+import re
 import unicodedata
 
 
@@ -28,6 +28,7 @@ class QuestionIntent(str, Enum):
     RECALL = "recall"
     COUNTERFEIT = "counterfeit"
     HIGH_RISK_CONTEXT = "high_risk_context"
+    PEDIATRIC_SYMPTOM = "pediatric_symptom"
     EMERGENCY = "emergency"
     GENERAL_SAFETY = "general_safety"
 
@@ -48,21 +49,90 @@ class EvidenceDecision:
 EMERGENCY_TERMS = {
     "kho tho",
     "dau nguc",
+    "nguc trai",
     "co giat",
+    "sot cao co giat",
     "ngat",
     "lo mo",
     "soc phan ve",
     "qua lieu",
     "uong nham",
+    "te nua nguoi",
+    "yeu nua nguoi",
+    "nhin mo dot ngot",
+    "mat tu dung nhin mo",
+    "ho ra mau",
+    "tia mau",
+    "di tieu ra mau",
+    "tieu ra mau",
+    "dau dau nhu bua bo",
+    "dau bung du doi",
+    "dau bung duoi ben phai",
+    "vang mat",
+    "vang da",
+    "vang khe",
+    "tim dap thinh thich",
+    "sot gan 40",
+    "sot 40",
 }
 HIGH_RISK_TERMS = {
     "mang thai",
     "co thai",
+    "bau",
     "cho con bu",
     "tre em",
     "tre so sinh",
+    "so sinh",
+    "be",
+    "con tui",
+    "con toi",
+    "con nit",
+    "tre",
+    "3 tuoi",
+    "6 tuoi",
+    "1 tuoi",
+    "6 thang",
     "suy gan",
+    "benh gan",
     "suy than",
+    "hong than",
+    "tieu duong",
+    "dai thao duong",
+    "huyet ap",
+    "nguoi gia",
+    "75 tuoi",
+    "mai khong khoi",
+    "khong khoi",
+}
+PEDIATRIC_TERMS = {
+    "be",
+    "con tui",
+    "con toi",
+    "tre",
+    "tre em",
+    "tre so sinh",
+    "so sinh",
+    "con nit",
+    "3 tuoi",
+    "6 tuoi",
+    "1 tuoi",
+    "6 thang",
+    "15kg",
+}
+SYMPTOM_TERMS = {
+    "ho",
+    "sot",
+    "nghet mui",
+    "so mui",
+    "dau",
+    "tieu chay",
+    "di ngoai",
+    "non",
+    "mat do",
+    "dau tai",
+    "viem",
+    "loet",
+    "ngua",
 }
 DOSAGE_TERMS = {
     "lieu",
@@ -79,21 +149,35 @@ DOSAGE_TERMS = {
     "uong bao nhieu",
     "ngay may lan",
     "tan suat",
+    "nang 15kg",
+    "15kg",
+    "tang lieu",
+    "lieu khang sinh",
 }
-INTERACTION_TERMS = {"tuong tac", "dung chung", "uong cung", "ket hop"}
+INTERACTION_TERMS = {"tuong tac", "dung chung", "uong cung", "ket hop", "kem", "them"}
 COMMON_DRUG_TERMS = {
     "aspirin",
     "ibuprofen",
     "paracetamol",
     "acetaminophen",
-    "cloramphenicol",
-    "cefaclor",
-    "aceclofenac",
+    "panadol",
+    "efferalgan",
+    "diclofenac",
+    "warfarin",
+    "augmentin",
+    "amoxicillin",
+    "metronidazole",
+    "levothyroxine",
+    "omeprazole",
+    "rosuvastatin",
+    "ventolin",
+    "flixonase",
+    "rhinocort",
 }
 RECALL_TERMS = {"thu hoi", "dinh chi", "khong dat tieu chuan"}
-COUNTERFEIT_TERMS = {"gia mao", "thuoc gia", "khong ro nguon goc"}
+COUNTERFEIT_TERMS = {"gia mao", "thuoc gia", "khong ro nguon goc", "tren mang"}
 
-SAFETY_SOURCES = {"dav_recall", "canhgiacduoc"}
+SAFETY_SOURCES = {"dav_recall", "canhgiacduoc", "otc_condition_guardrail", "ddinter"}
 REGISTRY_SOURCES = {"dav_all", "dav_otc"}
 PDF_SOURCES = {"dav_pdf"}
 OCR_SOURCES = {"dav_pdf_ocr"}
@@ -101,6 +185,7 @@ HIGH_RISK_INTENTS = {
     QuestionIntent.DOSAGE,
     QuestionIntent.INTERACTION,
     QuestionIntent.HIGH_RISK_CONTEXT,
+    QuestionIntent.PEDIATRIC_SYMPTOM,
     QuestionIntent.EMERGENCY,
 }
 
@@ -115,7 +200,15 @@ def normalize_text(text: str) -> str:
 
 def contains_any(text: str, terms: Iterable[str]) -> bool:
     normalized = normalize_text(text)
-    return any(term in normalized for term in terms)
+    tokens = set(re.findall(r"[a-z0-9]+", normalized))
+    for term in terms:
+        normalized_term = normalize_text(term)
+        if " " in normalized_term:
+            if normalized_term in normalized:
+                return True
+        elif normalized_term in tokens:
+            return True
+    return False
 
 
 def classify_question_intent(question: str) -> QuestionIntent:
@@ -126,14 +219,18 @@ def classify_question_intent(question: str) -> QuestionIntent:
         return QuestionIntent.COUNTERFEIT
     if contains_any(question, RECALL_TERMS):
         return QuestionIntent.RECALL
-    if contains_any(question, HIGH_RISK_TERMS):
-        return QuestionIntent.HIGH_RISK_CONTEXT
+    if contains_any(question, PEDIATRIC_TERMS) and contains_any(question, SYMPTOM_TERMS):
+        return QuestionIntent.PEDIATRIC_SYMPTOM
     drug_mentions = sum(1 for term in COMMON_DRUG_TERMS if term in normalized)
-    if contains_any(question, INTERACTION_TERMS) or ("cung" in normalized and drug_mentions >= 2):
+    if contains_any(question, INTERACTION_TERMS) and drug_mentions >= 1:
+        return QuestionIntent.INTERACTION
+    if "cung" in normalized and drug_mentions >= 2:
         return QuestionIntent.INTERACTION
     if contains_any(question, DOSAGE_TERMS):
         return QuestionIntent.DOSAGE
-    if contains_any(question, {"canh bao", "tac dung phu", "nguy hiem", "di ung"}):
+    if contains_any(question, HIGH_RISK_TERMS):
+        return QuestionIntent.HIGH_RISK_CONTEXT
+    if contains_any(question, {"canh bao", "tac dung phu", "nguy hiem", "di ung", "dau bao tu"}):
         return QuestionIntent.GENERAL_SAFETY
     return QuestionIntent.DRUG_INFO
 
@@ -218,6 +315,34 @@ def evidence_summary(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
+def _early_handoff(intent: QuestionIntent, summary: Dict[str, Any]) -> EvidenceDecision | None:
+    if intent == QuestionIntent.EMERGENCY:
+        return EvidenceDecision(
+            action=EvidenceAction.EMERGENCY,
+            intent=intent,
+            should_answer=False,
+            message=(
+                "Có dấu hiệu cấp cứu hoặc nguy cơ nặng. Không nên trả lời bằng RAG; "
+                "cần hướng dẫn người dùng gọi 115 hoặc đến cơ sở y tế gần nhất."
+            ),
+            warnings=["Emergency/red-flag question must bypass RAG answer generation."],
+            metadata=summary,
+        )
+    if intent == QuestionIntent.PEDIATRIC_SYMPTOM:
+        return EvidenceDecision(
+            action=EvidenceAction.HANDOFF,
+            intent=intent,
+            should_answer=False,
+            message=(
+                "Câu hỏi liên quan trẻ nhỏ và triệu chứng bệnh. Không nên tự gợi ý thuốc "
+                "khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp."
+            ),
+            warnings=["Pediatric symptom question must be handed off unless a vetted pediatric protocol exists."],
+            metadata=summary,
+        )
+    return None
+
+
 def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceDecision:
     intent = classify_question_intent(question)
     summary = evidence_summary(results)
@@ -225,33 +350,24 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
     question_drugs = mentioned_common_drugs(question)
     warnings: List[str] = []
 
-    if intent == QuestionIntent.EMERGENCY:
-        return EvidenceDecision(
-            action=EvidenceAction.EMERGENCY,
-            intent=intent,
-            should_answer=False,
-            message=(
-                "Co dau hieu cap cuu hoac nguy co qua lieu. Khong nen tra loi bang RAG; "
-                "can huong dan nguoi dung goi 115 hoac den co so y te gan nhat."
-            ),
-            warnings=["Emergency/red-flag question must bypass RAG answer generation."],
-            usable_sources=sources,
-            metadata=summary,
-        )
+    early = _early_handoff(intent, summary)
+    if early is not None:
+        early.usable_sources = sources
+        return early
 
     if not results:
         return EvidenceDecision(
             action=EvidenceAction.INSUFFICIENT_EVIDENCE,
             intent=intent,
             should_answer=False,
-            message="Khong co bang chung RAG du lien quan de tra loi an toan.",
+            message="Không có bằng chứng RAG đủ liên quan để trả lời an toàn.",
             warnings=["No retrieved evidence."],
             metadata=summary,
         )
 
     if summary["has_ocr_source"]:
         warnings.append(
-            "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac."
+            "Có bằng chứng OCR chưa xác minh; không được dùng để kết luận chắc chắn về liều, số liệu hoặc tương tác."
         )
 
     if intent in {QuestionIntent.RECALL, QuestionIntent.COUNTERFEIT, QuestionIntent.GENERAL_SAFETY}:
@@ -260,7 +376,7 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
                 action=EvidenceAction.ALLOW_WITH_CAUTION if warnings else EvidenceAction.ALLOW,
                 intent=intent,
                 should_answer=True,
-                message="Co bang chung safety/recall phu hop de tra loi kem citation.",
+                message="Có bằng chứng safety/recall phù hợp để trả lời kèm citation.",
                 warnings=warnings,
                 required_sources=sorted(SAFETY_SOURCES),
                 usable_sources=sources,
@@ -271,8 +387,8 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
             intent=intent,
             should_answer=False,
             message=(
-                "Cau hoi ve thu hoi/canh bao/thuoc gia can nguon DAV recall hoac CanhGiacDuoc. "
-                "Bang chung hien tai chua du de ket luan."
+                "Câu hỏi an toàn/cảnh báo cần nguồn safety đáng tin cậy. "
+                "Bằng chứng hiện tại chưa đủ để kết luận."
             ),
             warnings=warnings + ["Missing trusted safety source."],
             required_sources=sorted(SAFETY_SOURCES),
@@ -311,8 +427,8 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
                 intent=intent,
                 should_answer=False,
                 message=(
-                    "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. "
-                    "Nen chuyen nguoi dung gap bac si/duoc si."
+                    "Câu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. "
+                    "Nên chuyển người dùng gặp bác sĩ/dược sĩ."
                 ),
                 warnings=warnings + ["High-risk question lacks verified relevant evidence."],
                 blocked_sources=[source for source in sources if source in OCR_SOURCES],
@@ -324,8 +440,8 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
             intent=intent,
             should_answer=True,
             message=(
-                "Co the tra loi muc thong tin chung kem citation, nhung khong dua ra lieu ca nhan hoa "
-                "hoac thay doi toa thuoc."
+                "Có thể trả lời mức thông tin chung kèm citation, nhưng không đưa ra liều cá nhân hóa "
+                "hoặc thay đổi toa thuốc."
             ),
             warnings=warnings
             + [
@@ -341,7 +457,7 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
                 action=EvidenceAction.ALLOW_WITH_CAUTION if warnings else EvidenceAction.ALLOW,
                 intent=intent,
                 should_answer=True,
-                message="Co bang chung phu hop de tra loi thong tin dinh danh thuoc kem citation.",
+                message="Có bằng chứng phù hợp để trả lời thông tin định danh thuốc kèm citation.",
                 warnings=warnings,
                 usable_sources=sources,
                 metadata=summary,
@@ -351,7 +467,7 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
         action=EvidenceAction.INSUFFICIENT_EVIDENCE,
         intent=intent,
         should_answer=False,
-        message="Bang chung hien tai chua du tin cay hoac chua dung loai nguon cho cau hoi.",
+        message="Bằng chứng hiện tại chưa đủ tin cậy hoặc chưa đúng loại nguồn cho câu hỏi.",
         warnings=warnings,
         usable_sources=sources,
         metadata=summary,
