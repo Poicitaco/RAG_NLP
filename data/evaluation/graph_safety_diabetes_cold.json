@@ -1,0 +1,47 @@
+{
+  "query": "Tui bị tiểu đường, giờ muốn mua thuốc cảm thì nên tránh loại nào?",
+  "detected_drugs": [],
+  "findings": [
+    {
+      "type": "condition_otc_caution",
+      "condition": "diabetes",
+      "otc_category": "cold_flu",
+      "risk_level": "caution",
+      "ingredients_to_avoid_or_check": [
+        "pseudoephedrine",
+        "phenylephrine",
+        "ephedrine"
+      ],
+      "recommendation": "Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.",
+      "safer_options": [
+        "xịt/rửa mũi bằng nước muối sinh lý",
+        "thuốc chỉ chứa paracetamol để hạ sốt/đau nếu không có chống chỉ định và không dùng quá liều",
+        "hỏi dược sĩ để chọn thuốc không đường nếu cần siro"
+      ],
+      "red_flags": [
+        "sốt cao hoặc kéo dài",
+        "khó thở, đau ngực",
+        "đường huyết tăng cao bất thường",
+        "đang dùng nhiều thuốc điều trị tiểu đường/tim mạch/huyết áp"
+      ],
+      "citations": [
+        {
+          "title": "21 CFR 341.80 OTC nasal decongestant warnings",
+          "url": "https://www.law.cornell.edu/cfr/text/21/341.80",
+          "note": "US OTC monograph warnings mention diabetes for decongestant products unless directed by a doctor."
+        },
+        {
+          "title": "Mayo Clinic Q and A: Decongestants can sometimes cause more harm than good",
+          "url": "https://newsnetwork.mayoclinic.org/discussion/mayo-clinic-q-and-a-decongestants-can-sometimes-cause-more-harm-than-good/",
+          "note": "Oral decongestants can raise blood pressure and blood sugar and may affect diabetes medicines."
+        },
+        {
+          "title": "FDA proposes ending oral phenylephrine as OTC nasal decongestant",
+          "url": "https://www.fda.gov/news-events/press-announcements/fda-proposes-ending-use-oral-phenylephrine-otc-monograph-nasal-decongestant-active-ingredient-after",
+          "note": "FDA states oral phenylephrine is proposed for removal from OTC monograph due to lack of effectiveness."
+        }
+      ]
+    }
+  ],
+  "answer": "Kết quả kiểm tra an toàn theo graph:\n- Bệnh nền + OTC: nên tránh hoặc hỏi dược sĩ trước khi dùng nhóm/hoạt chất: pseudoephedrine, phenylephrine, ephedrine.\n  Lý do: Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.\n  Có thể hỏi dược sĩ về lựa chọn an toàn hơn: xịt/rửa mũi bằng nước muối sinh lý; thuốc chỉ chứa paracetamol để hạ sốt/đau nếu không có chống chỉ định và không dùng quá liều; hỏi dược sĩ để chọn thuốc không đường nếu cần siro\nĐây là cảnh báo hỗ trợ, không thay thế bác sĩ/dược sĩ."
+}

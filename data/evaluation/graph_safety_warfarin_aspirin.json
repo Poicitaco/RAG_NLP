@@ -1,0 +1,19 @@
+{
+  "query": "Tôi đang dùng warfarin có uống aspirin được không?",
+  "detected_drugs": [
+    "aspirin",
+    "warfarin"
+  ],
+  "findings": [
+    {
+      "type": "drug_drug_interaction",
+      "severity": "Major",
+      "drug_a": "Acetylsalicylic acid",
+      "drug_b": "Warfarin",
+      "source": "ddinter",
+      "source_url": "https://ddinter.scbdd.com/download/",
+      "recommendation": "Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau."
+    }
+  ],
+  "answer": "Kết quả kiểm tra an toàn theo graph:\n- Tương tác thuốc: Acetylsalicylic acid + Warfarin mức Major. Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau.\nĐây là cảnh báo hỗ trợ, không thay thế bác sĩ/dược sĩ."
+}

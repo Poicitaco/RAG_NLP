@@ -1,0 +1,1940 @@
+﻿drug_id,name,normalized_name,source
+drug:abacavir,Abacavir,abacavir,ddinter
+drug:naltrexone,Naltrexone,naltrexone,ddinter
+drug:orlistat,Orlistat,orlistat,ddinter
+drug:aluminum_hydroxide,Aluminum hydroxide,aluminum_hydroxide,ddinter
+drug:dolutegravir,Dolutegravir,dolutegravir,ddinter
+drug:aprepitant,Aprepitant,aprepitant,ddinter
+drug:attapulgite,Attapulgite,attapulgite,ddinter
+drug:calcium_acetate,Calcium acetate,calcium_acetate,ddinter
+drug:calcium_carbonate,Calcium carbonate,calcium_carbonate,ddinter
+drug:calcium_citrate,Calcium citrate,calcium_citrate,ddinter
+drug:calcium_glubionate_anhydrous,Calcium glubionate anhydrous,calcium_glubionate_anhydrous,ddinter
+drug:calcium_gluconate,Calcium gluconate,calcium_gluconate,ddinter
+drug:calcium_lactate,Calcium lactate,calcium_lactate,ddinter
+drug:calcium_phosphate,Calcium Phosphate,calcium_phosphate,ddinter
+drug:iron,Iron,iron,ddinter
+drug:cimetidine,Cimetidine,cimetidine,ddinter
+drug:clarithromycin,Clarithromycin,clarithromycin,ddinter
+drug:clotrimazole,Clotrimazole,clotrimazole,ddinter
+drug:dexamethasone,Dexamethasone,dexamethasone,ddinter
+drug:kaolin,Kaolin,kaolin,ddinter
+drug:lactitol,Lactitol,lactitol,ddinter
+drug:lamivudine,Lamivudine,lamivudine,ddinter
+drug:magaldrate,Magaldrate,magaldrate,ddinter
+drug:magnesium_carbonate,Magnesium carbonate,magnesium_carbonate,ddinter
+drug:magnesium_chloride,Magnesium chloride,magnesium_chloride,ddinter
+drug:magnesium_citrate,Magnesium citrate,magnesium_citrate,ddinter
+drug:magnesium_gluconate,Magnesium gluconate,magnesium_gluconate,ddinter
+drug:magnesium_hydroxide,Magnesium hydroxide,magnesium_hydroxide,ddinter
+drug:magnesium_oxide,Magnesium oxide,magnesium_oxide,ddinter
+drug:magnesium_sulfate,Magnesium sulfate,magnesium_sulfate,ddinter
+drug:mannitol,Mannitol,mannitol,ddinter
+drug:metformin,Metformin,metformin,ddinter
+drug:miconazole,Miconazole,miconazole,ddinter
+drug:sorbitol,Sorbitol,sorbitol,ddinter
+drug:sucralfate,Sucralfate,sucralfate,ddinter
+drug:troglitazone,Troglitazone,troglitazone,ddinter
+drug:amphotericin_b,Amphotericin B,amphotericin_b,ddinter
+drug:zidovudine,Zidovudine,zidovudine,ddinter
+drug:amphotericin_b_cholesteryl_sulfate,Amphotericin B (cholesteryl sulfate),amphotericin_b_cholesteryl_sulfate,ddinter
+drug:amphotericin_b_lipid_complex,Amphotericin B (lipid complex),amphotericin_b_lipid_complex,ddinter
+drug:betamethasone,Betamethasone,betamethasone,ddinter
+drug:budesonide,Budesonide,budesonide,ddinter
+drug:hydrocortisone,Hydrocortisone,hydrocortisone,ddinter
+drug:prednisolone,Prednisolone,prednisolone,ddinter
+drug:prednisone,Prednisone,prednisone,ddinter
+drug:rosuvastatin,Rosuvastatin,rosuvastatin,ddinter
+drug:simvastatin,Simvastatin,simvastatin,ddinter
+drug:triamcinolone,Triamcinolone,triamcinolone,ddinter
+drug:abaloparatide,Abaloparatide,abaloparatide,ddinter
+drug:calcitriol_topical,Calcitriol (topical),calcitriol_topical,ddinter
+drug:abametapir_topical,Abametapir (topical),abametapir_topical,ddinter
+drug:alosetron,Alosetron,alosetron,ddinter
+drug:bupropion,Bupropion,bupropion,ddinter
+drug:cisapride,Cisapride,cisapride,ddinter
+drug:dexlansoprazole,Dexlansoprazole,dexlansoprazole,ddinter
+drug:dolasetron,Dolasetron,dolasetron,ddinter
+drug:dronabinol,Dronabinol,dronabinol,ddinter
+drug:eliglustat,Eliglustat,eliglustat,ddinter
+drug:esomeprazole,Esomeprazole,esomeprazole,ddinter
+drug:glyburide,Glyburide,glyburide,ddinter
+drug:granisetron,Granisetron,granisetron,ddinter
+drug:lansoprazole,Lansoprazole,lansoprazole,ddinter
+drug:linagliptin,Linagliptin,linagliptin,ddinter
+drug:naldemedine,Naldemedine,naldemedine,ddinter
+drug:naloxegol,Naloxegol,naloxegol,ddinter
+drug:nateglinide,Nateglinide,nateglinide,ddinter
+drug:nitisinone,Nitisinone,nitisinone,ddinter
+drug:omeprazole,Omeprazole,omeprazole,ddinter
+drug:ondansetron,Ondansetron,ondansetron,ddinter
+drug:pantoprazole,Pantoprazole,pantoprazole,ddinter
+drug:pioglitazone,Pioglitazone,pioglitazone,ddinter
+drug:rabeprazole,Rabeprazole,rabeprazole,ddinter
+drug:repaglinide,Repaglinide,repaglinide,ddinter
+drug:rolapitant,Rolapitant,rolapitant,ddinter
+drug:saxagliptin,Saxagliptin,saxagliptin,ddinter
+drug:sibutramine,Sibutramine,sibutramine,ddinter
+drug:tinidazole,Tinidazole,tinidazole,ddinter
+drug:abatacept,Abatacept,abatacept,ddinter
+drug:zinc_acetate,Zinc acetate,zinc_acetate,ddinter
+drug:zinc_gluconate,Zinc gluconate,zinc_gluconate,ddinter
+drug:zinc_sulfate,Zinc sulfate,zinc_sulfate,ddinter
+drug:abciximab,Abciximab,abciximab,ddinter
+drug:acetylsalicylic_acid,Acetylsalicylic acid,acetylsalicylic_acid,ddinter
+drug:dexfenfluramine,Dexfenfluramine,dexfenfluramine,ddinter
+drug:fenfluramine,Fenfluramine,fenfluramine,ddinter
+drug:abemaciclib,Abemaciclib,abemaciclib,ddinter
+drug:metreleptin,Metreleptin,metreleptin,ddinter
+drug:abiraterone,Abiraterone,abiraterone,ddinter
+drug:bisacodyl,Bisacodyl,bisacodyl,ddinter
+drug:castor_oil,Castor oil,castor_oil,ddinter
+drug:eluxadoline,Eluxadoline,eluxadoline,ddinter
+drug:famotidine,Famotidine,famotidine,ddinter
+drug:glycerin,Glycerin,glycerin,ddinter
+drug:lactulose,Lactulose,lactulose,ddinter
+drug:levofloxacin,Levofloxacin,levofloxacin,ddinter
+drug:loperamide,Loperamide,loperamide,ddinter
+drug:metoclopramide,Metoclopramide,metoclopramide,ddinter
+drug:metronidazole,Metronidazole,metronidazole,ddinter
+drug:mineral_oil,Mineral oil,mineral_oil,ddinter
+drug:palonosetron,Palonosetron,palonosetron,ddinter
+drug:papaverine,Papaverine,papaverine,ddinter
+drug:phenolphthalein,Phenolphthalein,phenolphthalein,ddinter
+drug:polyethylene_glycol_3350,Polyethylene glycol (3350),polyethylene_glycol_3350,ddinter
+drug:polyethylene_glycol_3350_with_electrolytes,Polyethylene glycol (3350 with electrolytes),polyethylene_glycol_3350_with_electrolytes,ddinter
+drug:rosiglitazone,Rosiglitazone,rosiglitazone,ddinter
+drug:atropine,Atropine,atropine,ddinter
+drug:botulinum_toxin_type_a,Botulinum toxin type A,botulinum_toxin_type_a,ddinter
+drug:clidinium,Clidinium,clidinium,ddinter
+drug:dicyclomine,Dicyclomine,dicyclomine,ddinter
+drug:glycopyrronium,Glycopyrronium,glycopyrronium,ddinter
+drug:hyoscyamine,Hyoscyamine,hyoscyamine,ddinter
+drug:kanamycin,Kanamycin,kanamycin,ddinter
+drug:mepenzolate,Mepenzolate,mepenzolate,ddinter
+drug:methscopolamine,Methscopolamine,methscopolamine,ddinter
+drug:neomycin,Neomycin,neomycin,ddinter
+drug:polymyxin_b,Polymyxin B,polymyxin_b,ddinter
+drug:propantheline,Propantheline,propantheline,ddinter
+drug:scopolamine,Scopolamine,scopolamine,ddinter
+drug:streptomycin,Streptomycin,streptomycin,ddinter
+drug:trospium,Trospium,trospium,ddinter
+drug:paclitaxel,Paclitaxel,paclitaxel,ddinter
+drug:ascorbic_acid,Ascorbic acid,ascorbic_acid,ddinter
+drug:isotretinoin,Isotretinoin,isotretinoin,ddinter
+drug:doxycycline,Doxycycline,doxycycline,ddinter
+drug:minocycline,Minocycline,minocycline,ddinter
+drug:tetracycline,Tetracycline,tetracycline,ddinter
+drug:vitamin_a,Vitamin A,vitamin_a,ddinter
+drug:alvimopan,Alvimopan,alvimopan,ddinter
+drug:fentanyl,Fentanyl,fentanyl,ddinter
+drug:glycerol_phenylbutyrate,Glycerol phenylbutyrate,glycerol_phenylbutyrate,ddinter
+drug:lorcaserin,Lorcaserin,lorcaserin,ddinter
+drug:mazindol,Mazindol,mazindol,ddinter
+drug:morphine,Morphine,morphine,ddinter
+drug:morphine_liposomal,Morphine (liposomal),morphine_liposomal,ddinter
+drug:nabilone,Nabilone,nabilone,ddinter
+drug:naloxone,Naloxone,naloxone,ddinter
+drug:opium,Opium,opium,ddinter
+drug:phentermine,Phentermine,phentermine,ddinter
+drug:acalabrutinib,Acalabrutinib,acalabrutinib,ddinter
+drug:nizatidine,Nizatidine,nizatidine,ddinter
+drug:ranitidine,Ranitidine,ranitidine,ddinter
+drug:ranitidine_bismuth_citrate,Ranitidine (bismuth citrate),ranitidine_bismuth_citrate,ddinter
+drug:acarbose,Acarbose,acarbose,ddinter
+drug:acetazolamide,Acetazolamide,acetazolamide,ddinter
+drug:albiglutide,Albiglutide,albiglutide,ddinter
+drug:salbutamol,Salbutamol,salbutamol,ddinter
+drug:alclometasone_topical,Alclometasone (topical),alclometasone_topical,ddinter
+drug:aloe_vera_leaf,Aloe Vera Leaf,aloe_vera_leaf,ddinter
+drug:alpelisib,Alpelisib,alpelisib,ddinter
+drug:lipoic_acid,Lipoic acid,lipoic_acid,ddinter
+drug:amcinonide,Amcinonide,amcinonide,ddinter
+drug:amprenavir,Amprenavir,amprenavir,ddinter
+drug:anisindione,Anisindione,anisindione,ddinter
+drug:aripiprazole,Aripiprazole,aripiprazole,ddinter
+drug:asenapine,Asenapine,asenapine,ddinter
+drug:asparaginase_erwinia_chrysanthemi,Asparaginase Erwinia chrysanthemi,asparaginase_erwinia_chrysanthemi,ddinter
+drug:asparaginase_escherichia_coli,Asparaginase Escherichia coli,asparaginase_escherichia_coli,ddinter
+drug:atazanavir,Atazanavir,atazanavir,ddinter
+drug:bedaquiline,Bedaquiline,bedaquiline,ddinter
+drug:bendroflumethiazide,Bendroflumethiazide,bendroflumethiazide,ddinter
+drug:benzphetamine,Benzphetamine,benzphetamine,ddinter
+drug:benzthiazide,Benzthiazide,benzthiazide,ddinter
+drug:betamethasone_topical,Betamethasone (topical),betamethasone_topical,ddinter
+drug:bortezomib,Bortezomib,bortezomib,ddinter
+drug:brentuximab_vedotin,Brentuximab vedotin,brentuximab_vedotin,ddinter
+drug:brexpiprazole,Brexpiprazole,brexpiprazole,ddinter
+drug:brigatinib,Brigatinib,brigatinib,ddinter
+drug:bumetanide,Bumetanide,bumetanide,ddinter
+drug:calaspargase_pegol,Calaspargase pegol,calaspargase_pegol,ddinter
+drug:cannabidiol,Cannabidiol,cannabidiol,ddinter
+drug:cariprazine,Cariprazine,cariprazine,ddinter
+drug:ceritinib,Ceritinib,ceritinib,ddinter
+drug:activated_charcoal,Activated charcoal,activated_charcoal,ddinter
+drug:chlorothiazide,Chlorothiazide,chlorothiazide,ddinter
+drug:chlorpromazine,Chlorpromazine,chlorpromazine,ddinter
+drug:chlorthalidone,Chlorthalidone,chlorthalidone,ddinter
+drug:chromic_chloride,Chromic chloride,chromic_chloride,ddinter
+drug:chromium_picolinate,Chromium picolinate,chromium_picolinate,ddinter
+drug:cinoxacin,Cinoxacin,cinoxacin,ddinter
+drug:ciprofloxacin,Ciprofloxacin,ciprofloxacin,ddinter
+drug:clobetasol_topical,Clobetasol (topical),clobetasol_topical,ddinter
+drug:clocortolone_topical,Clocortolone (topical),clocortolone_topical,ddinter
+drug:clofarabine,Clofarabine,clofarabine,ddinter
+drug:clozapine,Clozapine,clozapine,ddinter
+drug:conjugated_estrogens,Conjugated estrogens,conjugated_estrogens,ddinter
+drug:conjugated_estrogens_topical,Conjugated estrogens (topical),conjugated_estrogens_topical,ddinter
+drug:copanlisib,Copanlisib,copanlisib,ddinter
+drug:corticotropin,Corticotropin,corticotropin,ddinter
+drug:tetracosactide,Tetracosactide,tetracosactide,ddinter
+drug:dabrafenib,Dabrafenib,dabrafenib,ddinter
+drug:danazol,Danazol,danazol,ddinter
+drug:darunavir,Darunavir,darunavir,ddinter
+drug:deflazacort,Deflazacort,deflazacort,ddinter
+drug:delafloxacin,Delafloxacin,delafloxacin,ddinter
+drug:desonide_topical,Desonide (topical),desonide_topical,ddinter
+drug:desoximetasone_topical,Desoximetasone (topical),desoximetasone_topical,ddinter
+drug:dexamethasone_ophthalmic,Dexamethasone (ophthalmic),dexamethasone_ophthalmic,ddinter
+drug:dexamethasone_topical,Dexamethasone (topical),dexamethasone_topical,ddinter
+drug:diazoxide,Diazoxide,diazoxide,ddinter
+drug:diclofenamide,Diclofenamide,diclofenamide,ddinter
+drug:dicoumarol,Dicoumarol,dicoumarol,ddinter
+drug:dienestrol_topical,Dienestrol (topical),dienestrol_topical,ddinter
+drug:diethylpropion,Diethylpropion,diethylpropion,ddinter
+drug:diethylstilbestrol,Diethylstilbestrol,diethylstilbestrol,ddinter
+drug:diflorasone_topical,Diflorasone (topical),diflorasone_topical,ddinter
+drug:digitoxin,Digitoxin,digitoxin,ddinter
+drug:digoxin,Digoxin,digoxin,ddinter
+drug:dobutamine,Dobutamine,dobutamine,ddinter
+drug:dopamine,Dopamine,dopamine,ddinter
+drug:drospirenone,Drospirenone,drospirenone,ddinter
+drug:efavirenz,Efavirenz,efavirenz,ddinter
+drug:enfortumab_vedotin,Enfortumab vedotin,enfortumab_vedotin,ddinter
+drug:enoxacin,Enoxacin,enoxacin,ddinter
+drug:ephedrine,Ephedrine,ephedrine,ddinter
+drug:epinephrine,Epinephrine,epinephrine,ddinter
+drug:epirubicin,Epirubicin,epirubicin,ddinter
+drug:esterified_estrogens,Esterified estrogens,esterified_estrogens,ddinter
+drug:estradiol,Estradiol,estradiol,ddinter
+drug:estradiol_topical,Estradiol (topical),estradiol_topical,ddinter
+drug:estramustine,Estramustine,estramustine,ddinter
+drug:estrone,Estrone,estrone,ddinter
+drug:estrone_sulfate,Estrone sulfate,estrone_sulfate,ddinter
+drug:estrone_sulfate_topical,Estrone sulfate (topical),estrone_sulfate_topical,ddinter
+drug:etacrynic_acid,Etacrynic acid,etacrynic_acid,ddinter
+drug:ethanol,Ethanol,ethanol,ddinter
+drug:ethinylestradiol,Ethinylestradiol,ethinylestradiol,ddinter
+drug:etonogestrel,Etonogestrel,etonogestrel,ddinter
+drug:everolimus,Everolimus,everolimus,ddinter
+drug:fludrocortisone,Fludrocortisone,fludrocortisone,ddinter
+drug:fluocinonide_topical,Fluocinonide (topical),fluocinonide_topical,ddinter
+drug:fluphenazine,Fluphenazine,fluphenazine,ddinter
+drug:flurandrenolide_topical,Flurandrenolide (topical),flurandrenolide_topical,ddinter
+drug:fluticasone_topical,Fluticasone (topical),fluticasone_topical,ddinter
+drug:formoterol,Formoterol,formoterol,ddinter
+drug:fosamprenavir,Fosamprenavir,fosamprenavir,ddinter
+drug:fosphenytoin,Fosphenytoin,fosphenytoin,ddinter
+drug:furosemide,Furosemide,furosemide,ddinter
+drug:garlic,Garlic,garlic,ddinter
+drug:gatifloxacin,Gatifloxacin,gatifloxacin,ddinter
+drug:gemifloxacin,Gemifloxacin,gemifloxacin,ddinter
+drug:ginseng,Ginseng,ginseng,ddinter
+drug:goserelin,Goserelin,goserelin,ddinter
+drug:grepafloxacin,Grepafloxacin,grepafloxacin,ddinter
+drug:halcinonide_topical,Halcinonide (topical),halcinonide_topical,ddinter
+drug:ulobetasol_topical,Ulobetasol (topical),ulobetasol_topical,ddinter
+drug:histrelin,Histrelin,histrelin,ddinter
+drug:hydrochlorothiazide,Hydrochlorothiazide,hydrochlorothiazide,ddinter
+drug:hydrocortisone_topical,Hydrocortisone (topical),hydrocortisone_topical,ddinter
+drug:hydroflumethiazide,Hydroflumethiazide,hydroflumethiazide,ddinter
+drug:idelalisib,Idelalisib,idelalisib,ddinter
+drug:iloperidone,Iloperidone,iloperidone,ddinter
+drug:indacaterol,Indacaterol,indacaterol,ddinter
+drug:indapamide,Indapamide,indapamide,ddinter
+drug:indinavir,Indinavir,indinavir,ddinter
+drug:interferon_beta_1a,Interferon beta-1a,interferon_beta_1a,ddinter
+drug:interferon_beta_1b,Interferon beta-1b,interferon_beta_1b,ddinter
+drug:isoniazid,Isoniazid,isoniazid,ddinter
+drug:isoprenaline,Isoprenaline,isoprenaline,ddinter
+drug:lanreotide,Lanreotide,lanreotide,ddinter
+drug:leflunomide,Leflunomide,leflunomide,ddinter
+drug:leuprolide,Leuprolide,leuprolide,ddinter
+drug:levonorgestrel,Levonorgestrel,levonorgestrel,ddinter
+drug:levothyroxine,Levothyroxine,levothyroxine,ddinter
+drug:liothyronine,Liothyronine,liothyronine,ddinter
+drug:liotrix,Liotrix,liotrix,ddinter
+drug:lithium_carbonate,Lithium carbonate,lithium_carbonate,ddinter
+drug:lomefloxacin,Lomefloxacin,lomefloxacin,ddinter
+drug:lomitapide,Lomitapide,lomitapide,ddinter
+drug:lumateperone,Lumateperone,lumateperone,ddinter
+drug:lurasidone,Lurasidone,lurasidone,ddinter
+drug:medroxyprogesterone_acetate,Medroxyprogesterone acetate,medroxyprogesterone_acetate,ddinter
+drug:megestrol_acetate,Megestrol acetate,megestrol_acetate,ddinter
+drug:mephentermine,Mephentermine,mephentermine,ddinter
+drug:mesoridazine,Mesoridazine,mesoridazine,ddinter
+drug:orciprenaline,Orciprenaline,orciprenaline,ddinter
+drug:metaraminol,Metaraminol,metaraminol,ddinter
+drug:metamfetamine,Metamfetamine,metamfetamine,ddinter
+drug:methazolamide,Methazolamide,methazolamide,ddinter
+drug:methdilazine,Methdilazine,methdilazine,ddinter
+drug:methotrexate,Methotrexate,methotrexate,ddinter
+drug:methotrimeprazine,Methotrimeprazine,methotrimeprazine,ddinter
+drug:methoxamine,Methoxamine,methoxamine,ddinter
+drug:methylcellulose,Methylcellulose,methylcellulose,ddinter
+drug:methylprednisolone,Methylprednisolone,methylprednisolone,ddinter
+drug:methylprednisolone_topical,Methylprednisolone (topical),methylprednisolone_topical,ddinter
+drug:metolazone,Metolazone,metolazone,ddinter
+drug:midostaurin,Midostaurin,midostaurin,ddinter
+drug:mipomersen,Mipomersen,mipomersen,ddinter
+drug:moxifloxacin,Moxifloxacin,moxifloxacin,ddinter
+drug:nalidixic_acid,Nalidixic acid,nalidixic_acid,ddinter
+drug:nelfinavir,Nelfinavir,nelfinavir,ddinter
+drug:niacin,Niacin,niacin,ddinter
+drug:nicotinamide,Nicotinamide,nicotinamide,ddinter
+drug:norepinephrine,Norepinephrine,norepinephrine,ddinter
+drug:norethisterone,Norethisterone,norethisterone,ddinter
+drug:norfloxacin,Norfloxacin,norfloxacin,ddinter
+drug:norgestrel,Norgestrel,norgestrel,ddinter
+drug:octreotide,Octreotide,octreotide,ddinter
+drug:ofloxacin,Ofloxacin,ofloxacin,ddinter
+drug:olanzapine,Olanzapine,olanzapine,ddinter
+drug:omacetaxine_mepesuccinate,Omacetaxine mepesuccinate,omacetaxine_mepesuccinate,ddinter
+drug:paliperidone,Paliperidone,paliperidone,ddinter
+drug:pancrelipase,Pancrelipase,pancrelipase,ddinter
+drug:pasireotide,Pasireotide,pasireotide,ddinter
+drug:pegaspargase,Pegaspargase,pegaspargase,ddinter
+drug:peginterferon_beta_1a,Peginterferon beta-1a,peginterferon_beta_1a,ddinter
+drug:pegvisomant,Pegvisomant,pegvisomant,ddinter
+drug:pentamidine,Pentamidine,pentamidine,ddinter
+drug:perphenazine,Perphenazine,perphenazine,ddinter
+drug:pexidartinib,Pexidartinib,pexidartinib,ddinter
+drug:phendimetrazine,Phendimetrazine,phendimetrazine,ddinter
+drug:phenylephrine,Phenylephrine,phenylephrine,ddinter
+drug:phenylpropanolamine,Phenylpropanolamine,phenylpropanolamine,ddinter
+drug:phenytoin,Phenytoin,phenytoin,ddinter
+drug:polythiazide,Polythiazide,polythiazide,ddinter
+drug:pramlintide,Pramlintide,pramlintide,ddinter
+drug:prednicarbate_topical,Prednicarbate (topical),prednicarbate_topical,ddinter
+drug:prochlorperazine,Prochlorperazine,prochlorperazine,ddinter
+drug:progesterone,Progesterone,progesterone,ddinter
+drug:progesterone_topical,Progesterone (topical),progesterone_topical,ddinter
+drug:promazine,Promazine,promazine,ddinter
+drug:promethazine,Promethazine,promethazine,ddinter
+drug:propiomazine,Propiomazine,propiomazine,ddinter
+drug:pseudoephedrine,Pseudoephedrine,pseudoephedrine,ddinter
+drug:plantago_seed,Plantago seed,plantago_seed,ddinter
+drug:quetiapine,Quetiapine,quetiapine,ddinter
+drug:quinestrol,Quinestrol,quinestrol,ddinter
+drug:remdesivir,Remdesivir,remdesivir,ddinter
+drug:risperidone,Risperidone,risperidone,ddinter
+drug:ritodrine,Ritodrine,ritodrine,ddinter
+drug:ritonavir,Ritonavir,ritonavir,ddinter
+drug:salmeterol,Salmeterol,salmeterol,ddinter
+drug:saquinavir,Saquinavir,saquinavir,ddinter
+drug:sermorelin,Sermorelin,sermorelin,ddinter
+drug:sirolimus,Sirolimus,sirolimus,ddinter
+drug:somapacitan,Somapacitan,somapacitan,ddinter
+drug:somatrem,Somatrem,somatrem,ddinter
+drug:somatotropin,Somatotropin,somatotropin,ddinter
+drug:sparfloxacin,Sparfloxacin,sparfloxacin,ddinter
+drug:tacrolimus,Tacrolimus,tacrolimus,ddinter
+drug:tagraxofusp,Tagraxofusp,tagraxofusp,ddinter
+drug:temsirolimus,Temsirolimus,temsirolimus,ddinter
+drug:teprotumumab,Teprotumumab,teprotumumab,ddinter
+drug:terbutaline,Terbutaline,terbutaline,ddinter
+drug:teriflunomide,Teriflunomide,teriflunomide,ddinter
+drug:tesamorelin,Tesamorelin,tesamorelin,ddinter
+drug:thiethylperazine,Thiethylperazine,thiethylperazine,ddinter
+drug:tioguanine,Tioguanine,tioguanine,ddinter
+drug:thioridazine,Thioridazine,thioridazine,ddinter
+drug:thyroid_porcine,"Thyroid, porcine",thyroid_porcine,ddinter
+drug:thyrotropin_alfa,Thyrotropin alfa,thyrotropin_alfa,ddinter
+drug:tipranavir,Tipranavir,tipranavir,ddinter
+drug:torasemide,Torasemide,torasemide,ddinter
+drug:trabectedin,Trabectedin,trabectedin,ddinter
+drug:triamcinolone_ophthalmic,Triamcinolone (ophthalmic),triamcinolone_ophthalmic,ddinter
+drug:triamcinolone_topical,Triamcinolone (topical),triamcinolone_topical,ddinter
+drug:trichlormethiazide,Trichlormethiazide,trichlormethiazide,ddinter
+drug:trifluoperazine,Trifluoperazine,trifluoperazine,ddinter
+drug:triflupromazine,Triflupromazine,triflupromazine,ddinter
+drug:alimemazine,Alimemazine,alimemazine,ddinter
+drug:triptorelin,Triptorelin,triptorelin,ddinter
+drug:trovafloxacin,Trovafloxacin,trovafloxacin,ddinter
+drug:turmeric,Turmeric,turmeric,ddinter
+drug:vorinostat,Vorinostat,vorinostat,ddinter
+drug:warfarin,Warfarin,warfarin,ddinter
+drug:ziprasidone,Ziprasidone,ziprasidone,ddinter
+drug:lidocaine,Lidocaine,lidocaine,ddinter
+drug:obeticholic_acid,Obeticholic acid,obeticholic_acid,ddinter
+drug:acetohexamide,Acetohexamide,acetohexamide,ddinter
+drug:alogliptin,Alogliptin,alogliptin,ddinter
+drug:chlorpheniramine,Chlorpheniramine,chlorpheniramine,ddinter
+drug:atropine_ophthalmic,Atropine (ophthalmic),atropine_ophthalmic,ddinter
+drug:canagliflozin,Canagliflozin,canagliflozin,ddinter
+drug:chlorpropamide,Chlorpropamide,chlorpropamide,ddinter
+drug:dapagliflozin,Dapagliflozin,dapagliflozin,ddinter
+drug:dulaglutide,Dulaglutide,dulaglutide,ddinter
+drug:empagliflozin,Empagliflozin,empagliflozin,ddinter
+drug:ertugliflozin,Ertugliflozin,ertugliflozin,ddinter
+drug:exenatide,Exenatide,exenatide,ddinter
+drug:glimepiride,Glimepiride,glimepiride,ddinter
+drug:glipizide,Glipizide,glipizide,ddinter
+drug:glycopyrronium_topical,Glycopyrronium (topical),glycopyrronium_topical,ddinter
+drug:insulin_human,Insulin human,insulin_human,ddinter
+drug:insulin_aspart_aspart,Insulin aspart (aspart),insulin_aspart_aspart,ddinter
+drug:insulin_aspart_aspart_protamine,Insulin aspart (aspart protamine),insulin_aspart_aspart_protamine,ddinter
+drug:insulin_degludec,Insulin degludec,insulin_degludec,ddinter
+drug:insulin_detemir,Insulin detemir,insulin_detemir,ddinter
+drug:insulin_glargine,Insulin glargine,insulin_glargine,ddinter
+drug:insulin_glulisine,Insulin glulisine,insulin_glulisine,ddinter
+drug:insulin_human_inhalation_rapid_acting,"Insulin human (inhalation, rapid acting)",insulin_human_inhalation_rapid_acting,ddinter
+drug:insulin_human_isophane,Insulin human (isophane),insulin_human_isophane,ddinter
+drug:insulin_lispro,Insulin lispro,insulin_lispro,ddinter
+drug:insulin_lispro_protamine,Insulin lispro (protamine),insulin_lispro_protamine,ddinter
+drug:insulin_human_regular,Insulin human (regular),insulin_human_regular,ddinter
+drug:insulin_human_zinc,Insulin human (zinc),insulin_human_zinc,ddinter
+drug:insulin_human_zinc_extended,Insulin human (zinc extended),insulin_human_zinc_extended,ddinter
+drug:liraglutide,Liraglutide,liraglutide,ddinter
+drug:lixisenatide,Lixisenatide,lixisenatide,ddinter
+drug:miglitol,Miglitol,miglitol,ddinter
+drug:potassium_chloride,Potassium chloride,potassium_chloride,ddinter
+drug:potassium_citrate,Potassium citrate,potassium_citrate,ddinter
+drug:scopolamine_ophthalmic,Scopolamine (ophthalmic),scopolamine_ophthalmic,ddinter
+drug:semaglutide,Semaglutide,semaglutide,ddinter
+drug:sitagliptin,Sitagliptin,sitagliptin,ddinter
+drug:tolazamide,Tolazamide,tolazamide,ddinter
+drug:tolbutamide,Tolbutamide,tolbutamide,ddinter
+drug:dextromethorphan,Dextromethorphan,dextromethorphan,ddinter
+drug:acebutolol,Acebutolol,acebutolol,ddinter
+drug:acetaminophen,Acetaminophen,acetaminophen,ddinter
+drug:caffeine,Caffeine,caffeine,ddinter
+drug:dihydrocodeine,Dihydrocodeine,dihydrocodeine,ddinter
+drug:codeine,Codeine,codeine,ddinter
+drug:isometheptene,Isometheptene,isometheptene,ddinter
+drug:amphetamine,Amphetamine,amphetamine,ddinter
+drug:arformoterol,Arformoterol,arformoterol,ddinter
+drug:atomoxetine,Atomoxetine,atomoxetine,ddinter
+drug:bromocriptine,Bromocriptine,bromocriptine,ddinter
+drug:dexmethylphenidate,Dexmethylphenidate,dexmethylphenidate,ddinter
+drug:dextroamphetamine,Dextroamphetamine,dextroamphetamine,ddinter
+drug:dihydroergotamine,Dihydroergotamine,dihydroergotamine,ddinter
+drug:doxapram,Doxapram,doxapram,ddinter
+drug:dichloralphenazone,Dichloralphenazone,dichloralphenazone,ddinter
+drug:droxidopa,Droxidopa,droxidopa,ddinter
+drug:ergometrine,Ergometrine,ergometrine,ddinter
+drug:ergotamine,Ergotamine,ergotamine,ddinter
+drug:guanethidine,Guanethidine,guanethidine,ddinter
+drug:iobenguane_i_123,Iobenguane (I-123),iobenguane_i_123,ddinter
+drug:isocarboxazid,Isocarboxazid,isocarboxazid,ddinter
+drug:isoetharine,Isoetharine,isoetharine,ddinter
+drug:levosalbutamol,Levosalbutamol,levosalbutamol,ddinter
+drug:levomilnacipran,Levomilnacipran,levomilnacipran,ddinter
+drug:linezolid,Linezolid,linezolid,ddinter
+drug:lisdexamfetamine,Lisdexamfetamine,lisdexamfetamine,ddinter
+drug:methylene_blue,Methylene blue,methylene_blue,ddinter
+drug:methylergometrine,Methylergometrine,methylergometrine,ddinter
+drug:methylphenidate,Methylphenidate,methylphenidate,ddinter
+drug:methysergide,Methysergide,methysergide,ddinter
+drug:midodrine,Midodrine,midodrine,ddinter
+drug:milnacipran,Milnacipran,milnacipran,ddinter
+drug:olodaterol,Olodaterol,olodaterol,ddinter
+drug:oxytocin,Oxytocin,oxytocin,ddinter
+drug:ozanimod,Ozanimod,ozanimod,ddinter
+drug:phenelzine,Phenelzine,phenelzine,ddinter
+drug:pirbuterol,Pirbuterol,pirbuterol,ddinter
+drug:procarbazine,Procarbazine,procarbazine,ddinter
+drug:racepinephrine,Racepinephrine,racepinephrine,ddinter
+drug:safinamide,Safinamide,safinamide,ddinter
+drug:selegiline,Selegiline,selegiline,ddinter
+drug:solriamfetol,Solriamfetol,solriamfetol,ddinter
+drug:tranylcypromine,Tranylcypromine,tranylcypromine,ddinter
+drug:venlafaxine,Venlafaxine,venlafaxine,ddinter
+drug:tramadol,Tramadol,tramadol,ddinter
+drug:amphotericin_b_liposomal,Amphotericin B (liposomal),amphotericin_b_liposomal,ddinter
+drug:beclomethasone_dipropionate,Beclomethasone dipropionate,beclomethasone_dipropionate,ddinter
+drug:acetylcholine,Acetylcholine,acetylcholine,ddinter
+drug:acetylcysteine,Acetylcysteine,acetylcysteine,ddinter
+drug:abarelix,Abarelix,abarelix,ddinter
+drug:adenosine,Adenosine,adenosine,ddinter
+drug:alendronic_acid,Alendronic acid,alendronic_acid,ddinter
+drug:alfuzosin,Alfuzosin,alfuzosin,ddinter
+drug:aminophylline,Aminophylline,aminophylline,ddinter
+drug:amiodarone,Amiodarone,amiodarone,ddinter
+drug:amisulpride,Amisulpride,amisulpride,ddinter
+drug:amitriptyline,Amitriptyline,amitriptyline,ddinter
+drug:amoxapine,Amoxapine,amoxapine,ddinter
+drug:anagrelide,Anagrelide,anagrelide,ddinter
+drug:apalutamide,Apalutamide,apalutamide,ddinter
+drug:apomorphine,Apomorphine,apomorphine,ddinter
+drug:arsenic_trioxide,Arsenic trioxide,arsenic_trioxide,ddinter
+drug:astemizole,Astemizole,astemizole,ddinter
+drug:axitinib,Axitinib,axitinib,ddinter
+drug:azithromycin,Azithromycin,azithromycin,ddinter
+drug:bacampicillin,Bacampicillin,bacampicillin,ddinter
+drug:bepridil,Bepridil,bepridil,ddinter
+drug:bicalutamide,Bicalutamide,bicalutamide,ddinter
+drug:bosutinib,Bosutinib,bosutinib,ddinter
+drug:buprenorphine,Buprenorphine,buprenorphine,ddinter
+drug:cefditoren,Cefditoren,cefditoren,ddinter
+drug:cefpodoxime,Cefpodoxime,cefpodoxime,ddinter
+drug:cefuroxime,Cefuroxime,cefuroxime,ddinter
+drug:chloroquine,Chloroquine,chloroquine,ddinter
+drug:citalopram,Citalopram,citalopram,ddinter
+drug:clofazimine,Clofazimine,clofazimine,ddinter
+drug:clomipramine,Clomipramine,clomipramine,ddinter
+drug:crizotinib,Crizotinib,crizotinib,ddinter
+drug:cyanocobalamin,Cyanocobalamin,cyanocobalamin,ddinter
+drug:dacomitinib,Dacomitinib,dacomitinib,ddinter
+drug:dasatinib,Dasatinib,dasatinib,ddinter
+drug:daunorubicin,Daunorubicin,daunorubicin,ddinter
+drug:daunorubicin_liposomal,Daunorubicin (liposomal),daunorubicin_liposomal,ddinter
+drug:degarelix,Degarelix,degarelix,ddinter
+drug:delavirdine,Delavirdine,delavirdine,ddinter
+drug:desipramine,Desipramine,desipramine,ddinter
+drug:deutetrabenazine,Deutetrabenazine,deutetrabenazine,ddinter
+drug:diclofenac,Diclofenac,diclofenac,ddinter
+drug:disopyramide,Disopyramide,disopyramide,ddinter
+drug:dofetilide,Dofetilide,dofetilide,ddinter
+drug:donepezil,Donepezil,donepezil,ddinter
+drug:doxepin,Doxepin,doxepin,ddinter
+drug:doxepin_topical,Doxepin (topical),doxepin_topical,ddinter
+drug:doxorubicin,Doxorubicin,doxorubicin,ddinter
+drug:doxorubicin_liposomal,Doxorubicin (liposomal),doxorubicin_liposomal,ddinter
+drug:dronedarone,Dronedarone,dronedarone,ddinter
+drug:droperidol,Droperidol,droperidol,ddinter
+drug:duloxetine,Duloxetine,duloxetine,ddinter
+drug:encorafenib,Encorafenib,encorafenib,ddinter
+drug:entecavir,Entecavir,entecavir,ddinter
+drug:entrectinib,Entrectinib,entrectinib,ddinter
+drug:enzalutamide,Enzalutamide,enzalutamide,ddinter
+drug:eribulin,Eribulin,eribulin,ddinter
+drug:erlotinib,Erlotinib,erlotinib,ddinter
+drug:erythromycin,Erythromycin,erythromycin,ddinter
+drug:escitalopram,Escitalopram,escitalopram,ddinter
+drug:etodolac,Etodolac,etodolac,ddinter
+drug:ezogabine,Ezogabine,ezogabine,ddinter
+drug:fenoprofen,Fenoprofen,fenoprofen,ddinter
+drug:fingolimod,Fingolimod,fingolimod,ddinter
+drug:flecainide,Flecainide,flecainide,ddinter
+drug:fluconazole,Fluconazole,fluconazole,ddinter
+drug:fluoxetine,Fluoxetine,fluoxetine,ddinter
+drug:flurbiprofen,Flurbiprofen,flurbiprofen,ddinter
+drug:flutamide,Flutamide,flutamide,ddinter
+drug:foscarnet,Foscarnet,foscarnet,ddinter
+drug:fostemsavir,Fostemsavir,fostemsavir,ddinter
+drug:galantamine,Galantamine,galantamine,ddinter
+drug:gefitinib,Gefitinib,gefitinib,ddinter
+drug:gilteritinib,Gilteritinib,gilteritinib,ddinter
+drug:glasdegib,Glasdegib,glasdegib,ddinter
+drug:halofantrine,Halofantrine,halofantrine,ddinter
+drug:haloperidol,Haloperidol,haloperidol,ddinter
+drug:halothane,Halothane,halothane,ddinter
+drug:hydroxychloroquine,Hydroxychloroquine,hydroxychloroquine,ddinter
+drug:hydroxyzine,Hydroxyzine,hydroxyzine,ddinter
+drug:ibuprofen,Ibuprofen,ibuprofen,ddinter
+drug:ibutilide,Ibutilide,ibutilide,ddinter
+drug:idarubicin,Idarubicin,idarubicin,ddinter
+drug:imipramine,Imipramine,imipramine,ddinter
+drug:indomethacin,Indomethacin,indomethacin,ddinter
+drug:inotuzumab_ozogamicin,Inotuzumab ozogamicin,inotuzumab_ozogamicin,ddinter
+drug:itraconazole,Itraconazole,itraconazole,ddinter
+drug:ivabradine,Ivabradine,ivabradine,ddinter
+drug:ivosidenib,Ivosidenib,ivosidenib,ddinter
+drug:ketoconazole,Ketoconazole,ketoconazole,ddinter
+drug:ketoprofen,Ketoprofen,ketoprofen,ddinter
+drug:ketorolac,Ketorolac,ketorolac,ddinter
+drug:lapatinib,Lapatinib,lapatinib,ddinter
+drug:lasmiditan,Lasmiditan,lasmiditan,ddinter
+drug:lefamulin,Lefamulin,lefamulin,ddinter
+drug:lenvatinib,Lenvatinib,lenvatinib,ddinter
+drug:levacetylmethadol,Levacetylmethadol,levacetylmethadol,ddinter
+drug:lofexidine,Lofexidine,lofexidine,ddinter
+drug:maprotiline,Maprotiline,maprotiline,ddinter
+drug:meclofenamic_acid,Meclofenamic acid,meclofenamic_acid,ddinter
+drug:mefenamic_acid,Mefenamic acid,mefenamic_acid,ddinter
+drug:mefloquine,Mefloquine,mefloquine,ddinter
+drug:methadone,Methadone,methadone,ddinter
+drug:mecobalamin,Mecobalamin,mecobalamin,ddinter
+drug:mifepristone,Mifepristone,mifepristone,ddinter
+drug:mirtazapine,Mirtazapine,mirtazapine,ddinter
+drug:naproxen,Naproxen,naproxen,ddinter
+drug:neratinib,Neratinib,neratinib,ddinter
+drug:nicotine,Nicotine,nicotine,ddinter
+drug:nilotinib,Nilotinib,nilotinib,ddinter
+drug:nilutamide,Nilutamide,nilutamide,ddinter
+drug:nortriptyline,Nortriptyline,nortriptyline,ddinter
+drug:oliceridine,Oliceridine,oliceridine,ddinter
+drug:osilodrostat,Osilodrostat,osilodrostat,ddinter
+drug:osimertinib,Osimertinib,osimertinib,ddinter
+drug:oxaliplatin,Oxaliplatin,oxaliplatin,ddinter
+drug:oxaprozin,Oxaprozin,oxaprozin,ddinter
+drug:oxtriphylline,Oxtriphylline,oxtriphylline,ddinter
+drug:panobinostat,Panobinostat,panobinostat,ddinter
+drug:pazopanib,Pazopanib,pazopanib,ddinter
+drug:pemetrexed,Pemetrexed,pemetrexed,ddinter
+drug:pimavanserin,Pimavanserin,pimavanserin,ddinter
+drug:pimozide,Pimozide,pimozide,ddinter
+drug:piroxicam,Piroxicam,piroxicam,ddinter
+drug:pitolisant,Pitolisant,pitolisant,ddinter
+drug:ponatinib,Ponatinib,ponatinib,ddinter
+drug:posaconazole,Posaconazole,posaconazole,ddinter
+drug:prasugrel,Prasugrel,prasugrel,ddinter
+drug:primaquine,Primaquine,primaquine,ddinter
+drug:probenecid,Probenecid,probenecid,ddinter
+drug:probucol,Probucol,probucol,ddinter
+drug:procainamide,Procainamide,procainamide,ddinter
+drug:propafenone,Propafenone,propafenone,ddinter
+drug:propofol,Propofol,propofol,ddinter
+drug:dextropropoxyphene,Dextropropoxyphene,dextropropoxyphene,ddinter
+drug:protriptyline,Protriptyline,protriptyline,ddinter
+drug:quinidine,Quinidine,quinidine,ddinter
+drug:quinine,Quinine,quinine,ddinter
+drug:raltegravir,Raltegravir,raltegravir,ddinter
+drug:ramelteon,Ramelteon,ramelteon,ddinter
+drug:ranolazine,Ranolazine,ranolazine,ddinter
+drug:ribociclib,Ribociclib,ribociclib,ddinter
+drug:rilpivirine,Rilpivirine,rilpivirine,ddinter
+drug:rivastigmine,Rivastigmine,rivastigmine,ddinter
+drug:romidepsin,Romidepsin,romidepsin,ddinter
+drug:rucaparib,Rucaparib,rucaparib,ddinter
+drug:selpercatinib,Selpercatinib,selpercatinib,ddinter
+drug:sertraline,Sertraline,sertraline,ddinter
+drug:sevoflurane,Sevoflurane,sevoflurane,ddinter
+drug:siponimod,Siponimod,siponimod,ddinter
+drug:sodium_bicarbonate,Sodium bicarbonate,sodium_bicarbonate,ddinter
+drug:solifenacin,Solifenacin,solifenacin,ddinter
+drug:sonidegib,Sonidegib,sonidegib,ddinter
+drug:sorafenib,Sorafenib,sorafenib,ddinter
+drug:sotalol,Sotalol,sotalol,ddinter
+drug:sulfamethoxazole,Sulfamethoxazole,sulfamethoxazole,ddinter
+drug:sulindac,Sulindac,sulindac,ddinter
+drug:sunitinib,Sunitinib,sunitinib,ddinter
+drug:tacrine,Tacrine,tacrine,ddinter
+drug:tamoxifen,Tamoxifen,tamoxifen,ddinter
+drug:telavancin,Telavancin,telavancin,ddinter
+drug:telithromycin,Telithromycin,telithromycin,ddinter
+drug:terfenadine,Terfenadine,terfenadine,ddinter
+drug:tetrabenazine,Tetrabenazine,tetrabenazine,ddinter
+drug:thalidomide,Thalidomide,thalidomide,ddinter
+drug:theophylline,Theophylline,theophylline,ddinter
+drug:tizanidine,Tizanidine,tizanidine,ddinter
+drug:tolmetin,Tolmetin,tolmetin,ddinter
+drug:toremifene,Toremifene,toremifene,ddinter
+drug:trazodone,Trazodone,trazodone,ddinter
+drug:triamterene,Triamterene,triamterene,ddinter
+drug:triclabendazole,Triclabendazole,triclabendazole,ddinter
+drug:trimipramine,Trimipramine,trimipramine,ddinter
+drug:valbenazine,Valbenazine,valbenazine,ddinter
+drug:vandetanib,Vandetanib,vandetanib,ddinter
+drug:vardenafil,Vardenafil,vardenafil,ddinter
+drug:vasopressin,Vasopressin,vasopressin,ddinter
+drug:vemurafenib,Vemurafenib,vemurafenib,ddinter
+drug:vismodegib,Vismodegib,vismodegib,ddinter
+drug:voriconazole,Voriconazole,voriconazole,ddinter
+drug:atracurium,Atracurium,atracurium,ddinter
+drug:cisatracurium,Cisatracurium,cisatracurium,ddinter
+drug:cyclosporine,Cyclosporine,cyclosporine,ddinter
+drug:didanosine,Didanosine,didanosine,ddinter
+drug:doxacurium,Doxacurium,doxacurium,ddinter
+drug:etravirine,Etravirine,etravirine,ddinter
+drug:flibanserin,Flibanserin,flibanserin,ddinter
+drug:lemborexant,Lemborexant,lemborexant,ddinter
+drug:memantine,Memantine,memantine,ddinter
+drug:metocurine,Metocurine,metocurine,ddinter
+drug:midazolam,Midazolam,midazolam,ddinter
+drug:mivacurium,Mivacurium,mivacurium,ddinter
+drug:nabumetone,Nabumetone,nabumetone,ddinter
+drug:nifedipine,Nifedipine,nifedipine,ddinter
+drug:pancuronium,Pancuronium,pancuronium,ddinter
+drug:physostigmine,Physostigmine,physostigmine,ddinter
+drug:pipecuronium,Pipecuronium,pipecuronium,ddinter
+drug:porfimer_sodium,Porfimer sodium,porfimer_sodium,ddinter
+drug:pramipexole,Pramipexole,pramipexole,ddinter
+drug:rapacuronium,Rapacuronium,rapacuronium,ddinter
+drug:rocuronium,Rocuronium,rocuronium,ddinter
+drug:succinylcholine,Succinylcholine,succinylcholine,ddinter
+drug:triazolam,Triazolam,triazolam,ddinter
+drug:tubocurarine,Tubocurarine,tubocurarine,ddinter
+drug:vecuronium,Vecuronium,vecuronium,ddinter
+drug:amikacin,Amikacin,amikacin,ddinter
+drug:amikacin_liposome,Amikacin (liposome),amikacin_liposome,ddinter
+drug:armodafinil,Armodafinil,armodafinil,ddinter
+drug:capmatinib,Capmatinib,capmatinib,ddinter
+drug:capreomycin,Capreomycin,capreomycin,ddinter
+drug:carboplatin,Carboplatin,carboplatin,ddinter
+drug:cetuximab,Cetuximab,cetuximab,ddinter
+drug:choline_salicylate,Choline salicylate,choline_salicylate,ddinter
+drug:cisplatin,Cisplatin,cisplatin,ddinter
+drug:clopidogrel,Clopidogrel,clopidogrel,ddinter
+drug:conivaptan,Conivaptan,conivaptan,ddinter
+drug:deferasirox,Deferasirox,deferasirox,ddinter
+drug:echinacea,Echinacea,echinacea,ddinter
+drug:fedratinib,Fedratinib,fedratinib,ddinter
+drug:ferrous_fumarate,Ferrous fumarate,ferrous_fumarate,ddinter
+drug:ferrous_gluconate,Ferrous gluconate,ferrous_gluconate,ddinter
+drug:ferrous_sulfate_anhydrous,Ferrous sulfate anhydrous,ferrous_sulfate_anhydrous,ddinter
+drug:fluvoxamine,Fluvoxamine,fluvoxamine,ddinter
+drug:fosaprepitant,Fosaprepitant,fosaprepitant,ddinter
+drug:fostamatinib,Fostamatinib,fostamatinib,ddinter
+drug:gentamicin,Gentamicin,gentamicin,ddinter
+drug:iron_protein_succinylate,Iron protein succinylate,iron_protein_succinylate,ddinter
+drug:linaclotide,Linaclotide,linaclotide,ddinter
+drug:modafinil,Modafinil,modafinil,ddinter
+drug:mycophenolate_mofetil,Mycophenolate mofetil,mycophenolate_mofetil,ddinter
+drug:netilmicin,Netilmicin,netilmicin,ddinter
+drug:nevirapine,Nevirapine,nevirapine,ddinter
+drug:panitumumab,Panitumumab,panitumumab,ddinter
+drug:paromomycin,Paromomycin,paromomycin,ddinter
+drug:patiromer,Patiromer,patiromer,ddinter
+drug:plazomicin,Plazomicin,plazomicin,ddinter
+drug:rifampicin,Rifampicin,rifampicin,ddinter
+drug:rifapentine,Rifapentine,rifapentine,ddinter
+drug:riociguat,Riociguat,riociguat,ddinter
+drug:salsalate,Salsalate,salsalate,ddinter
+drug:tolevamer,Tolevamer,tolevamer,ddinter
+drug:salicylic_acid_sodium,Salicylic acid (sodium),salicylic_acid_sodium,ddinter
+drug:st_john_s_wort,St. John's Wort,st_john_s_wort,ddinter
+drug:stiripentol,Stiripentol,stiripentol,ddinter
+drug:tobramycin,Tobramycin,tobramycin,ddinter
+drug:acitretin,Acitretin,acitretin,ddinter
+drug:aclidinium,Aclidinium,aclidinium,ddinter
+drug:prucalopride,Prucalopride,prucalopride,ddinter
+drug:ephedrine_nasal,Ephedrine (nasal),ephedrine_nasal,ddinter
+drug:epinephrine_ophthalmic,Epinephrine (ophthalmic),epinephrine_ophthalmic,ddinter
+drug:epinephrine_topical,Epinephrine (topical),epinephrine_topical,ddinter
+drug:acrivastine,Acrivastine,acrivastine,ddinter
+drug:amiloride,Amiloride,amiloride,ddinter
+drug:aminolevulinic_acid,Aminolevulinic acid,aminolevulinic_acid,ddinter
+drug:aminolevulinic_acid_topical,Aminolevulinic acid (topical),aminolevulinic_acid_topical,ddinter
+drug:amobarbital,Amobarbital,amobarbital,ddinter
+drug:amoxicillin,Amoxicillin,amoxicillin,ddinter
+drug:ampicillin,Ampicillin,ampicillin,ddinter
+drug:balsalazide,Balsalazide,balsalazide,ddinter
+drug:bifidobacterium_longum_infantis,Bifidobacterium longum infantis,bifidobacterium_longum_infantis,ddinter
+drug:bismuth_subcitrate_potassium,Bismuth subcitrate potassium,bismuth_subcitrate_potassium,ddinter
+drug:bismuth_subgallate,Bismuth subgallate,bismuth_subgallate,ddinter
+drug:bismuth_subsalicylate,Bismuth subsalicylate,bismuth_subsalicylate,ddinter
+drug:butabarbital,Butabarbital,butabarbital,ddinter
+drug:butalbital,Butalbital,butalbital,ddinter
+drug:calcium_chloride,Calcium chloride,calcium_chloride,ddinter
+drug:calcium_glucoheptonate,Calcium glucoheptonate,calcium_glucoheptonate,ddinter
+drug:carbamazepine,Carbamazepine,carbamazepine,ddinter
+drug:carbenicillin,Carbenicillin,carbenicillin,ddinter
+drug:vibrio_cholerae_cvd_103_hgr_strain_live_antigen_live,Vibrio cholerae CVD 103-HgR strain live antigen (live),vibrio_cholerae_cvd_103_hgr_strain_live_antigen_live,ddinter
+drug:cloxacillin,Cloxacillin,cloxacillin,ddinter
+drug:colestipol,Colestipol,colestipol,ddinter
+drug:collagenase_clostridium_histolyticum,Collagenase clostridium histolyticum,collagenase_clostridium_histolyticum,ddinter
+drug:dicloxacillin,Dicloxacillin,dicloxacillin,ddinter
+drug:ethotoin,Ethotoin,ethotoin,ddinter
+drug:tetraferric_tricitrate_decahydrate,Tetraferric tricitrate decahydrate,tetraferric_tricitrate_decahydrate,ddinter
+drug:indium_in_111_oxyquinoline,Indium In-111 oxyquinoline,indium_in_111_oxyquinoline,ddinter
+drug:isosorbide,Isosorbide,isosorbide,ddinter
+drug:lactobacillus_acidophilus,Lactobacillus acidophilus,lactobacillus_acidophilus,ddinter
+drug:lanthanum_carbonate,Lanthanum carbonate,lanthanum_carbonate,ddinter
+drug:magnesium_glycinate,Magnesium glycinate,magnesium_glycinate,ddinter
+drug:mephenytoin,Mephenytoin,mephenytoin,ddinter
+drug:methylphenobarbital,Methylphenobarbital,methylphenobarbital,ddinter
+drug:meticillin,Meticillin,meticillin,ddinter
+drug:methohexital,Methohexital,methohexital,ddinter
+drug:methoxsalen,Methoxsalen,methoxsalen,ddinter
+drug:methoxyflurane,Methoxyflurane,methoxyflurane,ddinter
+drug:methyl_aminolevulinate_topical,Methyl aminolevulinate (topical),methyl_aminolevulinate_topical,ddinter
+drug:mezlocillin,Mezlocillin,mezlocillin,ddinter
+drug:mycophenolic_acid,Mycophenolic acid,mycophenolic_acid,ddinter
+drug:nafcillin,Nafcillin,nafcillin,ddinter
+drug:oxacillin,Oxacillin,oxacillin,ddinter
+drug:benzylpenicillin,Benzylpenicillin,benzylpenicillin,ddinter
+drug:benzylpenicillin_potassium,Benzylpenicillin (potassium),benzylpenicillin_potassium,ddinter
+drug:benzylpenicillin_sodium,Benzylpenicillin (sodium),benzylpenicillin_sodium,ddinter
+drug:phenoxymethylpenicillin,Phenoxymethylpenicillin,phenoxymethylpenicillin,ddinter
+drug:pentobarbital,Pentobarbital,pentobarbital,ddinter
+drug:phenobarbital,Phenobarbital,phenobarbital,ddinter
+drug:piperacillin,Piperacillin,piperacillin,ddinter
+drug:primidone,Primidone,primidone,ddinter
+drug:quinapril,Quinapril,quinapril,ddinter
+drug:rifabutin,Rifabutin,rifabutin,ddinter
+drug:secobarbital,Secobarbital,secobarbital,ddinter
+drug:sodium_acetate,Sodium acetate,sodium_acetate,ddinter
+drug:sodium_citrate,Sodium citrate,sodium_citrate,ddinter
+drug:lactic_acid,Lactic acid,lactic_acid,ddinter
+drug:spironolactone,Spironolactone,spironolactone,ddinter
+drug:iron_sucrose,Iron sucrose,iron_sucrose,ddinter
+drug:thiopental,Thiopental,thiopental,ddinter
+drug:ticarcillin,Ticarcillin,ticarcillin,ddinter
+drug:tretinoin,Tretinoin,tretinoin,ddinter
+drug:tromethamine,Tromethamine,tromethamine,ddinter
+drug:typhoid_vaccine_live,Typhoid vaccine (live),typhoid_vaccine_live,ddinter
+drug:verteporfin,Verteporfin,verteporfin,ddinter
+drug:mesalazine,Mesalazine,mesalazine,ddinter
+drug:olsalazine,Olsalazine,olsalazine,ddinter
+drug:potassium_bicarbonate,Potassium bicarbonate,potassium_bicarbonate,ddinter
+drug:potassium_gluconate,Potassium gluconate,potassium_gluconate,ddinter
+drug:sulfasalazine,Sulfasalazine,sulfasalazine,ddinter
+drug:vancomycin,Vancomycin,vancomycin,ddinter
+drug:ketorolac_ophthalmic,Ketorolac (ophthalmic),ketorolac_ophthalmic,ddinter
+drug:prednisolone_ophthalmic,Prednisolone (ophthalmic),prednisolone_ophthalmic,ddinter
+drug:acyclovir,Acyclovir,acyclovir,ddinter
+drug:clostridium_tetani_toxoid_antigen_formaldehyde_inactivated,Clostridium tetani toxoid antigen (formaldehyde inactivated),clostridium_tetani_toxoid_antigen_formaldehyde_inactivated,ddinter
+drug:budesonide_nasal,Budesonide (nasal),budesonide_nasal,ddinter
+drug:fidaxomicin,Fidaxomicin,fidaxomicin,ddinter
+drug:adalimumab,Adalimumab,adalimumab,ddinter
+drug:trastuzumab_emtansine,Trastuzumab emtansine,trastuzumab_emtansine,ddinter
+drug:atenolol,Atenolol,atenolol,ddinter
+drug:betaxolol,Betaxolol,betaxolol,ddinter
+drug:betaxolol_ophthalmic,Betaxolol (ophthalmic),betaxolol_ophthalmic,ddinter
+drug:bisoprolol,Bisoprolol,bisoprolol,ddinter
+drug:carteolol,Carteolol,carteolol,ddinter
+drug:carteolol_ophthalmic,Carteolol (ophthalmic),carteolol_ophthalmic,ddinter
+drug:carvedilol,Carvedilol,carvedilol,ddinter
+drug:cocaine_nasal,Cocaine (nasal),cocaine_nasal,ddinter
+drug:cocaine_topical,Cocaine (topical),cocaine_topical,ddinter
+drug:deserpidine,Deserpidine,deserpidine,ddinter
+drug:desflurane,Desflurane,desflurane,ddinter
+drug:desmopressin,Desmopressin,desmopressin,ddinter
+drug:desvenlafaxine,Desvenlafaxine,desvenlafaxine,ddinter
+drug:enflurane,Enflurane,enflurane,ddinter
+drug:entacapone,Entacapone,entacapone,ddinter
+drug:epoprostenol,Epoprostenol,epoprostenol,ddinter
+drug:esmolol,Esmolol,esmolol,ddinter
+drug:guanadrel,Guanadrel,guanadrel,ddinter
+drug:iloprost,Iloprost,iloprost,ddinter
+drug:isoflurane,Isoflurane,isoflurane,ddinter
+drug:labetalol,Labetalol,labetalol,ddinter
+drug:levobetaxolol_ophthalmic,Levobetaxolol (ophthalmic),levobetaxolol_ophthalmic,ddinter
+drug:levobunolol_ophthalmic,Levobunolol (ophthalmic),levobunolol_ophthalmic,ddinter
+drug:levodopa,Levodopa,levodopa,ddinter
+drug:loxapine,Loxapine,loxapine,ddinter
+drug:mecamylamine,Mecamylamine,mecamylamine,ddinter
+drug:methyldopa,Methyldopa,methyldopa,ddinter
+drug:metipranolol_ophthalmic,Metipranolol (ophthalmic),metipranolol_ophthalmic,ddinter
+drug:metoprolol,Metoprolol,metoprolol,ddinter
+drug:molindone,Molindone,molindone,ddinter
+drug:nadolol,Nadolol,nadolol,ddinter
+drug:nebivolol,Nebivolol,nebivolol,ddinter
+drug:opicapone,Opicapone,opicapone,ddinter
+drug:penbutolol,Penbutolol,penbutolol,ddinter
+drug:pindolol,Pindolol,pindolol,ddinter
+drug:propranolol,Propranolol,propranolol,ddinter
+drug:rasagiline,Rasagiline,rasagiline,ddinter
+drug:reserpine,Reserpine,reserpine,ddinter
+drug:selexipag,Selexipag,selexipag,ddinter
+drug:tapentadol,Tapentadol,tapentadol,ddinter
+drug:thiothixene,Thiothixene,thiothixene,ddinter
+drug:timolol,Timolol,timolol,ddinter
+drug:timolol_ophthalmic,Timolol (ophthalmic),timolol_ophthalmic,ddinter
+drug:tolcapone,Tolcapone,tolcapone,ddinter
+drug:treprostinil,Treprostinil,treprostinil,ddinter
+drug:antihemophilic_factor_human_recombinant,"Antihemophilic factor, human recombinant",antihemophilic_factor_human_recombinant,ddinter
+drug:pegvaliase,Pegvaliase,pegvaliase,ddinter
+drug:flunisolide,Flunisolide,flunisolide,ddinter
+drug:afatinib,Afatinib,afatinib,ddinter
+drug:chenodeoxycholic_acid,Chenodeoxycholic acid,chenodeoxycholic_acid,ddinter
+drug:tegaserod,Tegaserod,tegaserod,ddinter
+drug:agalsidase_beta,Agalsidase beta,agalsidase_beta,ddinter
+drug:migalastat,Migalastat,migalastat,ddinter
+drug:human_adenovirus_e_serotype_4_strain_cl_68578_antigen,Human adenovirus e serotype 4 strain cl-68578 antigen,human_adenovirus_e_serotype_4_strain_cl_68578_antigen,ddinter
+drug:aldesleukin,Aldesleukin,aldesleukin,ddinter
+drug:alefacept,Alefacept,alefacept,ddinter
+drug:alemtuzumab,Alemtuzumab,alemtuzumab,ddinter
+drug:aliskiren,Aliskiren,aliskiren,ddinter
+drug:ambenonium,Ambenonium,ambenonium,ddinter
+drug:amifampridine,Amifampridine,amifampridine,ddinter
+drug:amlodipine,Amlodipine,amlodipine,ddinter
+drug:anakinra,Anakinra,anakinra,ddinter
+drug:anthrax_vaccine,Anthrax vaccine,anthrax_vaccine,ddinter
+drug:atezolizumab,Atezolizumab,atezolizumab,ddinter
+drug:azilsartan_medoxomil,Azilsartan medoxomil,azilsartan_medoxomil,ddinter
+drug:baricitinib,Baricitinib,baricitinib,ddinter
+drug:bacillus_calmette_guerin_substrain_tice_live_antigen,Bacillus calmette-guerin substrain tice live antigen,bacillus_calmette_guerin_substrain_tice_live_antigen,ddinter
+drug:bempedoic_acid,Bempedoic acid,bempedoic_acid,ddinter
+drug:benazepril,Benazepril,benazepril,ddinter
+drug:bexarotene,Bexarotene,bexarotene,ddinter
+drug:boceprevir,Boceprevir,boceprevir,ddinter
+drug:bosentan,Bosentan,bosentan,ddinter
+drug:bromfenac,Bromfenac,bromfenac,ddinter
+drug:canakinumab,Canakinumab,canakinumab,ddinter
+drug:candida_albicans,Candida albicans,candida_albicans,ddinter
+drug:captopril,Captopril,captopril,ddinter
+drug:frangula_purshiana_bark,Frangula purshiana bark,frangula_purshiana_bark,ddinter
+drug:celecoxib,Celecoxib,celecoxib,ddinter
+drug:cemiplimab,Cemiplimab,cemiplimab,ddinter
+drug:cenobamate,Cenobamate,cenobamate,ddinter
+drug:certolizumab_pegol,Certolizumab pegol,certolizumab_pegol,ddinter
+drug:vibrio_cholerae_cvd_103_hgr_strain_live_antigen,Vibrio cholerae CVD 103-HgR strain live antigen,vibrio_cholerae_cvd_103_hgr_strain_live_antigen,ddinter
+drug:cholestyramine,Cholestyramine,cholestyramine,ddinter
+drug:cladribine,Cladribine,cladribine,ddinter
+drug:clevidipine,Clevidipine,clevidipine,ddinter
+drug:clonidine,Clonidine,clonidine,ddinter
+drug:cobicistat,Cobicistat,cobicistat,ddinter
+drug:coccidioides_immitis_spherule,Coccidioides immitis spherule,coccidioides_immitis_spherule,ddinter
+drug:colesevelam,Colesevelam,colesevelam,ddinter
+drug:denosumab,Denosumab,denosumab,ddinter
+drug:desirudin,Desirudin,desirudin,ddinter
+drug:diflunisal,Diflunisal,diflunisal,ddinter
+drug:diltiazem,Diltiazem,diltiazem,ddinter
+drug:dimethyl_fumarate,Dimethyl fumarate,dimethyl_fumarate,ddinter
+drug:dinutuximab,Dinutuximab,dinutuximab,ddinter
+drug:diroximel_fumarate,Diroximel fumarate,diroximel_fumarate,ddinter
+drug:doxazosin,Doxazosin,doxazosin,ddinter
+drug:durvalumab,Durvalumab,durvalumab,ddinter
+drug:duvelisib,Duvelisib,duvelisib,ddinter
+drug:edrophonium,Edrophonium,edrophonium,ddinter
+drug:efalizumab,Efalizumab,efalizumab,ddinter
+drug:enalapril,Enalapril,enalapril,ddinter
+drug:eplerenone,Eplerenone,eplerenone,ddinter
+drug:eprosartan,Eprosartan,eprosartan,ddinter
+drug:etanercept,Etanercept,etanercept,ddinter
+drug:felodipine,Felodipine,felodipine,ddinter
+drug:fenoldopam,Fenoldopam,fenoldopam,ddinter
+drug:fluoxymesterone,Fluoxymesterone,fluoxymesterone,ddinter
+drug:fosinopril,Fosinopril,fosinopril,ddinter
+drug:gallium_chloride_ga_67,Gallium chloride Ga-67,gallium_chloride_ga_67,ddinter
+drug:golimumab,Golimumab,golimumab,ddinter
+drug:guanabenz,Guanabenz,guanabenz,ddinter
+drug:guanfacine,Guanfacine,guanfacine,ddinter
+drug:hepatitis_a_vaccine,Hepatitis A Vaccine,hepatitis_a_vaccine,ddinter
+drug:hepatitis_b_vaccine_recombinant,Hepatitis B Vaccine (Recombinant),hepatitis_b_vaccine_recombinant,ddinter
+drug:human_papillomavirus_type_11_l1_capsid_protein_antigen,Human papillomavirus type 11 L1 capsid protein antigen,human_papillomavirus_type_11_l1_capsid_protein_antigen,ddinter
+drug:hyaluronidase,Hyaluronidase,hyaluronidase,ddinter
+drug:hydralazine,Hydralazine,hydralazine,ddinter
+drug:imatinib,Imatinib,imatinib,ddinter
+drug:infliximab,Infliximab,infliximab,ddinter
+drug:influenza_a_virus_a_california_7_2009_h1n1_like_antigen_propiolactone_inactivated,Influenza A virus A/California/7/2009 (H1N1)-like antigen (propiolactone inactivated),influenza_a_virus_a_california_7_2009_h1n1_like_antigen_propiolactone_inactivated,ddinter
+drug:influenza_a_virus_a_vietnam_1194_2004_h5n1_antigen_formaldehyde_inactivated,Influenza A virus A/Vietnam/1194/2004 (H5N1) antigen (formaldehyde inactivated),influenza_a_virus_a_vietnam_1194_2004_h5n1_antigen_formaldehyde_inactivated,ddinter
+drug:iohexol,Iohexol,iohexol,ddinter
+drug:iopamidol,Iopamidol,iopamidol,ddinter
+drug:ipilimumab,Ipilimumab,ipilimumab,ddinter
+drug:irbesartan,Irbesartan,irbesartan,ddinter
+drug:isavuconazonium,Isavuconazonium,isavuconazonium,ddinter
+drug:isradipine,Isradipine,isradipine,ddinter
+drug:ivacaftor,Ivacaftor,ivacaftor,ddinter
+drug:larotrectinib,Larotrectinib,larotrectinib,ddinter
+drug:letermovir,Letermovir,letermovir,ddinter
+drug:levamlodipine,Levamlodipine,levamlodipine,ddinter
+drug:licorice,Licorice,licorice,ddinter
+drug:lisinopril,Lisinopril,lisinopril,ddinter
+drug:lonafarnib,Lonafarnib,lonafarnib,ddinter
+drug:lorlatinib,Lorlatinib,lorlatinib,ddinter
+drug:losartan,Losartan,losartan,ddinter
+drug:lusutrombopag,Lusutrombopag,lusutrombopag,ddinter
+drug:lyme_disease_vaccine_recombinant_ospa,Lyme disease vaccine (recombinant OspA),lyme_disease_vaccine_recombinant_ospa,ddinter
+drug:macimorelin,Macimorelin,macimorelin,ddinter
+drug:measles_virus_vaccine_live_attenuated,Measles virus vaccine live attenuated,measles_virus_vaccine_live_attenuated,ddinter
+drug:meloxicam,Meloxicam,meloxicam,ddinter
+drug:meningococcal_polysaccharide_vaccine_group_c,Meningococcal polysaccharide vaccine group C,meningococcal_polysaccharide_vaccine_group_c,ddinter
+drug:methyltestosterone,Methyltestosterone,methyltestosterone,ddinter
+drug:minoxidil,Minoxidil,minoxidil,ddinter
+drug:moexipril,Moexipril,moexipril,ddinter
+drug:monomethyl_fumarate,Monomethyl fumarate,monomethyl_fumarate,ddinter
+drug:mumps_virus_strain_b_level_jeryl_lynn_live_antigen,Mumps virus strain B level jeryl lynn live antigen,mumps_virus_strain_b_level_jeryl_lynn_live_antigen,ddinter
+drug:natalizumab,Natalizumab,natalizumab,ddinter
+drug:nefazodone,Nefazodone,nefazodone,ddinter
+drug:neostigmine,Neostigmine,neostigmine,ddinter
+drug:nicardipine,Nicardipine,nicardipine,ddinter
+drug:nisoldipine,Nisoldipine,nisoldipine,ddinter
+drug:nitroprusside,Nitroprusside,nitroprusside,ddinter
+drug:nivolumab,Nivolumab,nivolumab,ddinter
+drug:ocrelizumab,Ocrelizumab,ocrelizumab,ddinter
+drug:olmesartan,Olmesartan,olmesartan,ddinter
+drug:oxandrolone,Oxandrolone,oxandrolone,ddinter
+drug:oxcarbazepine,Oxcarbazepine,oxcarbazepine,ddinter
+drug:oxymetholone,Oxymetholone,oxymetholone,ddinter
+drug:pembrolizumab,Pembrolizumab,pembrolizumab,ddinter
+drug:perindopril,Perindopril,perindopril,ddinter
+drug:phenylbutazone,Phenylbutazone,phenylbutazone,ddinter
+drug:poliovirus_type_1_antigen_formaldehyde_inactivated,Poliovirus type 1 antigen (formaldehyde inactivated),poliovirus_type_1_antigen_formaldehyde_inactivated,ddinter
+drug:prazosin,Prazosin,prazosin,ddinter
+drug:pyridostigmine,Pyridostigmine,pyridostigmine,ddinter
+drug:ramipril,Ramipril,ramipril,ddinter
+drug:rilonacept,Rilonacept,rilonacept,ddinter
+drug:rofecoxib,Rofecoxib,rofecoxib,ddinter
+drug:roflumilast,Roflumilast,roflumilast,ddinter
+drug:romosozumab,Romosozumab,romosozumab,ddinter
+drug:rotavirus_vaccine,Rotavirus vaccine,rotavirus_vaccine,ddinter
+drug:rubella_virus_vaccine,Rubella virus vaccine,rubella_virus_vaccine,ddinter
+drug:rufinamide,Rufinamide,rufinamide,ddinter
+drug:pfizer_biontech_covid_19_vaccine,Pfizer-BioNTech Covid-19 Vaccine,pfizer_biontech_covid_19_vaccine,ddinter
+drug:sipuleucel_t,Sipuleucel-T,sipuleucel_t,ddinter
+drug:smallpox_vaccinia_vaccine_live,"Smallpox (Vaccinia) Vaccine, Live",smallpox_vaccinia_vaccine_live,ddinter
+drug:iodide_i_123,Iodide I-123,iodide_i_123,ddinter
+drug:iodide_i_131,Iodide I-131,iodide_i_131,ddinter
+drug:phenylbutyric_acid,Phenylbutyric acid,phenylbutyric_acid,ddinter
+drug:stanozolol,Stanozolol,stanozolol,ddinter
+drug:talimogene_laherparepvec,Talimogene laherparepvec,talimogene_laherparepvec,ddinter
+drug:tazemetostat,Tazemetostat,tazemetostat,ddinter
+drug:telaprevir,Telaprevir,telaprevir,ddinter
+drug:telbivudine,Telbivudine,telbivudine,ddinter
+drug:telmisartan,Telmisartan,telmisartan,ddinter
+drug:telotristat_ethyl,Telotristat ethyl,telotristat_ethyl,ddinter
+drug:terazosin,Terazosin,terazosin,ddinter
+drug:testosterone,Testosterone,testosterone,ddinter
+drug:testosterone_topical,Testosterone (topical),testosterone_topical,ddinter
+drug:ticlopidine,Ticlopidine,ticlopidine,ddinter
+drug:tofacitinib,Tofacitinib,tofacitinib,ddinter
+drug:trandolapril,Trandolapril,trandolapril,ddinter
+drug:trichophyton_mentagrophytes,Trichophyton mentagrophytes,trichophyton_mentagrophytes,ddinter
+drug:trimethaphan,Trimethaphan,trimethaphan,ddinter
+drug:troleandomycin,Troleandomycin,troleandomycin,ddinter
+drug:tuberculin_purified_protein_derivative,Tuberculin purified protein derivative,tuberculin_purified_protein_derivative,ddinter
+drug:tucatinib,Tucatinib,tucatinib,ddinter
+drug:typhoid_vaccine_inactivated,Typhoid vaccine (inactivated),typhoid_vaccine_inactivated,ddinter
+drug:upadacitinib,Upadacitinib,upadacitinib,ddinter
+drug:ustekinumab,Ustekinumab,ustekinumab,ddinter
+drug:valdecoxib,Valdecoxib,valdecoxib,ddinter
+drug:valsartan,Valsartan,valsartan,ddinter
+drug:varicella_zoster_vaccine_recombinant,Varicella Zoster Vaccine (Recombinant),varicella_zoster_vaccine_recombinant,ddinter
+drug:verapamil,Verapamil,verapamil,ddinter
+drug:vigabatrin,Vigabatrin,vigabatrin,ddinter
+drug:vitamin_e,Vitamin E,vitamin_e,ddinter
+drug:voxelotor,Voxelotor,voxelotor,ddinter
+drug:yellow_fever_vaccine,Yellow Fever Vaccine,yellow_fever_vaccine,ddinter
+drug:zinc_chloride,Zinc chloride,zinc_chloride,ddinter
+drug:loratadine,Loratadine,loratadine,ddinter
+drug:albendazole,Albendazole,albendazole,ddinter
+drug:metronidazole_topical,Metronidazole (topical),metronidazole_topical,ddinter
+drug:alectinib,Alectinib,alectinib,ddinter
+drug:cholecalciferol,Cholecalciferol,cholecalciferol,ddinter
+drug:calcifediol,Calcifediol,calcifediol,ddinter
+drug:calcipotriol_topical,Calcipotriol (topical),calcipotriol_topical,ddinter
+drug:calcitriol,Calcitriol,calcitriol,ddinter
+drug:dihydrotachysterol,Dihydrotachysterol,dihydrotachysterol,ddinter
+drug:doxercalciferol,Doxercalciferol,doxercalciferol,ddinter
+drug:erdafitinib,Erdafitinib,erdafitinib,ddinter
+drug:ergocalciferol,Ergocalciferol,ergocalciferol,ddinter
+drug:felbamate,Felbamate,felbamate,ddinter
+drug:paricalcitol,Paricalcitol,paricalcitol,ddinter
+drug:sevelamer,Sevelamer,sevelamer,ddinter
+drug:alfentanil,Alfentanil,alfentanil,ddinter
+drug:fondaparinux,Fondaparinux,fondaparinux,ddinter
+drug:fosfomycin,Fosfomycin,fosfomycin,ddinter
+drug:frovatriptan,Frovatriptan,frovatriptan,ddinter
+drug:gabapentin,Gabapentin,gabapentin,ddinter
+drug:gallium_nitrate,Gallium nitrate,gallium_nitrate,ddinter
+drug:ganciclovir,Ganciclovir,ganciclovir,ddinter
+drug:gemfibrozil,Gemfibrozil,gemfibrozil,ddinter
+drug:phenyltoloxamine,Phenyltoloxamine,phenyltoloxamine,ddinter
+drug:nitazoxanide,Nitazoxanide,nitazoxanide,ddinter
+drug:zonisamide,Zonisamide,zonisamide,ddinter
+drug:cetirizine,Cetirizine,cetirizine,ddinter
+drug:allopurinol,Allopurinol,allopurinol,ddinter
+drug:almotriptan,Almotriptan,almotriptan,ddinter
+drug:cephalexin,Cephalexin,cephalexin,ddinter
+drug:daclatasvir,Daclatasvir,daclatasvir,ddinter
+drug:dalfampridine,Dalfampridine,dalfampridine,ddinter
+drug:diatrizoate,Diatrizoate,diatrizoate,ddinter
+drug:diamorphine,Diamorphine,diamorphine,ddinter
+drug:iodipamide,Iodipamide,iodipamide,ddinter
+drug:iodixanol,Iodixanol,iodixanol,ddinter
+drug:iopromide,Iopromide,iopromide,ddinter
+drug:iothalamic_acid,Iothalamic acid,iothalamic_acid,ddinter
+drug:ioversol,Ioversol,ioversol,ddinter
+drug:ioxilan,Ioxilan,ioxilan,ddinter
+drug:lamotrigine,Lamotrigine,lamotrigine,ddinter
+drug:olaparib,Olaparib,olaparib,ddinter
+drug:ospemifene,Ospemifene,ospemifene,ddinter
+drug:risdiplam,Risdiplam,risdiplam,ddinter
+drug:tafenoquine,Tafenoquine,tafenoquine,ddinter
+drug:topiramate,Topiramate,topiramate,ddinter
+drug:trimethoprim,Trimethoprim,trimethoprim,ddinter
+drug:aminoglutethimide,Aminoglutethimide,aminoglutethimide,ddinter
+drug:pregabalin,Pregabalin,pregabalin,ddinter
+drug:ripretinib,Ripretinib,ripretinib,ddinter
+drug:vilazodone,Vilazodone,vilazodone,ddinter
+drug:givosiran,Givosiran,givosiran,ddinter
+drug:mexiletine,Mexiletine,mexiletine,ddinter
+drug:niclosamide,Niclosamide,niclosamide,ddinter
+drug:thiabendazole,Thiabendazole,thiabendazole,ddinter
+drug:zileuton,Zileuton,zileuton,ddinter
+drug:rifaximin,Rifaximin,rifaximin,ddinter
+drug:coagulation_factor_ix_human,Coagulation Factor IX Human,coagulation_factor_ix_human,ddinter
+drug:alprazolam,Alprazolam,alprazolam,ddinter
+drug:teduglutide,Teduglutide,teduglutide,ddinter
+drug:alprostadil,Alprostadil,alprostadil,ddinter
+drug:sapropterin,Sapropterin,sapropterin,ddinter
+drug:sumatriptan,Sumatriptan,sumatriptan,ddinter
+drug:tetracaine_ophthalmic,Tetracaine (ophthalmic),tetracaine_ophthalmic,ddinter
+drug:alteplase,Alteplase,alteplase,ddinter
+drug:altretamine,Altretamine,altretamine,ddinter
+drug:pyridoxine,Pyridoxine,pyridoxine,ddinter
+drug:butorphanol,Butorphanol,butorphanol,ddinter
+drug:dezocine,Dezocine,dezocine,ddinter
+drug:hydrocodone,Hydrocodone,hydrocodone,ddinter
+drug:hydromorphone,Hydromorphone,hydromorphone,ddinter
+drug:levorphanol,Levorphanol,levorphanol,ddinter
+drug:meperidine,Meperidine,meperidine,ddinter
+drug:methylnaltrexone,Methylnaltrexone,methylnaltrexone,ddinter
+drug:nalbuphine,Nalbuphine,nalbuphine,ddinter
+drug:oxycodone,Oxycodone,oxycodone,ddinter
+drug:oxymorphone,Oxymorphone,oxymorphone,ddinter
+drug:pentazocine,Pentazocine,pentazocine,ddinter
+drug:venetoclax,Venetoclax,venetoclax,ddinter
+drug:amantadine,Amantadine,amantadine,ddinter
+drug:diclofenac_topical,Diclofenac (topical),diclofenac_topical,ddinter
+drug:lidocaine_topical,Lidocaine (topical),lidocaine_topical,ddinter
+drug:human_botulinum_neurotoxin_a_b_immune_globulin,Human botulinum neurotoxin A/B immune globulin,human_botulinum_neurotoxin_a_b_immune_globulin,ddinter
+drug:chlorambucil,Chlorambucil,chlorambucil,ddinter
+drug:cidofovir,Cidofovir,cidofovir,ddinter
+drug:cyclophosphamide,Cyclophosphamide,cyclophosphamide,ddinter
+drug:human_cytomegalovirus_immune_globulin,Human cytomegalovirus immune globulin,human_cytomegalovirus_immune_globulin,ddinter
+drug:etidronic_acid,Etidronic acid,etidronic_acid,ddinter
+drug:flucytosine,Flucytosine,flucytosine,ddinter
+drug:ibandronate,Ibandronate,ibandronate,ddinter
+drug:ifosfamide,Ifosfamide,ifosfamide,ddinter
+drug:human_immunoglobulin_g_intravenous,Human immunoglobulin G (intravenous),human_immunoglobulin_g_intravenous,ddinter
+drug:human_immunoglobulin_g_intravenous_and_subcutaneous,Human immunoglobulin G (intravenous and subcutaneous),human_immunoglobulin_g_intravenous_and_subcutaneous,ddinter
+drug:inotersen,Inotersen,inotersen,ddinter
+drug:melphalan,Melphalan,melphalan,ddinter
+drug:micafungin,Micafungin,micafungin,ddinter
+drug:pamidronic_acid,Pamidronic acid,pamidronic_acid,ddinter
+drug:radium_ra_223_dichloride,Radium Ra 223 dichloride,radium_ra_223_dichloride,ddinter
+drug:human_rho_d_immune_globulin,Human Rho(D) immune globulin,human_rho_d_immune_globulin,ddinter
+drug:sodium_phosphate_monobasic_p32,"Sodium phosphate, monobasic (p32)",sodium_phosphate_monobasic_p32,ddinter
+drug:strontium_chloride_sr_89,Strontium chloride Sr-89,strontium_chloride_sr_89,ddinter
+drug:uracil_mustard,Uracil mustard,uracil_mustard,ddinter
+drug:valganciclovir,Valganciclovir,valganciclovir,ddinter
+drug:zoledronic_acid,Zoledronic acid,zoledronic_acid,ddinter
+drug:ambrisentan,Ambrisentan,ambrisentan,ddinter
+drug:amifostine,Amifostine,amifostine,ddinter
+drug:neomycin_topical,Neomycin (topical),neomycin_topical,ddinter
+drug:doxycycline_topical,Doxycycline (topical),doxycycline_topical,ddinter
+drug:minocycline_topical,Minocycline (topical),minocycline_topical,ddinter
+drug:tetracycline_topical,Tetracycline (topical),tetracycline_topical,ddinter
+drug:aminosalicylic_acid,Aminosalicylic acid,aminosalicylic_acid,ddinter
+drug:chlordiazepoxide,Chlordiazepoxide,chlordiazepoxide,ddinter
+drug:atorvastatin,Atorvastatin,atorvastatin,ddinter
+drug:demeclocycline,Demeclocycline,demeclocycline,ddinter
+drug:oxytetracycline,Oxytetracycline,oxytetracycline,ddinter
+drug:sarecycline,Sarecycline,sarecycline,ddinter
+drug:clavulanic_acid,Clavulanic acid,clavulanic_acid,ddinter
+drug:glutamic_acid,Glutamic acid,glutamic_acid,ddinter
+drug:arbutamine,Arbutamine,arbutamine,ddinter
+drug:azatadine,Azatadine,azatadine,ddinter
+drug:belladonna,Belladonna,belladonna,ddinter
+drug:benzatropine,Benzatropine,benzatropine,ddinter
+drug:bethanechol,Bethanechol,bethanechol,ddinter
+drug:biperiden,Biperiden,biperiden,ddinter
+drug:brexanolone,Brexanolone,brexanolone,ddinter
+drug:brompheniramine,Brompheniramine,brompheniramine,ddinter
+drug:carbamoylcholine_ophthalmic,Carbamoylcholine (ophthalmic),carbamoylcholine_ophthalmic,ddinter
+drug:carbinoxamine,Carbinoxamine,carbinoxamine,ddinter
+drug:cevimeline,Cevimeline,cevimeline,ddinter
+drug:chlorcyclizine,Chlorcyclizine,chlorcyclizine,ddinter
+drug:clemastine,Clemastine,clemastine,ddinter
+drug:cyclizine,Cyclizine,cyclizine,ddinter
+drug:cyclobenzaprine,Cyclobenzaprine,cyclobenzaprine,ddinter
+drug:cyproheptadine,Cyproheptadine,cyproheptadine,ddinter
+drug:darifenacin,Darifenacin,darifenacin,ddinter
+drug:demecarium_ophthalmic,Demecarium (ophthalmic),demecarium_ophthalmic,ddinter
+drug:dexbrompheniramine,Dexbrompheniramine,dexbrompheniramine,ddinter
+drug:dimenhydrinate,Dimenhydrinate,dimenhydrinate,ddinter
+drug:diphenhydramine,Diphenhydramine,diphenhydramine,ddinter
+drug:doxylamine,Doxylamine,doxylamine,ddinter
+drug:echothiophate_ophthalmic,Echothiophate (ophthalmic),echothiophate_ophthalmic,ddinter
+drug:fesoterodine,Fesoterodine,fesoterodine,ddinter
+drug:flavoxate,Flavoxate,flavoxate,ddinter
+drug:guanidine,Guanidine,guanidine,ddinter
+drug:ipratropium,Ipratropium,ipratropium,ddinter
+drug:ipratropium_nasal,Ipratropium (nasal),ipratropium_nasal,ddinter
+drug:isoflurophate_ophthalmic,Isoflurophate (ophthalmic),isoflurophate_ophthalmic,ddinter
+drug:meclizine,Meclizine,meclizine,ddinter
+drug:nitrofurantoin,Nitrofurantoin,nitrofurantoin,ddinter
+drug:nitroglycerin,Nitroglycerin,nitroglycerin,ddinter
+drug:olopatadine_nasal,Olopatadine (nasal),olopatadine_nasal,ddinter
+drug:orphenadrine,Orphenadrine,orphenadrine,ddinter
+drug:oxybutynin,Oxybutynin,oxybutynin,ddinter
+drug:phenindamine,Phenindamine,phenindamine,ddinter
+drug:phenylephrine_ophthalmic,Phenylephrine (ophthalmic),phenylephrine_ophthalmic,ddinter
+drug:physostigmine_ophthalmic,Physostigmine (ophthalmic),physostigmine_ophthalmic,ddinter
+drug:pilocarpine,Pilocarpine,pilocarpine,ddinter
+drug:pilocarpine_ophthalmic,Pilocarpine (ophthalmic),pilocarpine_ophthalmic,ddinter
+drug:procyclidine,Procyclidine,procyclidine,ddinter
+drug:mepyramine,Mepyramine,mepyramine,ddinter
+drug:remifentanil,Remifentanil,remifentanil,ddinter
+drug:revefenacin,Revefenacin,revefenacin,ddinter
+drug:botulinum_toxin_type_b,Botulinum Toxin Type B,botulinum_toxin_type_b,ddinter
+drug:secretin_human,Secretin human,secretin_human,ddinter
+drug:sufentanil,Sufentanil,sufentanil,ddinter
+drug:tiotropium,Tiotropium,tiotropium,ddinter
+drug:tolterodine,Tolterodine,tolterodine,ddinter
+drug:trihexyphenidyl,Trihexyphenidyl,trihexyphenidyl,ddinter
+drug:tripelennamine,Tripelennamine,tripelennamine,ddinter
+drug:triprolidine,Triprolidine,triprolidine,ddinter
+drug:umeclidinium,Umeclidinium,umeclidinium,ddinter
+drug:omega_3_fatty_acids,Omega-3 fatty acids,omega_3_fatty_acids,ddinter
+drug:misoprostol,Misoprostol,misoprostol,ddinter
+drug:apraclonidine,Apraclonidine,apraclonidine,ddinter
+drug:brimonidine_ophthalmic,Brimonidine (ophthalmic),brimonidine_ophthalmic,ddinter
+drug:brimonidine_topical,Brimonidine (topical),brimonidine_topical,ddinter
+drug:cabozantinib,Cabozantinib,cabozantinib,ddinter
+drug:elagolix,Elagolix,elagolix,ddinter
+drug:esketamine,Esketamine,esketamine,ddinter
+drug:ibrutinib,Ibrutinib,ibrutinib,ddinter
+drug:istradefylline,Istradefylline,istradefylline,ddinter
+drug:levocetirizine,Levocetirizine,levocetirizine,ddinter
+drug:perflutren,Perflutren,perflutren,ddinter
+drug:ulipristal,Ulipristal,ulipristal,ddinter
+drug:prilocaine_topiclal,Prilocaine (topiclal),prilocaine_topiclal,ddinter
+drug:fenofibrate,Fenofibrate,fenofibrate,ddinter
+drug:antithrombin_iii_human,Antithrombin III human,antithrombin_iii_human,ddinter
+drug:antithrombin_alfa,Antithrombin Alfa,antithrombin_alfa,ddinter
+drug:antilymphocyte_immunoglobulin_horse,Antilymphocyte immunoglobulin (horse),antilymphocyte_immunoglobulin_horse,ddinter
+drug:antithymocyte_immunoglobulin_rabbit,Antithymocyte immunoglobulin (rabbit),antithymocyte_immunoglobulin_rabbit,ddinter
+drug:homatropine,Homatropine,homatropine,ddinter
+drug:apixaban,Apixaban,apixaban,ddinter
+drug:amyl_nitrite,Amyl Nitrite,amyl_nitrite,ddinter
+drug:blinatumomab,Blinatumomab,blinatumomab,ddinter
+drug:cefiderocol,Cefiderocol,cefiderocol,ddinter
+drug:chloral_hydrate,Chloral hydrate,chloral_hydrate,ddinter
+drug:chlormezanone,Chlormezanone,chlormezanone,ddinter
+drug:clobazam,Clobazam,clobazam,ddinter
+drug:clonazepam,Clonazepam,clonazepam,ddinter
+drug:clorazepic_acid,Clorazepic acid,clorazepic_acid,ddinter
+drug:cycloserine,Cycloserine,cycloserine,ddinter
+drug:diazepam,Diazepam,diazepam,ddinter
+drug:valproic_acid,Valproic acid,valproic_acid,ddinter
+drug:ertapenem,Ertapenem,ertapenem,ddinter
+drug:estazolam,Estazolam,estazolam,ddinter
+drug:eszopiclone,Eszopiclone,eszopiclone,ddinter
+drug:ethchlorvynol,Ethchlorvynol,ethchlorvynol,ddinter
+drug:flurazepam,Flurazepam,flurazepam,ddinter
+drug:ginkgo_biloba,Ginkgo biloba,ginkgo_biloba,ddinter
+drug:halazepam,Halazepam,halazepam,ddinter
+drug:interferon_alfa_2a_recombinant,"Interferon alfa-2a, Recombinant",interferon_alfa_2a_recombinant,ddinter
+drug:interferon_alfa_2b,Interferon alfa-2b,interferon_alfa_2b,ddinter
+drug:interferon_alfa_n1,Interferon alfa-n1,interferon_alfa_n1,ddinter
+drug:interferon_alfa_n3,Interferon alfa-n3,interferon_alfa_n3,ddinter
+drug:interferon_alfacon_1,Interferon alfacon-1,interferon_alfacon_1,ddinter
+drug:interferon_gamma_1b,Interferon gamma-1b,interferon_gamma_1b,ddinter
+drug:iobenguane_i_131,Iobenguane (I-131),iobenguane_i_131,ddinter
+drug:ioflupane_i_123,Ioflupane I-123,ioflupane_i_123,ddinter
+drug:isosorbide_dinitrate,Isosorbide dinitrate,isosorbide_dinitrate,ddinter
+drug:isosorbide_mononitrate,Isosorbide mononitrate,isosorbide_mononitrate,ddinter
+drug:lindane,Lindane,lindane,ddinter
+drug:lorazepam,Lorazepam,lorazepam,ddinter
+drug:meprobamate,Meprobamate,meprobamate,ddinter
+drug:meropenem,Meropenem,meropenem,ddinter
+drug:muromonab,Muromonab,muromonab,ddinter
+drug:nelarabine,Nelarabine,nelarabine,ddinter
+drug:nimodipine,Nimodipine,nimodipine,ddinter
+drug:oxamniquine,Oxamniquine,oxamniquine,ddinter
+drug:oxazepam,Oxazepam,oxazepam,ddinter
+drug:paraldehyde,Paraldehyde,paraldehyde,ddinter
+drug:paroxetine,Paroxetine,paroxetine,ddinter
+drug:peginterferon_alfa_2a,Peginterferon alfa-2a,peginterferon_alfa_2a,ddinter
+drug:peginterferon_alfa_2b,Peginterferon alfa-2b,peginterferon_alfa_2b,ddinter
+drug:pemoline,Pemoline,pemoline,ddinter
+drug:phenoxybenzamine,Phenoxybenzamine,phenoxybenzamine,ddinter
+drug:phentolamine,Phentolamine,phentolamine,ddinter
+drug:piperazine,Piperazine,piperazine,ddinter
+drug:pirfenidone,Pirfenidone,pirfenidone,ddinter
+drug:quazepam,Quazepam,quazepam,ddinter
+drug:remimazolam,Remimazolam,remimazolam,ddinter
+drug:rimantadine,Rimantadine,rimantadine,ddinter
+drug:silodosin,Silodosin,silodosin,ddinter
+drug:sodium_oxybate,Sodium oxybate,sodium_oxybate,ddinter
+drug:tamsulosin,Tamsulosin,tamsulosin,ddinter
+drug:temazepam,Temazepam,temazepam,ddinter
+drug:thiotepa,Thiotepa,thiotepa,ddinter
+drug:vortioxetine,Vortioxetine,vortioxetine,ddinter
+drug:zaleplon,Zaleplon,zaleplon,ddinter
+drug:zolpidem,Zolpidem,zolpidem,ddinter
+drug:apremilast,Apremilast,apremilast,ddinter
+drug:avanafil,Avanafil,avanafil,ddinter
+drug:avapritinib,Avapritinib,avapritinib,ddinter
+drug:bupivacaine,Bupivacaine,bupivacaine,ddinter
+drug:buspirone,Buspirone,buspirone,ddinter
+drug:busulfan,Busulfan,busulfan,ddinter
+drug:cabazitaxel,Cabazitaxel,cabazitaxel,ddinter
+drug:cerivastatin,Cerivastatin,cerivastatin,ddinter
+drug:chloramphenicol,Chloramphenicol,chloramphenicol,ddinter
+drug:cilostazol,Cilostazol,cilostazol,ddinter
+drug:cobimetinib,Cobimetinib,cobimetinib,ddinter
+drug:colchicine,Colchicine,colchicine,ddinter
+drug:dapsone,Dapsone,dapsone,ddinter
+drug:darolutamide,Darolutamide,darolutamide,ddinter
+drug:docetaxel,Docetaxel,docetaxel,ddinter
+drug:doravirine,Doravirine,doravirine,ddinter
+drug:dutasteride,Dutasteride,dutasteride,ddinter
+drug:eletriptan,Eletriptan,eletriptan,ddinter
+drug:eslicarbazepine,Eslicarbazepine,eslicarbazepine,ddinter
+drug:ethosuximide,Ethosuximide,ethosuximide,ddinter
+drug:etoposide,Etoposide,etoposide,ddinter
+drug:fluticasone,Fluticasone,fluticasone,ddinter
+drug:fluticasone_nasal,Fluticasone (nasal),fluticasone_nasal,ddinter
+drug:fluvastatin,Fluvastatin,fluvastatin,ddinter
+drug:griseofulvin,Griseofulvin,griseofulvin,ddinter
+drug:irinotecan,Irinotecan,irinotecan,ddinter
+drug:irinotecan_liposomal,Irinotecan (liposomal),irinotecan_liposomal,ddinter
+drug:ivermectin,Ivermectin,ivermectin,ddinter
+drug:ixabepilone,Ixabepilone,ixabepilone,ddinter
+drug:lesinurad,Lesinurad,lesinurad,ddinter
+drug:letrozole,Letrozole,letrozole,ddinter
+drug:levobupivacaine,Levobupivacaine,levobupivacaine,ddinter
+drug:lovastatin,Lovastatin,lovastatin,ddinter
+drug:lurbinectedin,Lurbinectedin,lurbinectedin,ddinter
+drug:macitentan,Macitentan,macitentan,ddinter
+drug:maraviroc,Maraviroc,maraviroc,ddinter
+drug:mirabegron,Mirabegron,mirabegron,ddinter
+drug:mitotane,Mitotane,mitotane,ddinter
+drug:paclitaxel_protein_bound,Paclitaxel (protein-bound),paclitaxel_protein_bound,ddinter
+drug:palbociclib,Palbociclib,palbociclib,ddinter
+drug:pemigatinib,Pemigatinib,pemigatinib,ddinter
+drug:pimecrolimus_topical,Pimecrolimus (topical),pimecrolimus_topical,ddinter
+drug:polatuzumab_vedotin,Polatuzumab vedotin,polatuzumab_vedotin,ddinter
+drug:pralsetinib,Pralsetinib,pralsetinib,ddinter
+drug:retapamulin_topical,Retapamulin (topical),retapamulin_topical,ddinter
+drug:rimegepant,Rimegepant,rimegepant,ddinter
+drug:rivaroxaban,Rivaroxaban,rivaroxaban,ddinter
+drug:ropivacaine,Ropivacaine,ropivacaine,ddinter
+drug:ruxolitinib,Ruxolitinib,ruxolitinib,ddinter
+drug:selumetinib,Selumetinib,selumetinib,ddinter
+drug:sildenafil,Sildenafil,sildenafil,ddinter
+drug:sulfinpyrazone,Sulfinpyrazone,sulfinpyrazone,ddinter
+drug:suvorexant,Suvorexant,suvorexant,ddinter
+drug:tadalafil,Tadalafil,tadalafil,ddinter
+drug:tasimelteon,Tasimelteon,tasimelteon,ddinter
+drug:teniposide,Teniposide,teniposide,ddinter
+drug:tiagabine,Tiagabine,tiagabine,ddinter
+drug:ticagrelor,Ticagrelor,ticagrelor,ddinter
+drug:tolvaptan,Tolvaptan,tolvaptan,ddinter
+drug:ubrogepant,Ubrogepant,ubrogepant,ddinter
+drug:vinblastine,Vinblastine,vinblastine,ddinter
+drug:vincristine,Vincristine,vincristine,ddinter
+drug:vincristine_liposome,Vincristine (liposome),vincristine_liposome,ddinter
+drug:vinorelbine,Vinorelbine,vinorelbine,ddinter
+drug:zafirlukast,Zafirlukast,zafirlukast,ddinter
+drug:zanubrutinib,Zanubrutinib,zanubrutinib,ddinter
+drug:desogestrel,Desogestrel,desogestrel,ddinter
+drug:azathioprine,Azathioprine,azathioprine,ddinter
+drug:bacitracin,Bacitracin,bacitracin,ddinter
+drug:colistimethate,Colistimethate,colistimethate,ddinter
+drug:lutetium_lu_177_dotatate,Lutetium Lu 177 dotatate,lutetium_lu_177_dotatate,ddinter
+drug:mercaptopurine,Mercaptopurine,mercaptopurine,ddinter
+drug:moxetumomab_pasudotox,Moxetumomab Pasudotox,moxetumomab_pasudotox,ddinter
+drug:valaciclovir,Valaciclovir,valaciclovir,ddinter
+drug:lumefantrine,Lumefantrine,lumefantrine,ddinter
+drug:artemether,Artemether,artemether,ddinter
+drug:articaine,Articaine,articaine,ddinter
+drug:oxitriptan,Oxitriptan,oxitriptan,ddinter
+drug:azelastine_nasal,Azelastine (nasal),azelastine_nasal,ddinter
+drug:baclofen,Baclofen,baclofen,ddinter
+drug:brivaracetam,Brivaracetam,brivaracetam,ddinter
+drug:salmon_calcitonin,Salmon calcitonin,salmon_calcitonin,ddinter
+drug:pentoxyverine,Pentoxyverine,pentoxyverine,ddinter
+drug:carisoprodol,Carisoprodol,carisoprodol,ddinter
+drug:clofedanol,Clofedanol,clofedanol,ddinter
+drug:chlorphenesin,Chlorphenesin,chlorphenesin,ddinter
+drug:chlorzoxazone,Chlorzoxazone,chlorzoxazone,ddinter
+drug:dantrolene,Dantrolene,dantrolene,ddinter
+drug:dexmedetomidine,Dexmedetomidine,dexmedetomidine,ddinter
+drug:fospropofol,Fospropofol,fospropofol,ddinter
+drug:kava,Kava,kava,ddinter
+drug:ketamine,Ketamine,ketamine,ddinter
+drug:levetiracetam,Levetiracetam,levetiracetam,ddinter
+drug:mebrofenin,Mebrofenin,mebrofenin,ddinter
+drug:metaxalone,Metaxalone,metaxalone,ddinter
+drug:methocarbamol,Methocarbamol,methocarbamol,ddinter
+drug:methsuximide,Methsuximide,methsuximide,ddinter
+drug:metyrosine,Metyrosine,metyrosine,ddinter
+drug:naratriptan,Naratriptan,naratriptan,ddinter
+drug:nitrous_oxide,Nitrous oxide,nitrous_oxide,ddinter
+drug:paramethadione,Paramethadione,paramethadione,ddinter
+drug:perampanel,Perampanel,perampanel,ddinter
+drug:pergolide,Pergolide,pergolide,ddinter
+drug:phenacemide,Phenacemide,phenacemide,ddinter
+drug:phensuximide,Phensuximide,phensuximide,ddinter
+drug:rizatriptan,Rizatriptan,rizatriptan,ddinter
+drug:ropinirole,Ropinirole,ropinirole,ddinter
+drug:rotigotine,Rotigotine,rotigotine,ddinter
+drug:terbinafine,Terbinafine,terbinafine,ddinter
+drug:trimethadione,Trimethadione,trimethadione,ddinter
+drug:trimethobenzamide,Trimethobenzamide,trimethobenzamide,ddinter
+drug:tryptophan,Tryptophan,tryptophan,ddinter
+drug:valerian,Valerian,valerian,ddinter
+drug:yohimbine,Yohimbine,yohimbine,ddinter
+drug:ziconotide,Ziconotide,ziconotide,ddinter
+drug:zolmitriptan,Zolmitriptan,zolmitriptan,ddinter
+drug:deferoxamine,Deferoxamine,deferoxamine,ddinter
+drug:anistreplase,Anistreplase,anistreplase,ddinter
+drug:betrixaban,Betrixaban,betrixaban,ddinter
+drug:brinzolamide_ophthalmic,Brinzolamide (ophthalmic),brinzolamide_ophthalmic,ddinter
+drug:bromfenac_ophthalmic,Bromfenac (ophthalmic),bromfenac_ophthalmic,ddinter
+drug:chamomile,Chamomile,chamomile,ddinter
+drug:dalteparin,Dalteparin,dalteparin,ddinter
+drug:defibrotide,Defibrotide,defibrotide,ddinter
+drug:deoxycholic_acid,Deoxycholic acid,deoxycholic_acid,ddinter
+drug:dipyridamole,Dipyridamole,dipyridamole,ddinter
+drug:dorzolamide_ophthalmic,Dorzolamide (ophthalmic),dorzolamide_ophthalmic,ddinter
+drug:drotrecogin_alfa,Drotrecogin alfa,drotrecogin_alfa,ddinter
+drug:flurbiprofen_ophthalmic,Flurbiprofen (ophthalmic),flurbiprofen_ophthalmic,ddinter
+drug:heparin,Heparin,heparin,ddinter
+drug:ibritumomab_tiuxetan,Ibritumomab tiuxetan,ibritumomab_tiuxetan,ddinter
+drug:icosapent,Icosapent,icosapent,ddinter
+drug:tositumomab_i_131,Tositumomab (I-131),tositumomab_i_131,ddinter
+drug:nepafenac_ophthalmic,Nepafenac (ophthalmic),nepafenac_ophthalmic,ddinter
+drug:pentosan_polysulfate,Pentosan polysulfate,pentosan_polysulfate,ddinter
+drug:pralatrexate,Pralatrexate,pralatrexate,ddinter
+drug:ramucirumab,Ramucirumab,ramucirumab,ddinter
+drug:reteplase,Reteplase,reteplase,ddinter
+drug:risedronic_acid,Risedronic acid,risedronic_acid,ddinter
+drug:streptokinase,Streptokinase,streptokinase,ddinter
+drug:tenecteplase,Tenecteplase,tenecteplase,ddinter
+drug:tiludronic_acid,Tiludronic acid,tiludronic_acid,ddinter
+drug:tinzaparin,Tinzaparin,tinzaparin,ddinter
+drug:tositumomab,Tositumomab,tositumomab,ddinter
+drug:urokinase,Urokinase,urokinase,ddinter
+drug:ardeparin,Ardeparin,ardeparin,ddinter
+drug:argatroban,Argatroban,argatroban,ddinter
+drug:bendamustine,Bendamustine,bendamustine,ddinter
+drug:binimetinib,Binimetinib,binimetinib,ddinter
+drug:caplacizumab,Caplacizumab,caplacizumab,ddinter
+drug:danaparoid,Danaparoid,danaparoid,ddinter
+drug:diclofenac_ophthalmic,Diclofenac (ophthalmic),diclofenac_ophthalmic,ddinter
+drug:edoxaban,Edoxaban,edoxaban,ddinter
+drug:enoxaparin,Enoxaparin,enoxaparin,ddinter
+drug:eptifibatide,Eptifibatide,eptifibatide,ddinter
+drug:ginger,Ginger,ginger,ddinter
+drug:hemin,Hemin,hemin,ddinter
+drug:lepirudin,Lepirudin,lepirudin,ddinter
+drug:nintedanib,Nintedanib,nintedanib,ddinter
+drug:niraparib,Niraparib,niraparib,ddinter
+drug:pentoxifylline,Pentoxifylline,pentoxifylline,ddinter
+drug:regorafenib,Regorafenib,regorafenib,ddinter
+drug:suprofen_ophthalmic,Suprofen (ophthalmic),suprofen_ophthalmic,ddinter
+drug:tirofiban,Tirofiban,tirofiban,ddinter
+drug:dexamethasone_nasal,Dexamethasone (nasal),dexamethasone_nasal,ddinter
+drug:triamcinolone_nasal,Triamcinolone (nasal),triamcinolone_nasal,ddinter
+drug:pectin,Pectin,pectin,ddinter
+drug:atovaquone,Atovaquone,atovaquone,ddinter
+drug:proguanil,Proguanil,proguanil,ddinter
+drug:pralidoxime,Pralidoxime,pralidoxime,ddinter
+drug:auranofin,Auranofin,auranofin,ddinter
+drug:avatrombopag,Avatrombopag,avatrombopag,ddinter
+drug:azelastine_ophthalmic,Azelastine (ophthalmic),azelastine_ophthalmic,ddinter
+drug:phenazopyridine,Phenazopyridine,phenazopyridine,ddinter
+drug:methenamine,Methenamine,methenamine,ddinter
+drug:benzocaine_topical,Benzocaine (topical),benzocaine_topical,ddinter
+drug:baloxavir_marboxil,Baloxavir marboxil,baloxavir_marboxil,ddinter
+drug:cefaclor,Cefaclor,cefaclor,ddinter
+drug:cefadroxil,Cefadroxil,cefadroxil,ddinter
+drug:cefdinir,Cefdinir,cefdinir,ddinter
+drug:cefprozil,Cefprozil,cefprozil,ddinter
+drug:ceftibuten,Ceftibuten,ceftibuten,ddinter
+drug:cefradine,Cefradine,cefradine,ddinter
+drug:clindamycin,Clindamycin,clindamycin,ddinter
+drug:lincomycin,Lincomycin,lincomycin,ddinter
+drug:sulfadiazine,Sulfadiazine,sulfadiazine,ddinter
+drug:sulfamethizole,Sulfamethizole,sulfamethizole,ddinter
+drug:sulfisoxazole,Sulfisoxazole,sulfisoxazole,ddinter
+drug:basiliximab,Basiliximab,basiliximab,ddinter
+drug:berotralstat,Berotralstat,berotralstat,ddinter
+drug:caspofungin,Caspofungin,caspofungin,ddinter
+drug:dapsone_topical,Dapsone (topical),dapsone_topical,ddinter
+drug:elvitegravir,Elvitegravir,elvitegravir,ddinter
+drug:exemestane,Exemestane,exemestane,ddinter
+drug:montelukast,Montelukast,montelukast,ddinter
+drug:praziquantel,Praziquantel,praziquantel,ddinter
+drug:pretomanid,Pretomanid,pretomanid,ddinter
+drug:relugolix,Relugolix,relugolix,ddinter
+drug:simeprevir,Simeprevir,simeprevir,ddinter
+drug:thallous_chloride,Thallous Chloride,thallous_chloride,ddinter
+drug:beclomethasone_dipropionate_nasal,Beclomethasone dipropionate (nasal),beclomethasone_dipropionate_nasal,ddinter
+drug:belatacept,Belatacept,belatacept,ddinter
+drug:belimumab,Belimumab,belimumab,ddinter
+drug:cabergoline,Cabergoline,cabergoline,ddinter
+drug:ezetimibe,Ezetimibe,ezetimibe,ddinter
+drug:benzhydrocodone,Benzhydrocodone,benzhydrocodone,ddinter
+drug:hydrocortisone_ophthalmic,Hydrocortisone (ophthalmic),hydrocortisone_ophthalmic,ddinter
+drug:bictegravir,Bictegravir,bictegravir,ddinter
+drug:emtricitabine,Emtricitabine,emtricitabine,ddinter
+drug:fludeoxyglucose_18f,Fludeoxyglucose (18F),fludeoxyglucose_18f,ddinter
+drug:urea,Urea,urea,ddinter
+drug:aurothioglucose,Aurothioglucose,aurothioglucose,ddinter
+drug:capecitabine,Capecitabine,capecitabine,ddinter
+drug:disulfiram,Disulfiram,disulfiram,ddinter
+drug:ethambutol,Ethambutol,ethambutol,ddinter
+drug:ethionamide,Ethionamide,ethionamide,ddinter
+drug:fludarabine,Fludarabine,fludarabine,ddinter
+drug:fluorouracil,Fluorouracil,fluorouracil,ddinter
+drug:sodium_aurothiomalate,Sodium aurothiomalate,sodium_aurothiomalate,ddinter
+drug:diiodohydroxyquinoline,Diiodohydroxyquinoline,diiodohydroxyquinoline,ddinter
+drug:mebendazole,Mebendazole,mebendazole,ddinter
+drug:pravastatin,Pravastatin,pravastatin,ddinter
+drug:stavudine,Stavudine,stavudine,ddinter
+drug:zalcitabine,Zalcitabine,zalcitabine,ddinter
+drug:bivalirudin,Bivalirudin,bivalirudin,ddinter
+drug:bleomycin,Bleomycin,bleomycin,ddinter
+drug:burosumab,Burosumab,burosumab,ddinter
+drug:deferiprone,Deferiprone,deferiprone,ddinter
+drug:eltrombopag,Eltrombopag,eltrombopag,ddinter
+drug:omadacycline,Omadacycline,omadacycline,ddinter
+drug:folic_acid,Folic acid,folic_acid,ddinter
+drug:penicillamine,Penicillamine,penicillamine,ddinter
+drug:triethylenetetramine,Triethylenetetramine,triethylenetetramine,ddinter
+drug:bremelanotide,Bremelanotide,bremelanotide,ddinter
+drug:brodalumab,Brodalumab,brodalumab,ddinter
+drug:goldenseal,Goldenseal,goldenseal,ddinter
+drug:calcium_glycerophosphate,Calcium glycerophosphate,calcium_glycerophosphate,ddinter
+drug:prasterone_enantate,Prasterone enantate,prasterone_enantate,ddinter
+drug:parathyroid_hormone,Parathyroid hormone,parathyroid_hormone,ddinter
+drug:teriparatide,Teriparatide,teriparatide,ddinter
+drug:testolactone,Testolactone,testolactone,ddinter
+drug:cyclandelate,Cyclandelate,cyclandelate,ddinter
+drug:isoxsuprine,Isoxsuprine,isoxsuprine,ddinter
+drug:nesiritide,Nesiritide,nesiritide,ddinter
+drug:nitrous_acid,Nitrous acid,nitrous_acid,ddinter
+drug:tolazoline,Tolazoline,tolazoline,ddinter
+drug:cangrelor,Cangrelor,cangrelor,ddinter
+drug:levonordefrin,Levonordefrin,levonordefrin,ddinter
+drug:mepivacaine,Mepivacaine,mepivacaine,ddinter
+drug:carfilzomib,Carfilzomib,carfilzomib,ddinter
+drug:carmustine,Carmustine,carmustine,ddinter
+drug:cefazolin,Cefazolin,cefazolin,ddinter
+drug:cefepime,Cefepime,cefepime,ddinter
+drug:cefixime,Cefixime,cefixime,ddinter
+drug:cefotaxime,Cefotaxime,cefotaxime,ddinter
+drug:cefotetan,Cefotetan,cefotetan,ddinter
+drug:cefoxitin,Cefoxitin,cefoxitin,ddinter
+drug:ceftaroline_fosamil,Ceftaroline fosamil,ceftaroline_fosamil,ddinter
+drug:ceftazidime,Ceftazidime,ceftazidime,ddinter
+drug:ceftolozane,Ceftolozane,ceftolozane,ddinter
+drug:ceftriaxone,Ceftriaxone,ceftriaxone,ddinter
+drug:clofibrate,Clofibrate,clofibrate,ddinter
+drug:fenofibric_acid,Fenofibric acid,fenofibric_acid,ddinter
+drug:chloroprocaine,Chloroprocaine,chloroprocaine,ddinter
+drug:laronidase,Laronidase,laronidase,ddinter
+drug:mecasermin,Mecasermin,mecasermin,ddinter
+drug:mecasermin_rinfabate,Mecasermin rinfabate,mecasermin_rinfabate,ddinter
+drug:sulfadoxine,Sulfadoxine,sulfadoxine,ddinter
+drug:rifamycin,Rifamycin,rifamycin,ddinter
+drug:cholic_acid,Cholic Acid,cholic_acid,ddinter
+drug:ciclesonide_nasal,Ciclesonide (nasal),ciclesonide_nasal,ddinter
+drug:ciclesonide,Ciclesonide,ciclesonide,ddinter
+drug:creatine,Creatine,creatine,ddinter
+drug:lomustine,Lomustine,lomustine,ddinter
+drug:melatonin,Melatonin,melatonin,ddinter
+drug:moricizine,Moricizine,moricizine,ddinter
+drug:tocainide,Tocainide,tocainide,ddinter
+drug:trimetrexate,Trimetrexate,trimetrexate,ddinter
+drug:varenicline,Varenicline,varenicline,ddinter
+drug:cinacalcet,Cinacalcet,cinacalcet,ddinter
+drug:citric_acid,Citric acid,citric_acid,ddinter
+drug:eravacycline,Eravacycline,eravacycline,ddinter
+drug:fexofenadine,Fexofenadine,fexofenadine,ddinter
+drug:flunisolide_nasal,Flunisolide (nasal),flunisolide_nasal,ddinter
+drug:fluorometholone_ophthalmic,Fluorometholone (ophthalmic),fluorometholone_ophthalmic,ddinter
+drug:loteprednol_ophthalmic,Loteprednol (ophthalmic),loteprednol_ophthalmic,ddinter
+drug:mitoxantrone,Mitoxantrone,mitoxantrone,ddinter
+drug:pomalidomide,Pomalidomide,pomalidomide,ddinter
+drug:talazoparib,Talazoparib,talazoparib,ddinter
+drug:vorapaxar,Vorapaxar,vorapaxar,ddinter
+drug:picosulfuric_acid,Picosulfuric acid,picosulfuric_acid,ddinter
+drug:aztreonam,Aztreonam,aztreonam,ddinter
+drug:benznidazole,Benznidazole,benznidazole,ddinter
+drug:cefamandole,Cefamandole,cefamandole,ddinter
+drug:cefmetazole,Cefmetazole,cefmetazole,ddinter
+drug:cefonicid,Cefonicid,cefonicid,ddinter
+drug:cefoperazone,Cefoperazone,cefoperazone,ddinter
+drug:ceftizoxime,Ceftizoxime,ceftizoxime,ddinter
+drug:microcrystalline_cellulose,Microcrystalline cellulose,microcrystalline_cellulose,ddinter
+drug:cefalotin,Cefalotin,cefalotin,ddinter
+drug:cefapirin,Cefapirin,cefapirin,ddinter
+drug:dalbavancin,Dalbavancin,dalbavancin,ddinter
+drug:daptomycin,Daptomycin,daptomycin,ddinter
+drug:doripenem,Doripenem,doripenem,ddinter
+drug:loracarbef,Loracarbef,loracarbef,ddinter
+drug:novobiocin,Novobiocin,novobiocin,ddinter
+drug:oritavancin,Oritavancin,oritavancin,ddinter
+drug:pyrazinamide,Pyrazinamide,pyrazinamide,ddinter
+drug:quinupristin,Quinupristin,quinupristin,ddinter
+drug:secnidazole,Secnidazole,secnidazole,ddinter
+drug:spectinomycin,Spectinomycin,spectinomycin,ddinter
+drug:tedizolid,Tedizolid,tedizolid,ddinter
+drug:tigecycline,Tigecycline,tigecycline,ddinter
+drug:levomefolic_acid,Levomefolic acid,levomefolic_acid,ddinter
+drug:leucovorin,Leucovorin,leucovorin,ddinter
+drug:levomefolic_acid_calcium,Levomefolic acid (calcium),levomefolic_acid_calcium,ddinter
+drug:cromoglicic_acid,Cromoglicic acid,cromoglicic_acid,ddinter
+drug:ursodeoxycholic_acid,Ursodeoxycholic acid,ursodeoxycholic_acid,ddinter
+drug:human_c1_esterase_inhibitor,Human C1-esterase inhibitor,human_c1_esterase_inhibitor,ddinter
+drug:conestat_alfa,Conestat alfa,conestat_alfa,ddinter
+drug:dactinomycin,Dactinomycin,dactinomycin,ddinter
+drug:denileukin_diftitox,Denileukin diftitox,denileukin_diftitox,ddinter
+drug:dinoprostone_topical,Dinoprostone (topical),dinoprostone_topical,ddinter
+drug:difenoxin,Difenoxin,difenoxin,ddinter
+drug:dimercaprol,Dimercaprol,dimercaprol,ddinter
+drug:diphenoxylate,Diphenoxylate,diphenoxylate,ddinter
+drug:dipivefrin_ophthalmic,Dipivefrin (ophthalmic),dipivefrin_ophthalmic,ddinter
+drug:docusate,Docusate,docusate,ddinter
+drug:lacosamide,Lacosamide,lacosamide,ddinter
+drug:dornase_alfa,Dornase alfa,dornase_alfa,ddinter
+drug:dupilumab,Dupilumab,dupilumab,ddinter
+drug:dyphylline,Dyphylline,dyphylline,ddinter
+drug:grazoprevir,Grazoprevir,grazoprevir,ddinter
+drug:elbasvir,Elbasvir,elbasvir,ddinter
+drug:elexacaftor,Elexacaftor,elexacaftor,ddinter
+drug:artesunate,Artesunate,artesunate,ddinter
+drug:lenalidomide,Lenalidomide,lenalidomide,ddinter
+drug:topotecan,Topotecan,topotecan,ddinter
+drug:pitavastatin,Pitavastatin,pitavastatin,ddinter
+drug:emapalumab,Emapalumab,emapalumab,ddinter
+drug:enasidenib,Enasidenib,enasidenib,ddinter
+drug:procaine,Procaine,procaine,ddinter
+drug:ledipasvir,Ledipasvir,ledipasvir,ddinter
+drug:levocarnitine,Levocarnitine,levocarnitine,ddinter
+drug:lidocaine_ophthalmic,Lidocaine (ophthalmic),lidocaine_ophthalmic,ddinter
+drug:inulin,Inulin,inulin,ddinter
+drug:sodium_phosphate_monobasic,"Sodium phosphate, monobasic",sodium_phosphate_monobasic,ddinter
+drug:lopinavir,Lopinavir,lopinavir,ddinter
+drug:lubiprostone,Lubiprostone,lubiprostone,ddinter
+drug:lumacaftor,Lumacaftor,lumacaftor,ddinter
+drug:nalmefene,Nalmefene,nalmefene,ddinter
+drug:phenyl_salicylate,Phenyl salicylate,phenyl_salicylate,ddinter
+drug:miconazole_topical,Miconazole (topical),miconazole_topical,ddinter
+drug:imiglucerase,Imiglucerase,imiglucerase,ddinter
+drug:miglustat,Miglustat,miglustat,ddinter
+drug:guselkumab,Guselkumab,guselkumab,ddinter
+drug:inebilizumab,Inebilizumab,inebilizumab,ddinter
+drug:ixekizumab,Ixekizumab,ixekizumab,ddinter
+drug:selenium,Selenium,selenium,ddinter
+drug:mogamulizumab,Mogamulizumab,mogamulizumab,ddinter
+drug:naxitamab,Naxitamab,naxitamab,ddinter
+drug:omalizumab,Omalizumab,omalizumab,ddinter
+drug:risankizumab,Risankizumab,risankizumab,ddinter
+drug:rituximab,Rituximab,rituximab,ddinter
+drug:sarilumab,Sarilumab,sarilumab,ddinter
+drug:satralizumab,Satralizumab,satralizumab,ddinter
+drug:secukinumab,Secukinumab,secukinumab,ddinter
+drug:siltuximab,Siltuximab,siltuximab,ddinter
+drug:tildrakizumab,Tildrakizumab,tildrakizumab,ddinter
+drug:tocilizumab,Tocilizumab,tocilizumab,ddinter
+drug:vedolizumab,Vedolizumab,vedolizumab,ddinter
+drug:propylthiouracil,Propylthiouracil,propylthiouracil,ddinter
+drug:nedocromil,Nedocromil,nedocromil,ddinter
+drug:netupitant,Netupitant,netupitant,ddinter
+drug:mestranol,Mestranol,mestranol,ddinter
+drug:riluzole,Riluzole,riluzole,ddinter
+drug:paritaprevir,Paritaprevir,paritaprevir,ddinter
+drug:onasemnogene_abeparvovec,Onasemnogene abeparvovec,onasemnogene_abeparvovec,ddinter
+drug:proparacaine_ophthalmic,Proparacaine (ophthalmic),proparacaine_ophthalmic,ddinter
+drug:pegaptanib_ophthalmic,Pegaptanib (ophthalmic),pegaptanib_ophthalmic,ddinter
+drug:pegloticase,Pegloticase,pegloticase,ddinter
+drug:pegademase,Pegademase,pegademase,ddinter
+drug:pegfilgrastim,Pegfilgrastim,pegfilgrastim,ddinter
+drug:peginesatide,Peginesatide,peginesatide,ddinter
+drug:phylloquinone,Phylloquinone,phylloquinone,ddinter
+drug:plecanatide,Plecanatide,plecanatide,ddinter
+drug:monopotassium_phosphate,Monopotassium phosphate,monopotassium_phosphate,ddinter
+drug:prilocaine,Prilocaine,prilocaine,ddinter
+drug:dalfopristin,Dalfopristin,dalfopristin,ddinter
+drug:sacubitril,Sacubitril,sacubitril,ddinter
+drug:sodium_chloride,Sodium chloride,sodium_chloride,ddinter
+drug:vibegron,Vibegron,vibegron,ddinter
+drug:minoxidil_topical,Minoxidil (topical),minoxidil_topical,ddinter
+drug:pyrimethamine,Pyrimethamine,pyrimethamine,ddinter
+drug:sodium_sulfate,Sodium sulfate,sodium_sulfate,ddinter
+drug:velpatasvir,Velpatasvir,velpatasvir,ddinter
+drug:voxilaprevir,Voxilaprevir,voxilaprevir,ddinter
+drug:tetracaine,Tetracaine,tetracaine,ddinter
+drug:manganese_sulfate,Manganese (sulfate),manganese_sulfate,ddinter
+drug:copper_gluconate,Copper gluconate,copper_gluconate,ddinter
+drug:manganese_chloride,Manganese (chloride),manganese_chloride,ddinter
+drug:tipiracil,Tipiracil,tipiracil,ddinter
+drug:triheptanoin,Triheptanoin,triheptanoin,ddinter
+drug:vilanterol,Vilanterol,vilanterol,ddinter
+drug:zanamivir,Zanamivir,zanamivir,ddinter
+drug:potassium_acetate,Potassium acetate,potassium_acetate,ddinter
+drug:potassium_perchlorate,Potassium perchlorate,potassium_perchlorate,ddinter
+drug:methacholine,Methacholine,methacholine,ddinter
+drug:iron_dextran,Iron Dextran,iron_dextran,ddinter
+drug:ixazomib,Ixazomib,ixazomib,ddinter
+drug:gentamicin_topical,Gentamicin (topical),gentamicin_topical,ddinter
+drug:belinostat,Belinostat,belinostat,ddinter
+drug:cytarabine,Cytarabine,cytarabine,ddinter
+drug:dacarbazine,Dacarbazine,dacarbazine,ddinter
+drug:elotuzumab,Elotuzumab,elotuzumab,ddinter
+drug:febuxostat,Febuxostat,febuxostat,ddinter
+drug:gemcitabine,Gemcitabine,gemcitabine,ddinter
+drug:gemtuzumab_ozogamicin,Gemtuzumab ozogamicin,gemtuzumab_ozogamicin,ddinter
+drug:methimazole,Methimazole,methimazole,ddinter
+drug:temozolomide,Temozolomide,temozolomide,ddinter
+drug:naphazoline_ophthalmic,Naphazoline (ophthalmic),naphazoline_ophthalmic,ddinter
+drug:floxuridine,Floxuridine,floxuridine,ddinter
+drug:hydroxyurea,Hydroxyurea,hydroxyurea,ddinter
+drug:mechlorethamine,Mechlorethamine,mechlorethamine,ddinter
+drug:mitomycin,Mitomycin,mitomycin,ddinter
+drug:pentostatin,Pentostatin,pentostatin,ddinter
+drug:plicamycin,Plicamycin,plicamycin,ddinter
+drug:streptozocin,Streptozocin,streptozocin,ddinter
+drug:oxybuprocaine_ophthalmic,Oxybuprocaine (ophthalmic),oxybuprocaine_ophthalmic,ddinter
+drug:cinchocaine_topical,Cinchocaine (topical),cinchocaine_topical,ddinter
+drug:tetracaine_topical,Tetracaine (topical),tetracaine_topical,ddinter
+drug:capsicum,Capsicum,capsicum,ddinter
+drug:clove,Clove,clove,ddinter
+drug:oxymetazoline_ophthalmic,Oxymetazoline (ophthalmic),oxymetazoline_ophthalmic,ddinter
+drug:oxymetazoline_nasal,Oxymetazoline (nasal),oxymetazoline_nasal,ddinter
+drug:oxymetazoline_topical,Oxymetazoline (topical),oxymetazoline_topical,ddinter
+drug:brexucabtagene_autoleucel,Brexucabtagene autoleucel,brexucabtagene_autoleucel,ddinter
+drug:tafamidis,Tafamidis,tafamidis,ddinter
+drug:oxyquinoline_topical,Oxyquinoline (topical),oxyquinoline_topical,ddinter
+drug:aminobenzoic_acid,Aminobenzoic acid,aminobenzoic_acid,ddinter
+drug:tetryzoline_nasal,Tetryzoline (nasal),tetryzoline_nasal,ddinter
+drug:beta_carotene,Beta carotene,beta_carotene,ddinter
+drug:ammonium_chloride,Ammonium chloride,ammonium_chloride,ddinter
+drug:methionine,Methionine,methionine,ddinter
+drug:dienogest,Dienogest,dienogest,ddinter
+drug:norgestimate,Norgestimate,norgestimate,ddinter
+drug:cabotegravir,Cabotegravir,cabotegravir,ddinter
+drug:ferric_carboxymaltose,Ferric carboxymaltose,ferric_carboxymaltose,ddinter
+drug:ferric_derisomaltose,Ferric derisomaltose,ferric_derisomaltose,ddinter
+drug:sodium_ferric_gluconate_complex,Sodium ferric gluconate complex,sodium_ferric_gluconate_complex,ddinter
+drug:ferumoxytol,Ferumoxytol,ferumoxytol,ddinter
+drug:glecaprevir,Glecaprevir,glecaprevir,ddinter
+drug:hydroxyamphetamine_ophthalmic,Hydroxyamphetamine (ophthalmic),hydroxyamphetamine_ophthalmic,ddinter
+drug:imipenem,Imipenem,imipenem,ddinter
+drug:ipecac,Ipecac,ipecac,ddinter
+drug:melphalan_flufenamide,Melphalan flufenamide,melphalan_flufenamide,ddinter
+drug:tetryzoline_ophthalmic,Tetryzoline (ophthalmic),tetryzoline_ophthalmic,ddinter
+drug:lutein,Lutein,lutein,ddinter
+drug:saw_palmetto,Saw palmetto,saw_palmetto,ddinter
+drug:fosnetupitant,Fosnetupitant,fosnetupitant,ddinter
+drug:levmetamfetamine_nasal,Levmetamfetamine (nasal),levmetamfetamine_nasal,ddinter
+drug:naphazoline_nasal,Naphazoline (nasal),naphazoline_nasal,ddinter
+drug:phenylephrine_nasal,Phenylephrine (nasal),phenylephrine_nasal,ddinter
+drug:phenylephrine_topical,Phenylephrine (topical),phenylephrine_topical,ddinter
+drug:propylhexedrine_nasal,Propylhexedrine (nasal),propylhexedrine_nasal,ddinter
+drug:xylometazoline_nasal,Xylometazoline (nasal),xylometazoline_nasal,ddinter
+drug:nystatin,Nystatin,nystatin,ddinter
+drug:gadodiamide,Gadodiamide,gadodiamide,ddinter
+drug:travoprost,Travoprost,travoprost,ddinter
+drug:mupirocin,Mupirocin,mupirocin,ddinter
+drug:famciclovir,Famciclovir,famciclovir,ddinter
+drug:raloxifene,Raloxifene,raloxifene,ddinter
+drug:gadoversetamide,Gadoversetamide,gadoversetamide,ddinter
+drug:latanoprost,Latanoprost,latanoprost,ddinter
+drug:ribavirin,Ribavirin,ribavirin,ddinter
+drug:bimatoprost,Bimatoprost,bimatoprost,ddinter
+drug:desloratadine,Desloratadine,desloratadine,ddinter
+drug:zopiclone,Zopiclone,zopiclone,ddinter
+drug:finasteride,Finasteride,finasteride,ddinter
+drug:acenocoumarol,Acenocoumarol,acenocoumarol,ddinter
+drug:nitrazepam,Nitrazepam,nitrazepam,ddinter
+drug:vitamin_d,Vitamin D,vitamin_d,ddinter
+drug:clobetasol,Clobetasol,clobetasol,ddinter
+drug:ciclopirox,Ciclopirox,ciclopirox,ddinter
+drug:pimecrolimus,Pimecrolimus,pimecrolimus,ddinter
+drug:oseltamivir,Oseltamivir,oseltamivir,ddinter
+drug:adapalene,Adapalene,adapalene,ddinter
+drug:etomidate,Etomidate,etomidate,ddinter
+drug:acamprosate,Acamprosate,acamprosate,ddinter
+drug:adefovir_dipivoxil,Adefovir dipivoxil,adefovir_dipivoxil,ddinter
+drug:imiquimod,Imiquimod,imiquimod,ddinter
+drug:olopatadine,Olopatadine,olopatadine,ddinter
+drug:fulvestrant,Fulvestrant,fulvestrant,ddinter
+drug:selenium_sulfide,Selenium Sulfide,selenium_sulfide,ddinter
+drug:brinzolamide,Brinzolamide,brinzolamide,ddinter
+drug:loteprednol_etabonate,Loteprednol etabonate,loteprednol_etabonate,ddinter
+drug:fluorometholone,Fluorometholone,fluorometholone,ddinter
+drug:tazarotene,Tazarotene,tazarotene,ddinter
+drug:ketotifen,Ketotifen,ketotifen,ddinter
+drug:fluocinonide,Fluocinonide,fluocinonide,ddinter
+drug:econazole,Econazole,econazole,ddinter
+drug:nitric_oxide,Nitric Oxide,nitric_oxide,ddinter
+drug:chlorhexidine,Chlorhexidine,chlorhexidine,ddinter
+drug:hydroxocobalamin,Hydroxocobalamin,hydroxocobalamin,ddinter
+drug:tioconazole,Tioconazole,tioconazole,ddinter
+drug:levobunolol,Levobunolol,levobunolol,ddinter
+drug:brimonidine,Brimonidine,brimonidine,ddinter
+drug:aminocaproic_acid,Aminocaproic acid,aminocaproic_acid,ddinter
+drug:tropicamide,Tropicamide,tropicamide,ddinter
+drug:galactose,Galactose,galactose,ddinter
+drug:azelastine,Azelastine,azelastine,ddinter
+drug:hydrocortisone_butyrate,Hydrocortisone butyrate,hydrocortisone_butyrate,ddinter
+drug:calcipotriol,Calcipotriol,calcipotriol,ddinter
+drug:anastrozole,Anastrozole,anastrozole,ddinter
+drug:flumazenil,Flumazenil,flumazenil,ddinter
+drug:fluocinolone_acetonide,Fluocinolone acetonide,fluocinolone_acetonide,ddinter
+drug:gamma_aminobutyric_acid,gamma-Aminobutyric acid,gamma_aminobutyric_acid,ddinter
+drug:dextran_low_molecular_weight,Dextran (low molecular weight),dextran_low_molecular_weight,ddinter
+drug:dextran_1,Dextran (-1),dextran_1,ddinter
+drug:dextran_high_molecular_weight,Dextran (high molecular weight),dextran_high_molecular_weight,ddinter
+drug:heparin_flush,Heparin (flush),heparin_flush,ddinter
+drug:emicizumab,Emicizumab,emicizumab,ddinter
+drug:tranexamic_acid,Tranexamic acid,tranexamic_acid,ddinter
+drug:darbepoetin_alfa,Darbepoetin alfa,darbepoetin_alfa,ddinter
+drug:aprotinin,Aprotinin,aprotinin,ddinter
+drug:protein_c,Protein C,protein_c,ddinter
+drug:anti_inhibitor_coagulant_complex,Anti-inhibitor coagulant complex,anti_inhibitor_coagulant_complex,ddinter
+drug:factor_ix_complex_human,Factor IX Complex (Human),factor_ix_complex_human,ddinter
+drug:erythropoietin,Erythropoietin,erythropoietin,ddinter
+drug:icatibant,Icatibant,icatibant,ddinter
+drug:von_willebrand_factor_human,Von Willebrand Factor Human,von_willebrand_factor_human,ddinter
+drug:coagulation_factor_viia_recombinant_human,Coagulation factor VIIa Recombinant Human,coagulation_factor_viia_recombinant_human,ddinter
+drug:sugammadex,Sugammadex,sugammadex,ddinter
+drug:coagulation_factor_x_human,Coagulation factor X human,coagulation_factor_x_human,ddinter
+drug:regadenoson,Regadenoson,regadenoson,ddinter
+drug:fibrinogen_human,Fibrinogen human,fibrinogen_human,ddinter
+drug:romiplostim,Romiplostim,romiplostim,ddinter
+drug:etidocaine,Etidocaine,etidocaine,ddinter
+drug:methyl_salicylate_topical,Methyl salicylate (topical),methyl_salicylate_topical,ddinter
+drug:econazole_topical,Econazole (topical),econazole_topical,ddinter
+drug:sofosbuvir,Sofosbuvir,sofosbuvir,ddinter
+drug:coenzyme_m,Coenzyme M,coenzyme_m,ddinter
+drug:trastuzumab,Trastuzumab,trastuzumab,ddinter
+drug:sodium_glycerophosphate,Sodium glycerophosphate,sodium_glycerophosphate,ddinter
+drug:citrus_bioflavonoids,Citrus bioflavonoids,citrus_bioflavonoids,ddinter
+drug:chondroitin_sulfate,Chondroitin sulfate,chondroitin_sulfate,ddinter
+drug:cranberry,Cranberry,cranberry,ddinter
+drug:dextrothyroxine,Dextrothyroxine,dextrothyroxine,ddinter
+drug:glucagon,Glucagon,glucagon,ddinter
+drug:glucosamine,Glucosamine,glucosamine,ddinter
+drug:levamisole,Levamisole,levamisole,ddinter
+drug:papaya,Papaya,papaya,ddinter
+drug:palifermin,Palifermin,palifermin,ddinter
+drug:sacituzumab_govitecan,Sacituzumab govitecan,sacituzumab_govitecan,ddinter
+drug:bromotheophylline,Bromotheophylline,bromotheophylline,ddinter
+drug:trametinib,Trametinib,trametinib,ddinter
+drug:pyrophosphoric_acid,Pyrophosphoric acid,pyrophosphoric_acid,ddinter
+drug:cetylpyridinium_topical,Cetylpyridinium (topical),cetylpyridinium_topical,ddinter
+drug:hyaluronic_acid,Hyaluronic acid,hyaluronic_acid,ddinter
+drug:chloramphenicol_ophthalmic,Chloramphenicol (ophthalmic),chloramphenicol_ophthalmic,ddinter
+drug:adapalene_topical,Adapalene (topical),adapalene_topical,ddinter
+drug:azelaic_acid_topical,Azelaic acid (topical),azelaic_acid_topical,ddinter
+drug:benzoyl_peroxide_topical,Benzoyl peroxide (topical),benzoyl_peroxide_topical,ddinter
+drug:salicylic_acid_topical,Salicylic acid (topical),salicylic_acid_topical,ddinter
+drug:octasulfur_topical,Octasulfur (topical),octasulfur_topical,ddinter
+drug:tazarotene_topical,Tazarotene (topical),tazarotene_topical,ddinter
+drug:tretinoin_topical,Tretinoin (topical),tretinoin_topical,ddinter
+drug:trifarotene_topical,Trifarotene (topical),trifarotene_topical,ddinter
+drug:bretylium,Bretylium,bretylium,ddinter
+drug:bupivacaine_liposome,Bupivacaine (liposome),bupivacaine_liposome,ddinter
+drug:tilmanocept,Tilmanocept,tilmanocept,ddinter
+drug:acyclovir_topical,Acyclovir (topical),acyclovir_topical,ddinter
+drug:resorcinol_topical,Resorcinol (topical),resorcinol_topical,ddinter
+drug:fomepizole,Fomepizole,fomepizole,ddinter
+drug:nifurtimox,Nifurtimox,nifurtimox,ddinter
+drug:alitretinoin_topical,Alitretinoin (topical),alitretinoin_topical,ddinter
+drug:bexarotene_topical,Bexarotene (topical),bexarotene_topical,ddinter
+drug:rasburicase,Rasburicase,rasburicase,ddinter
+drug:silver_nitrate_ophthalmic,Silver nitrate (ophthalmic),silver_nitrate_ophthalmic,ddinter
+drug:silver_nitrate_topical,Silver nitrate (topical),silver_nitrate_topical,ddinter
+drug:silver_sulfadiazine_topical,Silver sulfadiazine (topical),silver_sulfadiazine_topical,ddinter
+drug:imiquimod_topical,Imiquimod (topical),imiquimod_topical,ddinter
+drug:methoxsalen_topical,Methoxsalen (topical),methoxsalen_topical,ddinter
+drug:trioxsalen,Trioxsalen,trioxsalen,ddinter
+drug:diphenhydramine_topical,Diphenhydramine (topical),diphenhydramine_topical,ddinter
+drug:azacitidine,Azacitidine,azacitidine,ddinter
+drug:belantamab_mafodotin,Belantamab mafodotin,belantamab_mafodotin,ddinter
+drug:potassium_iodide,Potassium Iodide,potassium_iodide,ddinter
+drug:axicabtagene_ciloleucel,Axicabtagene ciloleucel,axicabtagene_ciloleucel,ddinter
+drug:daratumumab,Daratumumab,daratumumab,ddinter
+drug:decitabine,Decitabine,decitabine,ddinter
+drug:trastuzumab_deruxtecan,Trastuzumab deruxtecan,trastuzumab_deruxtecan,ddinter
+drug:isatuximab,Isatuximab,isatuximab,ddinter
+drug:obinutuzumab,Obinutuzumab,obinutuzumab,ddinter
+drug:ofatumumab,Ofatumumab,ofatumumab,ddinter
+drug:selinexor,Selinexor,selinexor,ddinter
+drug:tafasitamab,Tafasitamab,tafasitamab,ddinter
+drug:tisagenlecleucel,Tisagenlecleucel,tisagenlecleucel,ddinter
+drug:aflibercept,Aflibercept,aflibercept,ddinter
+drug:clindamycin_topical,Clindamycin (topical),clindamycin_topical,ddinter
+drug:histamine,Histamine,histamine,ddinter
+drug:clioquinol_topical,Clioquinol (topical),clioquinol_topical,ddinter
+drug:collagenase_clostridium_histolyticum_topical,Collagenase clostridium histolyticum (topical),collagenase_clostridium_histolyticum_topical,ddinter
+drug:silver_topical,Silver (topical),silver_topical,ddinter
+drug:thimerosal_topical,Thimerosal (topical),thimerosal_topical,ddinter
+drug:medrysone_ophthalmic,Medrysone (ophthalmic),medrysone_ophthalmic,ddinter
+drug:rimexolone_ophthalmic,Rimexolone (ophthalmic),rimexolone_ophthalmic,ddinter
+drug:difluprednate_ophthalmic,Difluprednate (ophthalmic),difluprednate_ophthalmic,ddinter
+drug:penciclovir_topical,Penciclovir (topical),penciclovir_topical,ddinter
+drug:sulfacetamide_ophthalmic,Sulfacetamide (ophthalmic),sulfacetamide_ophthalmic,ddinter
+drug:trifluridine,Trifluridine,trifluridine,ddinter
+drug:ivermectin_topical,Ivermectin (topical),ivermectin_topical,ddinter
+drug:iodine,Iodine,iodine,ddinter
+drug:iodine_topical,Iodine (topical),iodine_topical,ddinter
+drug:coal_tar_topical,Coal tar (topical),coal_tar_topical,ddinter
+drug:hexachlorophene_topical,Hexachlorophene (topical),hexachlorophene_topical,ddinter
+drug:chloramphenicol_otic,Chloramphenicol (otic),chloramphenicol_otic,ddinter
+drug:sodium_zirconium_cyclosilicate,Sodium zirconium cyclosilicate,sodium_zirconium_cyclosilicate,ddinter
+drug:benzalkonium_topical,Benzalkonium (topical),benzalkonium_topical,ddinter
+drug:azelaic_acid,Azelaic acid,azelaic_acid,ddinter
+drug:etelcalcetide,Etelcalcetide,etelcalcetide,ddinter
+drug:chorionic_gonadotropin_human,Chorionic Gonadotropin (Human),chorionic_gonadotropin_human,ddinter
+drug:ganirelix,Ganirelix,ganirelix,ddinter
+drug:simethicone,Simethicone,simethicone,ddinter
+drug:menotropins,Menotropins,menotropins,ddinter
+drug:copper_oxodotreotide_cu_64,Copper oxodotreotide Cu-64,copper_oxodotreotide_cu_64,ddinter
+drug:dotatate,Dotatate,dotatate,ddinter
+drug:indium_in_111_pentetreotide,Indium In-111 pentetreotide,indium_in_111_pentetreotide,ddinter
+drug:follitropin,Follitropin,follitropin,ddinter
+drug:gonadorelin,Gonadorelin,gonadorelin,ddinter
+drug:urofollitropin,Urofollitropin,urofollitropin,ddinter
+drug:filgrastim,Filgrastim,filgrastim,ddinter
+drug:samarium_153sm_lexidronam,Samarium (153Sm) lexidronam,samarium_153sm_lexidronam,ddinter
+drug:sargramostim,Sargramostim,sargramostim,ddinter
+drug:capromab_pendetide,Capromab pendetide,capromab_pendetide,ddinter
+drug:gadobenic_acid,Gadobenic acid,gadobenic_acid,ddinter
+drug:olaratumab,Olaratumab,olaratumab,ddinter
+drug:metyrapone,Metyrapone,metyrapone,ddinter
+drug:cytarabine_liposomal,Cytarabine (liposomal),cytarabine_liposomal,ddinter
+drug:ethiodized_oil,Ethiodized oil,ethiodized_oil,ddinter
+drug:iopanoic_acid,Iopanoic acid,iopanoic_acid,ddinter
+drug:iopodic_acid,Iopodic acid,iopodic_acid,ddinter
+drug:tyropanoic_acid,Tyropanoic acid,tyropanoic_acid,ddinter
+drug:acetohydroxamic_acid,Acetohydroxamic acid,acetohydroxamic_acid,ddinter
+drug:bevacizumab,Bevacizumab,bevacizumab,ddinter
+drug:amrinone,Amrinone,amrinone,ddinter
+drug:milrinone,Milrinone,milrinone,ddinter
+drug:anidulafungin,Anidulafungin,anidulafungin,ddinter
+drug:digoxin_immune_fab_ovine,Digoxin Immune Fab (Ovine),digoxin_immune_fab_ovine,ddinter
+drug:eculizumab,Eculizumab,eculizumab,ddinter
+drug:ravulizumab,Ravulizumab,ravulizumab,ddinter
+drug:avelumab,Avelumab,avelumab,ddinter
+drug:bazedoxifene,Bazedoxifene,bazedoxifene,ddinter
+drug:clomifene,Clomifene,clomifene,ddinter
+drug:oxygen,Oxygen,oxygen,ddinter
+drug:levoleucovorin,Levoleucovorin,levoleucovorin,ddinter
+drug:dexrazoxane,Dexrazoxane,dexrazoxane,ddinter
+drug:factor_xiii_human,Factor XIII (human),factor_xiii_human,ddinter
+drug:oprelvekin,Oprelvekin,oprelvekin,ddinter
+drug:valrubicin,Valrubicin,valrubicin,ddinter
+drug:edetate_calcium_disodium_anhydrous,Edetate calcium disodium anhydrous,edetate_calcium_disodium_anhydrous,ddinter
+drug:edetate_disodium_anhydrous,Edetate disodium anhydrous,edetate_disodium_anhydrous,ddinter
+drug:miltefosine,Miltefosine,miltefosine,ddinter
+drug:human_immunoglobulin_g_subcutaneous,Human immunoglobulin G (subcutaneous),human_immunoglobulin_g_subcutaneous,ddinter
+drug:dehydrocholic_acid,Dehydrocholic acid,dehydrocholic_acid,ddinter
+drug:cedazuridine,Cedazuridine,cedazuridine,ddinter
+drug:human_immunoglobulin_g_intramuscular,Human immunoglobulin G (intramuscular),human_immunoglobulin_g_intramuscular,ddinter
+drug:dasabuvir,Dasabuvir,dasabuvir,ddinter
+drug:pertuzumab,Pertuzumab,pertuzumab,ddinter
+drug:lisocabtagene_maraleucel,Lisocabtagene maraleucel,lisocabtagene_maraleucel,ddinter
+drug:glatiramer,Glatiramer,glatiramer,ddinter
+drug:necitumumab,Necitumumab,necitumumab,ddinter
+drug:glucarpidase,Glucarpidase,glucarpidase,ddinter
+drug:hexaminolevulinate,Hexaminolevulinate,hexaminolevulinate,ddinter
+drug:flax_seed,Flax seed,flax_seed,ddinter
+drug:tivozanib,Tivozanib,tivozanib,ddinter
+drug:pyrantel,Pyrantel,pyrantel,ddinter
+drug:cyclopentolate_ophthalmic,Cyclopentolate (ophthalmic),cyclopentolate_ophthalmic,ddinter
+drug:homatropine_ophthalmic,Homatropine (ophthalmic),homatropine_ophthalmic,ddinter
+drug:tropicamide_ophthalmic,Tropicamide (ophthalmic),tropicamide_ophthalmic,ddinter
+drug:benzonatate,Benzonatate,benzonatate,ddinter
+drug:phenylephrine_otic,Phenylephrine (otic),phenylephrine_otic,ddinter
+drug:gadobutrol,Gadobutrol,gadobutrol,ddinter
+drug:gadofosveset_trisodium,Gadofosveset trisodium,gadofosveset_trisodium,ddinter
+drug:gadopentetic_acid,Gadopentetic acid,gadopentetic_acid,ddinter
+drug:gadoteric_acid,Gadoteric acid,gadoteric_acid,ddinter
+drug:gadoteridol,Gadoteridol,gadoteridol,ddinter
+drug:gadoxetic_acid,Gadoxetic acid,gadoxetic_acid,ddinter
+drug:indium_in_111_pentetate,Indium In-111 pentetate,indium_in_111_pentetate,ddinter
+drug:enfuvirtide,Enfuvirtide,enfuvirtide,ddinter
+drug:sodium_cellulose_phosphate,Sodium cellulose phosphate,sodium_cellulose_phosphate,ddinter
+drug:milk_thistle,Milk thistle,milk_thistle,ddinter
+drug:dextrose_unspecified_form,"Dextrose, unspecified form",dextrose_unspecified_form,ddinter
+drug:ferumoxides,Ferumoxides,ferumoxides,ddinter
+drug:ferumoxsil,Ferumoxsil,ferumoxsil,ddinter
+drug:tetrofosmin,Tetrofosmin,tetrofosmin,ddinter
+drug:ergoloid_mesylate,Ergoloid mesylate,ergoloid_mesylate,ddinter
+drug:sodium_iodide,Sodium iodide,sodium_iodide,ddinter
+drug:norelgestromin,Norelgestromin,norelgestromin,ddinter
