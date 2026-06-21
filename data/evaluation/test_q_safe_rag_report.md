@@ -46,6 +46,13 @@ Graph warnings:
   - ID 59: aspirin + diclofenac triggered DDInter interaction warning.
   - ID 92: diabetes + cold/flu syrup triggered OTC condition guardrail.
 
+Response contract:
+
+- 100/100 responses include `metadata.response_blocks`.
+- Schema version: `agent_response_v1`.
+- Required render order: `safety_guardrail`, `core_action`, `clinical_reason`, `citations`.
+- Each response records `selected_agents`, for example `triage_risk_agent`, `graph_safety_agent`, `pediatric_safety_agent`, `retrieval_agent`, and `final_response_builder`.
+
 Source distribution by first citation:
 
 - `trungtamthuoc_duocthu`: 57
@@ -61,6 +68,8 @@ Source distribution by first citation:
 3. Graph safety catches at least one real drug-drug interaction case: aspirin + diclofenac.
 4. Emergency bypass works for explicit seizure/high-risk wording and many red flags.
 5. Handoff now works for pediatric symptom requests such as ID 1, ID 7, ID 25, ID 74, and ID 83.
+6. The final answer now follows the required four-block structure for every evaluated question.
+7. ID 94 now uses a bisphosphonate/alendronic-acid response template when retrieved evidence supports it.
 
 ## Main Problems
 

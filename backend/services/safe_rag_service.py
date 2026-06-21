@@ -18,6 +18,7 @@ from backend.safety.evidence_guardrails import (
     mentioned_common_drugs,
     normalize_text,
 )
+from backend.services.final_response_builder import build_response_blocks, format_response_blocks
 from backend.services.graph_safety_service import GraphSafetyService, format_graph_warning
 from backend.services.llm_answer_service import LLMAnswerService
 from backend.utils import format_medical_disclaimer
@@ -149,6 +150,21 @@ def _preview(row: Dict[str, Any], max_len: int = 280) -> str:
     return text
 
 
+def _selected_agents(intent: str, graph_result: Dict[str, Any]) -> List[str]:
+    agents = ["triage_risk_agent", "retrieval_agent", "final_response_builder"]
+    if graph_result.get("should_warn"):
+        agents.insert(1, "graph_safety_agent")
+    if intent == "dosage":
+        agents.insert(1, "dosage_agent")
+    elif intent == "interaction":
+        agents.insert(1, "interaction_agent")
+    elif intent == "pediatric_symptom":
+        agents.insert(1, "pediatric_safety_agent")
+    elif intent in {"high_risk_context", "emergency"}:
+        agents.insert(1, "safety_monitor_agent")
+    return list(dict.fromkeys(agents))
+
+
 class SafeRagService:
     """Hybrid retrieval + evidence guardrail + deterministic answer builder."""
 
@@ -201,8 +217,15 @@ class SafeRagService:
         conversation = conversation_id or session_id
         early_decision = evaluate_evidence(message, [])
         if early_decision.action == EvidenceAction.EMERGENCY:
+            response_blocks = build_response_blocks(
+                action=early_decision.action.value,
+                intent=early_decision.intent.value,
+                graph_result={},
+                citations=[],
+                selected_agents=_selected_agents(early_decision.intent.value, {}),
+            )
             return ChatResponse(
-                message=self._emergency_message(),
+                message=format_response_blocks(response_blocks),
                 conversation_id=conversation,
                 agent_type=AgentType.SAFETY_MONITOR,
                 confidence=1.0,
@@ -212,11 +235,19 @@ class SafeRagService:
                     "rag_action": early_decision.action.value,
                     "intent": early_decision.intent.value,
                     "retrieval_bypassed": True,
+                    "response_blocks": response_blocks,
                 },
             )
         if early_decision.action == EvidenceAction.HANDOFF:
+            response_blocks = build_response_blocks(
+                action=early_decision.action.value,
+                intent=early_decision.intent.value,
+                graph_result={},
+                citations=[],
+                selected_agents=_selected_agents(early_decision.intent.value, {}),
+            )
             return ChatResponse(
-                message=self._handoff_message(early_decision.message, []),
+                message=format_response_blocks(response_blocks),
                 conversation_id=conversation,
                 agent_type=AgentType.SAFETY_MONITOR,
                 confidence=0.95,
@@ -230,6 +261,7 @@ class SafeRagService:
                     "llm_answer_enabled": self.llm_answer.enabled,
                     "llm_answer_used": False,
                     "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                    "response_blocks": response_blocks,
                 },
             )
 
@@ -256,15 +288,15 @@ class SafeRagService:
             agent_type = AgentType.SAFETY_MONITOR
 
         deterministic_answer = answer
-        llm_answer = await self.llm_answer.rewrite(
-            question=message,
-            deterministic_answer=deterministic_answer,
-            graph_safety=graph_result,
-            snippets=answer_rows[:5],
+        response_blocks = build_response_blocks(
+            action=decision.action.value,
+            intent=decision.intent.value,
+            graph_result=graph_result,
             citations=citations[:5],
+            selected_agents=_selected_agents(decision.intent.value, graph_result),
         )
-        if llm_answer:
-            answer = llm_answer
+        answer = format_response_blocks(response_blocks)
+        llm_answer = None
 
         warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
         if graph_result["should_warn"]:
@@ -292,6 +324,7 @@ class SafeRagService:
                 "llm_answer_used": bool(llm_answer),
                 "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
                 "deterministic_answer": deterministic_answer,
+                "response_blocks": response_blocks,
                 "context_provided": bool(context),
             },
         )

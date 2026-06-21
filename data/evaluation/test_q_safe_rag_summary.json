@@ -19,6 +19,7 @@
   },
   "graph_warning_count": 3,
   "llm_answer_used_count": 0,
+  "response_block_schema_count": 100,
   "no_source_count": 18,
   "first_source_counts": {
     "no_source": 18,
@@ -68,7 +69,7 @@
       "intent": "pediatric_symptom",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi liên quan trẻ nhỏ và triệu chứng bệnh. Không nên tự gợi ý thuốc khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Trẻ nhỏ có triệu chứng bệnh không nên tự chọn thuốc nếu chưa có tuổi, cân nặng và chẩn đoán phù hợp.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự mua siro/thuốc uống cho trẻ chỉ dựa trên mô tả triệu chứng.\n- Cần hỏi dược sĩ/bác sĩ và cung cấp tuổi, cân nặng, nhiệt độ, thời gian bị bệnh, thuốc đã dùng.\n- Nếu trẻ khó thở, sốt cao, lừ đừ, co giật, bỏ bú/uống kém hoặc tiêu chảy nhiều lần thì đi khám ngay.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Trẻ nhỏ nhạy với liều dùng và tác dụng phụ; nhiều thuốc ho/cảm không phù hợp nếu chưa đánh giá tuổi, cân nặng và tình trạng bệnh.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 6,
@@ -78,7 +79,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "none",
       "first_source": "dav_all",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Rhinocort Aqua (dav_all)\n- [S2] Rhinocort Aqua (dav_all)\n- [S3] Rhinocort Aqua (dav_all)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 7,
@@ -88,7 +89,7 @@
       "intent": "pediatric_symptom",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi liên quan trẻ nhỏ và triệu chứng bệnh. Không nên tự gợi ý thuốc khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Trẻ nhỏ có triệu chứng bệnh không nên tự chọn thuốc nếu chưa có tuổi, cân nặng và chẩn đoán phù hợp.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự mua siro/thuốc uống cho trẻ chỉ dựa trên mô tả triệu chứng.\n- Cần hỏi dược sĩ/bác sĩ và cung cấp tuổi, cân nặng, nhiệt độ, thời gian bị bệnh, thuốc đã dùng.\n- Nếu trẻ khó thở, sốt cao, lừ đừ, co giật, bỏ bú/uống kém hoặc tiêu chảy nhiều lần thì đi khám ngay.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Trẻ nhỏ nhạy với liều dùng và tác dụng phụ; nhiều thuốc ho/cảm không phù hợp nếu chưa đánh giá tuổi, cân nặng và tình trạng bệnh.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 14,
@@ -98,7 +99,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "none",
       "first_source": "dav_all",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Nước muối sinh lý Natri clorid 0,9% (dav_all)\n- [S2] Nước muối sinh lý Natri clorid 0,9% (dav_all)\n- [S3] Nước muối sinh lý Natri clorid 0,9% (dav_all)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 23,
@@ -108,7 +109,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "none",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Prebiotic (trungtamthuoc_duocthu)\n- [S2] Biodiastase (trungtamthuoc_duocthu)\n- [S3] Digezyme (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 25,
@@ -118,7 +119,7 @@
       "intent": "pediatric_symptom",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi liên quan trẻ nhỏ và triệu chứng bệnh. Không nên tự gợi ý thuốc khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Trẻ nhỏ có triệu chứng bệnh không nên tự chọn thuốc nếu chưa có tuổi, cân nặng và chẩn đoán phù hợp.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự mua siro/thuốc uống cho trẻ chỉ dựa trên mô tả triệu chứng.\n- Cần hỏi dược sĩ/bác sĩ và cung cấp tuổi, cân nặng, nhiệt độ, thời gian bị bệnh, thuốc đã dùng.\n- Nếu trẻ khó thở, sốt cao, lừ đừ, co giật, bỏ bú/uống kém hoặc tiêu chảy nhiều lần thì đi khám ngay.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Trẻ nhỏ nhạy với liều dùng và tác dụng phụ; nhiều thuốc ho/cảm không phù hợp nếu chưa đánh giá tuổi, cân nặng và tình trạng bệnh.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 32,
@@ -128,7 +129,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "none",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Apalutamide (trungtamthuoc_duocthu)\n- [S2] Perampanel (trungtamthuoc_duocthu)\n- [S3] Ramelteon (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 41,
@@ -138,7 +139,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "none",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Pramipexole (trungtamthuoc_duocthu)\n- [S2] Crizotinib (trungtamthuoc_duocthu)\n- [S3] Voriconazole (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 49,
@@ -148,7 +149,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "caution",
       "first_source": "otc_condition_guardrail",
-      "answer_preview": "Cảnh báo an toàn từ graph:\n- Bệnh nền/OTC: nên tránh hoặc hỏi dược sĩ trước khi dùng pseudoephedrine, phenylephrine, ephedrine.\n  Lý do: Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.\n\nMình tìm thấy bằng chứng phù hợp để trả lời ở mức thông tin tham khảo.\nCác điểm dựa trên nguồn đã truy xuất:\n- [S1] tiểu đường/đái tháo đường - thuốc cảm cần thận trọng: Hỏi đáp OTC theo bệnh nền\nBệnh nền: tiểu đường/đái tháo đường (diabetes).\nNhu cầu: mua thuốc cảm/cúm, đặc biệt khi có nghẹt mũi/cảm "
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Nên tránh hoặc hỏi dược sĩ/bác sĩ trước khi dùng: pseudoephedrine, phenylephrine, ephedrine.\n\nDẶN DÒ SIÊU NGẮN:\n- Chỉ xem đây là thông tin tham khảo dựa trên nguồn truy xuất.\n- Đối chiếu đúng tên hoạt chất, biệt dược, hàm lượng và dạng dùng trên bao bì/toa thuốc.\n- Hỏi dược sĩ/bác sĩ nếu đang mang thai, cho con bú, trẻ em, người già, bệnh gan/thận hoặc dùng nhiều thuốc.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.\n- Khuyến nghị đượ"
     },
     {
       "id": 54,
@@ -158,7 +159,7 @@
       "intent": "pediatric_symptom",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi liên quan trẻ nhỏ và triệu chứng bệnh. Không nên tự gợi ý thuốc khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Trẻ nhỏ có triệu chứng bệnh không nên tự chọn thuốc nếu chưa có tuổi, cân nặng và chẩn đoán phù hợp.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự mua siro/thuốc uống cho trẻ chỉ dựa trên mô tả triệu chứng.\n- Cần hỏi dược sĩ/bác sĩ và cung cấp tuổi, cân nặng, nhiệt độ, thời gian bị bệnh, thuốc đã dùng.\n- Nếu trẻ khó thở, sốt cao, lừ đừ, co giật, bỏ bú/uống kém hoặc tiêu chảy nhiều lần thì đi khám ngay.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Trẻ nhỏ nhạy với liều dùng và tác dụng phụ; nhiều thuốc ho/cảm không phù hợp nếu chưa đánh giá tuổi, cân nặng và tình trạng bệnh.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 59,
@@ -168,7 +169,7 @@
       "intent": "interaction",
       "graph_highest_risk": "Moderate",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Cảnh báo an toàn từ graph:\n- Tương tác thuốc: Acetylsalicylic acid + Diclofenac mức Moderate. Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau.\n\nMình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Diclofenac (trungtamthuoc_duocthu)\n- [S2] Lornoxicam (trungtamthuoc_duocthu)\n- [S3] Diclofenac (trungtamthuoc_duocth"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Không tự phối hợp Acetylsalicylic acid với Diclofenac vì có tương tác mức Moderate.\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau.\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 60,
@@ -178,7 +179,7 @@
       "intent": "counterfeit",
       "graph_highest_risk": "none",
       "first_source": "dav_all",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi an toàn/cảnh báo cần nguồn safety đáng tin cậy. Bằng chứng hiện tại chưa đủ để kết luận.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Ké đầu ngựa (thương nhĩ tử) sao cháy gai (dav_all)\n- [S2] Pethidin hydroclorid (Meperidin hydroclorid) (trungtamthuoc_duocthu)\n- [S3] Morphin (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 65,
@@ -188,7 +189,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 66,
@@ -198,7 +199,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 67,
@@ -208,7 +209,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 68,
@@ -218,7 +219,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 69,
@@ -228,7 +229,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 71,
@@ -238,7 +239,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 72,
@@ -248,7 +249,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 73,
@@ -258,7 +259,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 74,
@@ -268,7 +269,7 @@
       "intent": "pediatric_symptom",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi liên quan trẻ nhỏ và triệu chứng bệnh. Không nên tự gợi ý thuốc khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Trẻ nhỏ có triệu chứng bệnh không nên tự chọn thuốc nếu chưa có tuổi, cân nặng và chẩn đoán phù hợp.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự mua siro/thuốc uống cho trẻ chỉ dựa trên mô tả triệu chứng.\n- Cần hỏi dược sĩ/bác sĩ và cung cấp tuổi, cân nặng, nhiệt độ, thời gian bị bệnh, thuốc đã dùng.\n- Nếu trẻ khó thở, sốt cao, lừ đừ, co giật, bỏ bú/uống kém hoặc tiêu chảy nhiều lần thì đi khám ngay.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Trẻ nhỏ nhạy với liều dùng và tác dụng phụ; nhiều thuốc ho/cảm không phù hợp nếu chưa đánh giá tuổi, cân nặng và tình trạng bệnh.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 75,
@@ -278,7 +279,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 76,
@@ -288,7 +289,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "none",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Ozolipoile (trungtamthuoc_duocthu)\n- [S2] Docosanol (Behenyl Alcohol) (trungtamthuoc_duocthu)\n- [S3] Nizatidin (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 77,
@@ -298,7 +299,7 @@
       "intent": "dosage",
       "graph_highest_risk": "none",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Taxifolin (trungtamthuoc_duocthu)\n- [S2] Cefotiam (trungtamthuoc_duocthu)\n- [S3] Cefuroxim (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 79,
@@ -308,7 +309,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 82,
@@ -318,7 +319,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 83,
@@ -328,7 +329,7 @@
       "intent": "pediatric_symptom",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi liên quan trẻ nhỏ và triệu chứng bệnh. Không nên tự gợi ý thuốc khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Trẻ nhỏ có triệu chứng bệnh không nên tự chọn thuốc nếu chưa có tuổi, cân nặng và chẩn đoán phù hợp.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự mua siro/thuốc uống cho trẻ chỉ dựa trên mô tả triệu chứng.\n- Cần hỏi dược sĩ/bác sĩ và cung cấp tuổi, cân nặng, nhiệt độ, thời gian bị bệnh, thuốc đã dùng.\n- Nếu trẻ khó thở, sốt cao, lừ đừ, co giật, bỏ bú/uống kém hoặc tiêu chảy nhiều lần thì đi khám ngay.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Trẻ nhỏ nhạy với liều dùng và tác dụng phụ; nhiều thuốc ho/cảm không phù hợp nếu chưa đánh giá tuổi, cân nặng và tình trạng bệnh.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 88,
@@ -338,7 +339,7 @@
       "intent": "emergency",
       "graph_highest_risk": null,
       "first_source": null,
-      "answer_preview": "Đây có thể là tình huống cấp cứu hoặc phản ứng nghiêm trọng sau dùng thuốc. Vui lòng gọi 115 hoặc đến cơ sở y tế gần nhất ngay. Bot không nên hướng dẫn dùng thuốc chi tiết trong tình huống này."
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Đây có thể là tình huống cần đi khám hoặc cấp cứu, không nên tự xử trí bằng thuốc tại nhà.\n- Gọi 115 hoặc đến cơ sở y tế gần nhất nếu triệu chứng nặng, đột ngột, kéo dài hoặc liên quan trẻ nhỏ/người già.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự uống thêm thuốc để che triệu chứng.\n- Liên hệ cấp cứu/đi khám ngay nếu triệu chứng đang nặng hoặc xuất hiện đột ngột.\n- Mang theo toa thuốc, vỏ thuốc hoặc ảnh thuốc đang dùng khi đi khám.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Một số triệu chứng đỏ có thể liên quan bệnh cấp tính; dùng thuốc tại nhà có thể che dấu bệnh và làm chậm xử trí.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 90,
@@ -348,7 +349,7 @@
       "intent": "counterfeit",
       "graph_highest_risk": "none",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi an toàn/cảnh báo cần nguồn safety đáng tin cậy. Bằng chứng hiện tại chưa đủ để kết luận.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Irbesartan (trungtamthuoc_duocthu)\n- [S2] Ketoprofen (trungtamthuoc_duocthu)\n- [S3] Zopiclone (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     },
     {
       "id": 92,
@@ -358,7 +359,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "caution",
       "first_source": "otc_condition_guardrail",
-      "answer_preview": "Cảnh báo an toàn từ graph:\n- Bệnh nền/OTC: nên tránh hoặc hỏi dược sĩ trước khi dùng pseudoephedrine, phenylephrine, ephedrine.\n  Lý do: Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.\n\nMình tìm thấy bằng chứng phù hợp để trả lời ở mức thông tin tham khảo.\nCác điểm dựa trên nguồn đã truy xuất:\n- [S1] tiểu đường/đái tháo đường - thuốc cảm cần thận trọng: Hỏi đáp OTC theo bệnh nền\nBệnh nền: tiểu đường/đái tháo đường (diabetes).\nNhu cầu: mua thuốc cảm/cúm, đặc biệt khi có nghẹt mũi/cảm "
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Nên tránh hoặc hỏi dược sĩ/bác sĩ trước khi dùng: pseudoephedrine, phenylephrine, ephedrine.\n\nDẶN DÒ SIÊU NGẮN:\n- Chỉ xem đây là thông tin tham khảo dựa trên nguồn truy xuất.\n- Đối chiếu đúng tên hoạt chất, biệt dược, hàm lượng và dạng dùng trên bao bì/toa thuốc.\n- Hỏi dược sĩ/bác sĩ nếu đang mang thai, cho con bú, trẻ em, người già, bệnh gan/thận hoặc dùng nhiều thuốc.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Người có tiểu đường nên tránh tự mua thuốc cảm/nghẹt mũi có thuốc co mạch đường uống như pseudoephedrine, phenylephrine hoặc ephedrine nếu chưa hỏi bác sĩ/dược sĩ, vì nhóm này có thể làm tăng đường huyết, tăng huyết áp hoặc ảnh hưởng bệnh nền/thuốc đang dùng.\n- Khuyến nghị đượ"
     },
     {
       "id": 99,
@@ -368,7 +369,7 @@
       "intent": "high_risk_context",
       "graph_highest_risk": "none",
       "first_source": "trungtamthuoc_duocthu",
-      "answer_preview": "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.\nCâu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.\nVới câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.\nCác nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:\n- [S1] Erythritol (trungtamthuoc_duocthu)\n- [S2] Acid Glycolic (AHA) (trungtamthuoc_duocthu)\n- [S3] Torasemide (trungtamthuoc_duocthu)"
+      "answer_preview": "CẢNH BÁO AN TOÀN:\n- Chưa đủ bằng chứng an toàn để bot đưa khuyến nghị dùng thuốc cụ thể.\n\nDẶN DÒ SIÊU NGẮN:\n- Không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa.\n- Hỏi trực tiếp dược sĩ/bác sĩ với tên thuốc, hàm lượng, dạng dùng và bệnh nền.\n- Có thể dùng các nguồn bên dưới để định danh, không dùng chúng để tự kết luận liều/tương tác.\n\nLÝ DO CHUYÊN KHOA DỄ HIỂU:\n- Nguồn truy xuất hiện chưa đủ đúng loại hoặc đủ liên quan để kết luận an toàn.\n\nDẪN NGUỒN ĐỐI SOÁT:\n- Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."
     }
   ]
 }

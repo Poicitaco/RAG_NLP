@@ -65,6 +65,7 @@ async def evaluate(
         response = await service.answer(row["question"], session_id=f"test-q-{row['id']}")
         metadata = response.metadata or {}
         graph_safety = metadata.get("graph_safety") or {}
+        response_blocks = metadata.get("response_blocks") or {}
         results.append(
             {
                 **row,
@@ -77,6 +78,8 @@ async def evaluate(
                 "graph_findings_count": len(graph_safety.get("findings") or []),
                 "llm_answer_enabled": metadata.get("llm_answer_enabled"),
                 "llm_answer_used": metadata.get("llm_answer_used"),
+                "selected_agents": response_blocks.get("selected_agents") or [],
+                "response_blocks": response_blocks,
                 "source_count": len(response.sources or []),
                 "sources": source_summary(response.sources or []),
                 "warnings": response.warnings,
@@ -122,6 +125,11 @@ def summarize(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "intent_counts": dict(Counter(row["intent"] or "unknown" for row in results)),
         "graph_warning_count": sum(1 for row in results if row["graph_should_warn"]),
         "llm_answer_used_count": sum(1 for row in results if row["llm_answer_used"]),
+        "response_block_schema_count": sum(
+            1
+            for row in results
+            if (row.get("response_blocks") or {}).get("schema_version") == "agent_response_v1"
+        ),
         "no_source_count": sum(1 for row in results if not row["sources"]),
         "first_source_counts": dict(source_counter),
         "by_group_action_counts": {group: dict(counter) for group, counter in by_group.items()},
