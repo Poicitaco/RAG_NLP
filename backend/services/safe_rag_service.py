@@ -7,6 +7,7 @@ answer, but it is never used as the source of medical truth.
 from __future__ import annotations
 
 import sys
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -172,6 +173,35 @@ def _selected_agents(
     return list(dict.fromkeys(agents))
 
 
+def _add_trace_step(
+    trace: List[Dict[str, Any]],
+    node: str,
+    status: str = "completed",
+    details: Optional[Dict[str, Any]] = None,
+    started_at: Optional[float] = None,
+) -> None:
+    step = {
+        "node": node,
+        "status": status,
+        "details": details or {},
+    }
+    if started_at is not None:
+        step["duration_ms"] = round((time.perf_counter() - started_at) * 1000, 2)
+    trace.append(step)
+
+
+def _agent_pipeline(
+    trace: List[Dict[str, Any]],
+    graph_overrode_rag: bool = False,
+) -> Dict[str, Any]:
+    return {
+        "name": "safe_rag_agent_pipeline_v1",
+        "execution_mode": "graph_first_hybrid_rag_with_evidence_join",
+        "graph_overrode_rag": graph_overrode_rag,
+        "trace": trace,
+    }
+
+
 class SafeRagService:
     """Hybrid retrieval + evidence guardrail + deterministic answer builder."""
 
@@ -223,14 +253,32 @@ class SafeRagService:
         context: Optional[Dict[str, Any]] = None,
     ) -> ChatResponse:
         conversation = conversation_id or session_id
+        trace: List[Dict[str, Any]] = []
+        started_at = time.perf_counter()
         early_decision = evaluate_evidence(message, [])
+        _add_trace_step(
+            trace,
+            "safety_router",
+            details={
+                "action": early_decision.action.value,
+                "intent": early_decision.intent.value,
+                "should_answer": early_decision.should_answer,
+            },
+            started_at=started_at,
+        )
         if early_decision.action == EvidenceAction.EMERGENCY:
+            selected_agents = _selected_agents(early_decision.intent.value, {})
             response_blocks = build_response_blocks(
                 action=early_decision.action.value,
                 intent=early_decision.intent.value,
                 graph_result={},
                 citations=[],
-                selected_agents=_selected_agents(early_decision.intent.value, {}),
+                selected_agents=selected_agents,
+            )
+            _add_trace_step(
+                trace,
+                "emergency_bypass",
+                details={"retrieval_bypassed": True, "selected_agents": selected_agents},
             )
             return ChatResponse(
                 message=format_response_blocks(response_blocks),
@@ -243,16 +291,24 @@ class SafeRagService:
                     "rag_action": early_decision.action.value,
                     "intent": early_decision.intent.value,
                     "retrieval_bypassed": True,
+                    "selected_agents": selected_agents,
+                    "agent_pipeline": _agent_pipeline(trace),
                     "response_blocks": response_blocks,
                 },
             )
         if early_decision.action == EvidenceAction.HANDOFF:
+            selected_agents = _selected_agents(early_decision.intent.value, {})
             response_blocks = build_response_blocks(
                 action=early_decision.action.value,
                 intent=early_decision.intent.value,
                 graph_result={},
                 citations=[],
-                selected_agents=_selected_agents(early_decision.intent.value, {}),
+                selected_agents=selected_agents,
+            )
+            _add_trace_step(
+                trace,
+                "safety_handoff_bypass",
+                details={"retrieval_bypassed": True, "selected_agents": selected_agents},
             )
             return ChatResponse(
                 message=format_response_blocks(response_blocks),
@@ -269,19 +325,71 @@ class SafeRagService:
                     "llm_answer_enabled": self.llm_answer.enabled,
                     "llm_answer_used": False,
                     "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                    "selected_agents": selected_agents,
+                    "agent_pipeline": _agent_pipeline(trace),
                     "response_blocks": response_blocks,
                 },
             )
 
+        started_at = time.perf_counter()
         alignment = self.name_alignment.align(message)
         effective_message = alignment["augmented_query"] if alignment.get("used") else message
+        _add_trace_step(
+            trace,
+            "drug_name_alignment_agent",
+            details={
+                "used": alignment.get("used"),
+                "canonical_terms": alignment.get("canonical_terms") or [],
+                "match_count": len(alignment.get("matches") or []),
+            },
+            started_at=started_at,
+        )
 
+        started_at = time.perf_counter()
         graph_result = self.graph_safety.check(effective_message)
+        _add_trace_step(
+            trace,
+            "graph_safety_agent",
+            details={
+                "should_warn": graph_result.get("should_warn"),
+                "highest_risk": graph_result.get("highest_risk"),
+                "findings_count": len(graph_result.get("findings") or []),
+                "detected_drugs": graph_result.get("detected_drugs") or [],
+            },
+            started_at=started_at,
+        )
+
+        started_at = time.perf_counter()
         results = self.retrieve(effective_message)
+        _add_trace_step(
+            trace,
+            "hybrid_rag_retrieval_agent",
+            details={
+                "retrieved_count": len(results),
+                "retriever": "hybrid_bm25_chroma_priority",
+                "chroma_dir": str(self.chroma_dir),
+            },
+            started_at=started_at,
+        )
+
+        started_at = time.perf_counter()
         decision = evaluate_evidence(effective_message, results)
+        _add_trace_step(
+            trace,
+            "evidence_guardrail_agent",
+            details={
+                "action": decision.action.value,
+                "intent": decision.intent.value,
+                "should_answer": decision.should_answer,
+                "usable_sources": decision.usable_sources,
+                "blocked_sources": decision.blocked_sources,
+            },
+            started_at=started_at,
+        )
         ranked = _rank_for_answer(effective_message, results)
         answer_rows = _select_answer_rows(graph_result, ranked)
         citations = [_citation_from_row(index, row) for index, row in enumerate(answer_rows[:5], 1)]
+        graph_overrode_rag = bool(graph_result.get("should_warn"))
 
         if decision.action in {EvidenceAction.HANDOFF, EvidenceAction.INSUFFICIENT_EVIDENCE}:
             answer = self._handoff_message(decision.message, citations)
@@ -297,17 +405,36 @@ class SafeRagService:
             answer = graph_warning + "\n\n" + answer
             confidence = max(confidence, 0.78)
             agent_type = AgentType.SAFETY_MONITOR
+        _add_trace_step(
+            trace,
+            "graph_rag_join_node",
+            details={
+                "graph_overrode_rag": graph_overrode_rag,
+                "answer_rows": len(answer_rows[:5]),
+                "citation_count": len(citations),
+            },
+        )
 
         deterministic_answer = answer
+        selected_agents = _selected_agents(decision.intent.value, graph_result, alignment)
         response_blocks = build_response_blocks(
             action=decision.action.value,
             intent=decision.intent.value,
             graph_result=graph_result,
             citations=citations[:5],
-            selected_agents=_selected_agents(decision.intent.value, graph_result, alignment),
+            selected_agents=selected_agents,
         )
         answer = format_response_blocks(response_blocks)
         llm_answer = None
+        _add_trace_step(
+            trace,
+            "final_response_builder",
+            details={
+                "schema_version": response_blocks.get("schema_version"),
+                "selected_agents": selected_agents,
+                "llm_answer_used": False,
+            },
+        )
 
         warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
         if graph_result["should_warn"]:
@@ -334,6 +461,8 @@ class SafeRagService:
                 "effective_query": effective_message,
                 "entity_alignment": alignment,
                 "graph_safety": graph_result,
+                "selected_agents": selected_agents,
+                "agent_pipeline": _agent_pipeline(trace, graph_overrode_rag=graph_overrode_rag),
                 "llm_answer_enabled": self.llm_answer.enabled,
                 "llm_answer_used": bool(llm_answer),
                 "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,

@@ -53,6 +53,7 @@ async def evaluate(
     rows: List[Dict[str, Any]],
     limit: int | None = None,
     use_chroma: bool = False,
+    quiet: bool = False,
 ) -> List[Dict[str, Any]]:
     from backend.services.safe_rag_service import SafeRagService
 
@@ -66,6 +67,8 @@ async def evaluate(
         metadata = response.metadata or {}
         graph_safety = metadata.get("graph_safety") or {}
         response_blocks = metadata.get("response_blocks") or {}
+        alignment = metadata.get("entity_alignment") or {}
+        agent_pipeline = metadata.get("agent_pipeline") or {}
         results.append(
             {
                 **row,
@@ -78,6 +81,14 @@ async def evaluate(
                 "graph_findings_count": len(graph_safety.get("findings") or []),
                 "llm_answer_enabled": metadata.get("llm_answer_enabled"),
                 "llm_answer_used": metadata.get("llm_answer_used"),
+                "alignment_used": alignment.get("used"),
+                "alignment_terms": alignment.get("canonical_terms") or [],
+                "graph_overrode_rag": agent_pipeline.get("graph_overrode_rag"),
+                "pipeline_nodes": [
+                    step.get("node")
+                    for step in agent_pipeline.get("trace") or []
+                    if step.get("node")
+                ],
                 "selected_agents": response_blocks.get("selected_agents") or [],
                 "response_blocks": response_blocks,
                 "source_count": len(response.sources or []),
@@ -88,7 +99,8 @@ async def evaluate(
                 "answer_preview": response.message[:700],
             }
         )
-        print(f"[{index}/{limit or len(rows)}] id={row['id']} action={metadata.get('rag_action')} graph={graph_safety.get('should_warn')}")
+        if not quiet:
+            print(f"[{index}/{limit or len(rows)}] id={row['id']} action={metadata.get('rag_action')} graph={graph_safety.get('should_warn')}")
     return results
 
 
@@ -98,11 +110,15 @@ def summarize(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         by_group[row["group"]][row["rag_action"] or "unknown"] += 1
 
     source_counter = Counter()
+    selected_agent_counter = Counter()
+    pipeline_node_counter = Counter()
     for row in results:
         if row["sources"]:
             source_counter[row["sources"][0]["source"] or "unknown"] += 1
         else:
             source_counter["no_source"] += 1
+        selected_agent_counter.update(row.get("selected_agents") or [])
+        pipeline_node_counter.update(row.get("pipeline_nodes") or [])
 
     risky = [
         {
@@ -124,6 +140,8 @@ def summarize(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "rag_action_counts": dict(Counter(row["rag_action"] or "unknown" for row in results)),
         "intent_counts": dict(Counter(row["intent"] or "unknown" for row in results)),
         "graph_warning_count": sum(1 for row in results if row["graph_should_warn"]),
+        "graph_override_count": sum(1 for row in results if row["graph_overrode_rag"]),
+        "alignment_used_count": sum(1 for row in results if row["alignment_used"]),
         "llm_answer_used_count": sum(1 for row in results if row["llm_answer_used"]),
         "response_block_schema_count": sum(
             1
@@ -132,6 +150,8 @@ def summarize(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         ),
         "no_source_count": sum(1 for row in results if not row["sources"]),
         "first_source_counts": dict(source_counter),
+        "selected_agent_counts": dict(selected_agent_counter),
+        "pipeline_node_counts": dict(pipeline_node_counter),
         "by_group_action_counts": {group: dict(counter) for group, counter in by_group.items()},
         "high_attention_cases": risky,
     }
@@ -145,13 +165,14 @@ async def main() -> None:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--use-llm", action="store_true")
     parser.add_argument("--use-chroma", action="store_true")
+    parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
 
     if not args.use_llm:
         os.environ["USE_LLM_ANSWER"] = "False"
 
     rows = load_questions(Path(args.input))
-    results = await evaluate(rows, args.limit, use_chroma=args.use_chroma)
+    results = await evaluate(rows, args.limit, use_chroma=args.use_chroma, quiet=args.quiet)
     summary = summarize(results)
 
     output = Path(args.output)

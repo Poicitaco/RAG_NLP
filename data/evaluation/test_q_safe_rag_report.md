@@ -4,7 +4,7 @@ Run command:
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'
-.\.venv\Scripts\python.exe scripts\evaluate_test_questions_safe_rag.py --output data\evaluation\test_q_safe_rag_results.json --summary-output data\evaluation\test_q_safe_rag_summary.json
+.\.venv\Scripts\python.exe scripts\evaluate_test_questions_safe_rag.py --quiet --output data\evaluation\test_q_safe_rag_results.json --summary-output data\evaluation\test_q_safe_rag_summary.json
 ```
 
 Evaluation mode:
@@ -21,8 +21,8 @@ Total questions: 100.
 
 RAG actions:
 
-- `allow`: 55
-- `allow_with_caution`: 16
+- `allow`: 57
+- `allow_with_caution`: 14
 - `handoff`: 15
 - `insufficient_evidence`: 2
 - `emergency`: 12
@@ -38,13 +38,21 @@ Detected intents:
 - `counterfeit`: 2
 - `emergency`: 12
 
+Agent pipeline metrics:
+
+- 100/100 questions include `metadata.agent_pipeline`.
+- 29/100 questions used deterministic drug-name alignment.
+- 4/100 questions triggered graph warnings and graph-over-RAG override.
+- Pipeline nodes observed: `safety_router`, `drug_name_alignment_agent`, `graph_safety_agent`, `hybrid_rag_retrieval_agent`, `evidence_guardrail_agent`, `graph_rag_join_node`, `final_response_builder`, plus emergency/handoff bypass nodes.
+
 Graph warnings:
 
-- 3/100 questions triggered graph warnings.
+- 4/100 questions triggered graph warnings.
 - Good cases:
   - ID 49: diabetes + cold medicine triggered OTC condition guardrail.
   - ID 59: aspirin + diclofenac triggered DDInter interaction warning.
   - ID 92: diabetes + cold/flu syrup triggered OTC condition guardrail.
+  - ID 98: paracetamol/acetaminophen + ibuprofen triggered a conservative interaction warning while the user had liver disease context.
 
 Response contract:
 
@@ -55,10 +63,11 @@ Response contract:
 
 Source distribution by first citation:
 
-- `trungtamthuoc_duocthu`: 57
-- `dav_all`: 16
-- `canhgiacduoc`: 5
+- `trungtamthuoc_duocthu`: 47
+- `dav_all`: 24
+- `canhgiacduoc`: 6
 - `otc_condition_guardrail`: 4
+- `ddinter`: 1
 - no source: 18
 
 ## What Works
@@ -70,6 +79,8 @@ Source distribution by first citation:
 5. Handoff now works for pediatric symptom requests such as ID 1, ID 7, ID 25, ID 74, and ID 83.
 6. The final answer now follows the required four-block structure for every evaluated question.
 7. ID 94 now uses a bisphosphonate/alendronic-acid response template when retrieved evidence supports it.
+8. Deterministic name alignment now handles common public-user spellings such as Panadol/Pa-na-don and Lipitor/Li-pi-to before graph and retrieval.
+9. The graph safety layer now caches DDInter and uses a normalized pair index instead of scanning the file on every interaction check.
 
 ## Main Problems
 
@@ -109,7 +120,7 @@ Examples:
 
 4. Current graph coverage is narrow.
 
-Graph warnings only fired on 3/100 questions. This is expected because the graph currently covers:
+Graph warnings only fired on 4/100 questions. This is expected because the graph currently covers:
 
 - DDInter drug-drug pairs when both drugs are detected,
 - the curated diabetes + cold medicine OTC guardrail.
@@ -120,10 +131,11 @@ It does not yet cover broad symptom triage, pediatric contraindications, pregnan
 
 Before improving UI or adding more Gemini behavior, the next engineering step should be a stronger medical-safety router before retrieval:
 
-1. Convert the current keyword safety router into a labeled triage classifier and evaluate precision/recall.
-2. Add curated pediatric, pregnancy, liver/kidney, diabetes, hypertension, and older-adult rules.
-3. Add duplicate-ingredient and common OTC rules, especially paracetamol, NSAIDs, antihistamines, decongestants, cough/cold combinations.
-4. For high-risk questions, force `handoff` or `emergency` before RAG answer generation unless a vetted protocol exists.
-5. Only allow RAG answers when retrieved evidence matches the key entities in the question.
+1. Expand the deterministic alignment dictionary with Vietnamese brand names and slang names from DAV/trungtamthuoc logs.
+2. Convert the current keyword safety router into a labeled triage classifier and evaluate precision/recall.
+3. Add curated pediatric, pregnancy, liver/kidney, diabetes, hypertension, and older-adult rules.
+4. Add duplicate-ingredient and common OTC rules, especially paracetamol, NSAIDs, antihistamines, decongestants, cough/cold combinations.
+5. For high-risk questions, force `handoff` or `emergency` before RAG answer generation unless a vetted protocol exists.
+6. Only allow RAG answers when retrieved evidence matches the key entities in the question.
 
 This result is useful for the NLP report because it clearly shows why a plain RAG retriever is not enough for public medication advice: a safety router and knowledge graph must control the answer path.
