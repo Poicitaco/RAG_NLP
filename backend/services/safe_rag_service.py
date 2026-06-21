@@ -1,9 +1,8 @@
-"""Safe deterministic RAG service used by the chat API.
+"""Safe RAG service used by the chat API.
 
-The service intentionally does not call an LLM. It retrieves evidence, applies
-evidence guardrails, then returns a concise answer preview with citations. This
-keeps the demo reproducible and prevents unsupported dosing or interaction
-claims from leaking into responses.
+The service retrieves evidence, applies evidence and graph guardrails, then
+returns a citation-backed answer. An LLM can optionally rewrite that approved
+answer, but it is never used as the source of medical truth.
 """
 from __future__ import annotations
 
@@ -20,6 +19,7 @@ from backend.safety.evidence_guardrails import (
     normalize_text,
 )
 from backend.services.graph_safety_service import GraphSafetyService, format_graph_warning
+from backend.services.llm_answer_service import LLMAnswerService
 from backend.utils import format_medical_disclaimer
 
 
@@ -125,6 +125,7 @@ class SafeRagService:
         self.model = model
         self._bm25_index: Optional[Dict[str, Any]] = None
         self.graph_safety = GraphSafetyService()
+        self.llm_answer = LLMAnswerService()
 
     def _load_bm25(self) -> Dict[str, Any]:
         if self._bm25_index is None:
@@ -195,6 +196,17 @@ class SafeRagService:
             confidence = max(confidence, 0.78)
             agent_type = AgentType.SAFETY_MONITOR
 
+        deterministic_answer = answer
+        llm_answer = await self.llm_answer.rewrite(
+            question=message,
+            deterministic_answer=deterministic_answer,
+            graph_safety=graph_result,
+            snippets=ranked[:5],
+            citations=citations[:5],
+        )
+        if llm_answer:
+            answer = llm_answer
+
         warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
         if graph_result["should_warn"]:
             warnings.insert(0, "Graph safety check found structured medication safety warnings.")
@@ -217,6 +229,10 @@ class SafeRagService:
                 "retrieved_count": len(results),
                 "retriever": "hybrid_bm25_chroma_priority",
                 "graph_safety": graph_result,
+                "llm_answer_enabled": self.llm_answer.enabled,
+                "llm_answer_used": bool(llm_answer),
+                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                "deterministic_answer": deterministic_answer,
                 "context_provided": bool(context),
             },
         )

@@ -40,6 +40,19 @@ class Settings(BaseSettings):
         default="claude-3-opus-20240229", 
         env="ANTHROPIC_MODEL"
     )
+
+    # Optional constrained LLM answer rewriting
+    USE_LLM_ANSWER: bool = Field(default=False, env="USE_LLM_ANSWER")
+    LLM_PROVIDER: str = Field(default="gemini", env="LLM_PROVIDER")
+    LLM_MODEL: str = Field(default="gemini-2.5-flash", env="LLM_MODEL")
+    LLM_TEMPERATURE: float = Field(default=0.1, env="LLM_TEMPERATURE")
+    LLM_MAX_OUTPUT_TOKENS: int = Field(default=700, env="LLM_MAX_OUTPUT_TOKENS")
+    LLM_TIMEOUT_SECONDS: int = Field(default=30, env="LLM_TIMEOUT_SECONDS")
+    GEMINI_API_KEY: str = Field(default="", env="GEMINI_API_KEY")
+    GEMINI_BASE_URL: str = Field(
+        default="https://generativelanguage.googleapis.com",
+        env="GEMINI_BASE_URL",
+    )
     
     # Cơ sở dữ liệu
     POSTGRES_HOST: str = Field(default="localhost", env="POSTGRES_HOST")

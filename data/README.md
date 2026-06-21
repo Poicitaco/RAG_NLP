@@ -354,7 +354,32 @@ Smoke result:
 data/evaluation/safe_rag_graph_smoke.json
 ```
 
-Important design note: the current system intentionally does not use ChatGPT or
-another LLM to freely generate medical advice. For the safety milestone, answers
-are deterministic and evidence-first. Later, an LLM can be added as a constrained
-rewriter over graph findings and citations only.
+Important design note: the system must not use ChatGPT/Gemini or another LLM to
+freely generate medical advice. The medical facts come from graph findings,
+guardrails, and retrieved citations. The optional LLM layer is only a constrained
+rewriter over that approved evidence.
+
+## Optional Gemini constrained rewriter
+
+Gemini can be enabled for more natural Vietnamese wording, but it is off by
+default. Do not commit real API keys.
+
+```env
+USE_LLM_ANSWER=True
+LLM_PROVIDER="gemini"
+LLM_MODEL="gemini-2.5-flash"
+GEMINI_API_KEY="your-new-local-key"
+```
+
+Runtime behavior:
+
+1. Graph safety check runs first.
+2. Hybrid RAG retrieves citations.
+3. Evidence guardrails decide whether the question can be answered.
+4. The deterministic answer is built.
+5. Gemini may rewrite only the approved answer, graph findings, and citations.
+6. If Gemini has no key, fails, or reaches quota, the API falls back to the
+   deterministic answer and sets `metadata.llm_answer_used=false`.
+
+If an API key was pasted into chat or logs, revoke it and create a new key before
+putting it into `.env`.
