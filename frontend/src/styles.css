@@ -131,6 +131,21 @@ button {
   background: var(--green-soft);
 }
 
+.backend-card.online {
+  background: var(--green-soft);
+  border-color: #a9dfd2;
+}
+
+.backend-card.checking {
+  background: var(--blue-soft);
+  border-color: #a9d6df;
+}
+
+.backend-card.offline {
+  background: var(--red-soft);
+  border-color: #ffb5ac;
+}
+
 .rail-card p {
   margin: 8px 0 0;
   color: inherit;
@@ -312,6 +327,17 @@ button {
   padding: 10px 12px;
   color: var(--green);
   background: var(--green-soft);
+}
+
+.mini-button {
+  margin-top: 12px;
+  padding: 8px 10px;
+  border: 1px solid rgba(24, 49, 44, 0.12);
+  border-radius: 10px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .quick-grid {

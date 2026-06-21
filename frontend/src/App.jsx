@@ -133,6 +133,10 @@ function App() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [backendStatus, setBackendStatus] = useState({
+    state: "checking",
+    detail: "Đang kiểm tra backend...",
+  });
   const patientContext = useMemo(() => extractPatientContext(messages), [messages]);
   const latestAssistant = useMemo(
     () => [...messages].reverse().find((msg) => msg.role === "assistant"),
@@ -174,6 +178,32 @@ function App() {
     gsap.fromTo(item, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: "power2.out" });
   }, [messages.length]);
 
+  useEffect(() => {
+    checkBackend();
+  }, []);
+
+  async function checkBackend() {
+    setBackendStatus({ state: "checking", detail: "Đang kiểm tra backend..." });
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 5000);
+    try {
+      const response = await fetch(`${API_BASE_URL}/health`, { signal: controller.signal });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      setBackendStatus({
+        state: "online",
+        detail: `${data.app || "Backend"} đang chạy`,
+      });
+    } catch (err) {
+      setBackendStatus({
+        state: "offline",
+        detail: `Chưa kết nối được API ở ${API_BASE_URL}`,
+      });
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
+
   async function sendMessage(text = input) {
     const clean = text.trim();
     if (!clean || loading) return;
@@ -214,6 +244,10 @@ function App() {
         },
       ]);
     } catch (err) {
+      setBackendStatus({
+        state: "offline",
+        detail: `Chưa kết nối được API ở ${API_BASE_URL}`,
+      });
       setError(
         "Chưa gọi được backend. Hãy chạy API ở port 8001 rồi thử lại. Chi tiết: " +
           (err?.message || "unknown error")
@@ -351,6 +385,20 @@ function App() {
         </section>
 
         <aside className="right-rail shell-panel">
+          <div className={`rail-card backend-card ${backendStatus.state}`}>
+            <div className="card-heading">
+              {backendStatus.state === "online" ? (
+                <CheckCircle size={22} weight="fill" />
+              ) : (
+                <WarningCircle size={22} weight="fill" />
+              )}
+              <span>Trạng thái hệ thống</span>
+            </div>
+            <p>{backendStatus.detail}</p>
+            <button className="mini-button" onClick={checkBackend} type="button">
+              Kiểm tra lại
+            </button>
+          </div>
           <div className="rail-card">
             <div className="card-heading">
               <Sparkle size={22} weight="fill" />

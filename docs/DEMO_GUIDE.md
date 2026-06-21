@@ -57,14 +57,33 @@ Expected scenarios:
 - Hypertension + cold medicine -> decongestant caution
 - Shortness of breath after medicine -> emergency bypass
 
-## 4. Fast API Smoke Test
+## 4. Full System Check
+
+Run this before showing the demo:
+
+```powershell
+$env:PYTHONIOENCODING='utf-8'
+.\.venv\Scripts\python.exe scripts\system_check.py --api-base-url http://127.0.0.1:8001 --frontend-url http://127.0.0.1:5173
+```
+
+This checks:
+
+- API health
+- Frontend shell
+- CORS from frontend to backend
+- Emergency guardrail
+- Patient-context clarification
+- Interaction warning
+- Condition warning
+
+## 5. Fast API Smoke Test
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'
 .\.venv\Scripts\python.exe scripts\smoke_api.py --base-url http://127.0.0.1:8001
 ```
 
-## 5. Evaluation
+## 6. Evaluation
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'

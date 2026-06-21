@@ -90,6 +90,7 @@ temp/
 data/debug/
 data/ocr_cache/
 tools/tessdata/
+data/evaluation/system_check_latest.json
 
 # OS
 Thumbs.db
