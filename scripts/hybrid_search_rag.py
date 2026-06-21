@@ -52,7 +52,29 @@ HIGH_RISK_TERMS = {
     "tuong tac",
 }
 SAFETY_SOURCES = {"dav_recall", "canhgiacduoc"}
+SECONDARY_DUOCTHU_SOURCES = {"trungtamthuoc_duocthu"}
 REGISTRY_SOURCES = {"dav_all", "dav_otc"}
+COMMON_DRUG_TERMS = {
+    "aceclofenac",
+    "amoxicillin",
+    "aspirin",
+    "atorvastatin",
+    "cefaclor",
+    "cefixim",
+    "clarithromycin",
+    "codeine",
+    "diclofenac",
+    "fluconazole",
+    "ibuprofen",
+    "itraconazole",
+    "loratadine",
+    "methotrexate",
+    "omeprazole",
+    "paracetamol",
+    "simvastatin",
+    "tramadol",
+    "warfarin",
+}
 
 
 def configure_stdout() -> None:
@@ -68,6 +90,11 @@ def normalize_text(text: str) -> str:
 def has_any_term(query: str, terms: set[str]) -> bool:
     normalized = normalize_text(query)
     return any(term in normalized for term in terms)
+
+
+def query_drug_terms(query: str) -> List[str]:
+    normalized = normalize_text(query)
+    return [term for term in COMMON_DRUG_TERMS if term in normalized]
 
 
 def metadata_source(metadata: Dict[str, Any]) -> str:
@@ -121,18 +148,63 @@ def rank_score(rank: int, weight: float) -> float:
     return weight / max(rank, 1)
 
 
-def source_adjustment(query: str, metadata: Dict[str, Any]) -> float:
+def source_adjustment(query: str, metadata: Dict[str, Any], document_preview: str = "") -> float:
     source = metadata_source(metadata)
     doc_type = str(metadata.get("type") or "")
     trust_level = str(metadata.get("trust_level") or "official_registry")
     is_safety_query = has_any_term(query, SAFETY_TERMS)
     is_high_risk_query = has_any_term(query, HIGH_RISK_TERMS)
+    mentioned_drugs = query_drug_terms(query)
+    row_text = normalize_text(
+        " ".join(
+            str(metadata.get(field) or "")
+            for field in (
+                "title",
+                "drug_name",
+                "main_ingredient",
+                "active_ingredients",
+                "section_title",
+                "section",
+                "slug",
+            )
+        )
+        + " "
+        + (document_preview or "")
+    )
+    title_text = normalize_text(
+        " ".join(
+            str(metadata.get(field) or "")
+            for field in ("title", "drug_name", "main_ingredient", "active_ingredients", "slug")
+        )
+    )
+    mentions_query_drug = bool(mentioned_drugs) and any(term in row_text for term in mentioned_drugs)
+    title_mentions_query_drug = bool(mentioned_drugs) and any(term in title_text for term in mentioned_drugs)
+    normalized_query = normalize_text(query)
+    wants_interaction = "tuong tac" in normalized_query
 
     score = 0.0
     if is_safety_query and source in SAFETY_SOURCES:
         score += 0.45
+    if is_safety_query and source in SECONDARY_DUOCTHU_SOURCES:
+        score += 0.3
     if is_safety_query and doc_type in {"safety_recall", "safety_article", "safety"}:
         score += 0.25
+    if is_safety_query and doc_type in {"interaction", "dosage"}:
+        score += 0.2
+    if wants_interaction and doc_type == "interaction":
+        score += 0.65
+    if wants_interaction and source in SECONDARY_DUOCTHU_SOURCES and doc_type == "interaction":
+        score += 0.35
+    if wants_interaction and source in REGISTRY_SOURCES:
+        score -= 0.45
+    if wants_interaction and doc_type == "drug_info":
+        score -= 0.25
+    if mentioned_drugs and title_mentions_query_drug:
+        score += 0.55
+    elif mentioned_drugs and mentions_query_drug:
+        score += 0.2
+    if mentioned_drugs and is_high_risk_query and source in SECONDARY_DUOCTHU_SOURCES and not mentions_query_drug:
+        score -= 0.45
     if not is_safety_query and source in REGISTRY_SOURCES:
         score += 0.1
     if is_high_risk_query and trust_level == "unverified_ocr":
@@ -196,7 +268,7 @@ def combine_results(
 
     rows = []
     for item in merged.values():
-        adjustment = source_adjustment(query, item["metadata"])
+        adjustment = source_adjustment(query, item["metadata"], item.get("document_preview") or "")
         item["adjustment"] = round(adjustment, 4)
         item["hybrid_score"] = round(item["score"] + adjustment, 6)
         rows.append(item)
@@ -221,7 +293,7 @@ def main() -> None:
     parser.add_argument("--collection", default=DEFAULT_COLLECTION)
     parser.add_argument("--provider", choices=["sentence-transformers", "openai"], default="sentence-transformers")
     parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument("--bm25-k", type=int, default=10)
+    parser.add_argument("--bm25-k", type=int, default=100)
     parser.add_argument("--vector-k", type=int, default=10)
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--bm25-weight", type=float, default=0.65)

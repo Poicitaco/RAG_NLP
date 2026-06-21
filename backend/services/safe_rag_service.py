@@ -41,6 +41,7 @@ SOURCE_PRIORITY = {
     "canhgiacduoc": 1,
     "dav_all": 2,
     "dav_otc": 2,
+    "trungtamthuoc_duocthu": 3,
     "dav_pdf": 3,
     "dav_pdf_ocr": 5,
 }
@@ -127,7 +128,7 @@ class SafeRagService:
         return self._bm25_index
 
     def retrieve(self, question: str, top_k: int = 5) -> List[Dict[str, Any]]:
-        bm25_results = bm25_search(self._load_bm25(), question, top_k=10)
+        bm25_results = bm25_search(self._load_bm25(), question, top_k=100)
         chroma_results = chroma_search(
             question,
             str(self.chroma_dir),

@@ -1,22 +1,24 @@
 {
   "output": "data\\chunks\\chroma_priority_corpus.jsonl",
   "inputs": [
-    "data/chunks/rag_corpus_parts"
+    "data/chunks/rag_corpus_parts",
+    "data/chunks/trungtamthuoc_duocthu_chunks.jsonl"
   ],
-  "total_chunks": 14156,
+  "total_chunks": 48833,
   "max_registry": 12000,
   "source_counts": {
     "dav_all": 12000,
     "dav_pdf": 88,
     "dav_pdf_ocr": 784,
     "dav_recall": 84,
-    "canhgiacduoc": 1200
+    "canhgiacduoc": 1200,
+    "trungtamthuoc_duocthu": 34677
   },
   "type_counts": {
-    "drug_info": 12630,
-    "safety": 124,
-    "dosage": 82,
-    "interaction": 36,
+    "drug_info": 36902,
+    "safety": 6261,
+    "dosage": 2883,
+    "interaction": 1503,
     "safety_recall": 84,
     "safety_article": 1200
   }

@@ -79,6 +79,11 @@ def batched(rows: Iterable[Dict[str, Any]], batch_size: int) -> Iterator[List[Di
         yield batch
 
 
+def existing_ids(collection: Any) -> set[str]:
+    ids = collection.get(include=[]).get("ids") or []
+    return {str(row_id) for row_id in ids}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--inputs", nargs="*", default=DEFAULT_INPUTS)
@@ -89,6 +94,7 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--reset", action="store_true")
+    parser.add_argument("--skip-existing", action="store_true")
     args = parser.parse_args()
 
     import chromadb
@@ -111,9 +117,17 @@ def main() -> None:
         },
     )
     model = load_embedding_model(args.provider, args.model)
+    seen_ids = existing_ids(collection) if args.skip_existing else set()
+    if seen_ids:
+        print(f"skipping {len(seen_ids)} existing chunks")
 
     total = 0
-    for batch in batched(read_chunks(args.inputs, args.limit), args.batch_size):
+    rows = (
+        row
+        for row in read_chunks(args.inputs, args.limit)
+        if not seen_ids or str(row.get("id")) not in seen_ids
+    )
+    for batch in batched(rows, args.batch_size):
         ids = [str(row.get("id")) for row in batch]
         docs = [str(row.get("document") or "") for row in batch]
         metadatas = [flatten_metadata(row.get("metadata") or {}) for row in batch]

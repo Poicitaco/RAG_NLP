@@ -1,0 +1,25 @@
+{
+  "source": "https://trungtamthuoc.com/hoat-chat",
+  "robots_txt": "https://trungtamthuoc.com/robots.txt allows / and lists sitemap_hoatchat.xml",
+  "sitemap": "https://trungtamthuoc.com/sitemap_hoatchat.xml",
+  "available_url_count": 1800,
+  "attempted": 1800,
+  "succeeded": 1800,
+  "failed": 0,
+  "output": "data\\processed\\trungtamthuoc_duocthu_monographs.jsonl",
+  "source_kind_counts": {
+    "general_monograph": 28,
+    "active_ingredient": 1772
+  },
+  "detected_section_type_counts": {
+    "adverse_effect": 1224,
+    "contraindication": 1558,
+    "dosage": 1557,
+    "indication": 1638,
+    "interaction": 1304,
+    "overdose": 952,
+    "pregnancy_lactation": 1441,
+    "storage": 409
+  },
+  "trust_policy": "Use as secondary Dược thư reference for RAG/KG enrichment. For high-risk dosage, interaction, pregnancy, liver/kidney, and pediatric claims, require citation and preferably cross-check with official/curated sources."
+}

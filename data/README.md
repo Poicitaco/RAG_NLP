@@ -39,6 +39,9 @@ Tinh den lan chay gan nhat:
 - `data/chunks/rag_corpus_parts/`: 187,643 chunks tong hop de ingest vao vector store, duoc tach shard de GitHub chap nhan.
 - `data/processed/rag_corpus_manifest.json`: thong ke thanh phan corpus tong hop.
 - `data/processed/rag_corpus_parts_manifest.json`: manifest cac shard corpus tong hop.
+- `data/processed/trungtamthuoc_duocthu_monographs.jsonl`: 1,800 trang Dược thư/hoạt chất tu TrungTamThuoc, gom 1,772 hoạt chất va 28 chuyên luận chung.
+- `data/chunks/trungtamthuoc_duocthu_chunks.jsonl`: 34,677 chunks Dược thư/hoạt chất, gom 1,467 interaction, 6,137 safety, 2,801 dosage va 24,272 drug_info chunks.
+- `data/DATA_SOURCE_GAP_ANALYSIS.md`: phan tich nguon du lieu con thieu cho AI Agent + Neo4j KG.
 
 Da lay du danh muc OTC va full registry DAV cong khai tai thoi diem chay script. PDF/nhan/HDSD da duoc tai theo mau uu tien top hoat chat pho bien; chua tai toan bo tai lieu PDF vi dung luong lon va nhieu file scan can OCR.
 
@@ -56,6 +59,7 @@ Dataset nay dung cho:
 3. Cong van thu hoi thuoc DAV: `https://dav.gov.vn/cong-van-thu-hoi-thuoc-cn89.html`
 4. Canh giac Duoc: ADR va thong tin an toan thuoc.
 5. Duoc dien Viet Nam: chi nen dung bo sung cho chuan hoa ten dang bao che, tieu chuan/chat luong, phu luc va chuyen luan can thiet; khong thay the HDSD/nhan thuoc trong tu van su dung.
+6. TrungTamThuoc Dược thư/hoạt chất: dùng làm nguồn Dược thư thứ cấp cho chỉ định/chống chỉ định/liều/tương tác/thai kỳ/gan thận/trẻ em; cần giữ citation và cross-check với nguồn chính thống/curated khi trả lời rủi ro cao.
 
 ## Lenh mau
 
@@ -139,6 +143,8 @@ Tao corpus RAG tong hop:
 python scripts/collect_canhgiacduoc_articles.py --pages 18
 python scripts/prepare_safety_article_chunks.py
 python scripts/prepare_recall_chunks.py
+python scripts/collect_trungtamthuoc_duocthu.py --include-general --delay 0.15
+python scripts/prepare_trungtamthuoc_duocthu_chunks.py
 python scripts/build_rag_corpus.py
 python scripts/split_jsonl.py --input data/chunks/rag_corpus.jsonl --output-dir data/chunks/rag_corpus_parts --prefix rag_corpus --max-mb 80 --manifest data/processed/rag_corpus_parts_manifest.json
 ```

@@ -1,0 +1,19 @@
+{
+  "input": "data\\processed\\trungtamthuoc_duocthu_monographs.jsonl",
+  "output": "data\\chunks\\trungtamthuoc_duocthu_chunks.jsonl",
+  "source_rows": 1800,
+  "skipped_rows": 17,
+  "chunk_count": 34677,
+  "type_counts": {
+    "dosage": 2801,
+    "drug_info": 24272,
+    "interaction": 1467,
+    "safety": 6137
+  },
+  "source_kind_counts": {
+    "active_ingredient": 1755,
+    "general_monograph": 28
+  },
+  "trust_level": "secondary_duocthu_reference",
+  "requires_review": true
+}
