@@ -1,0 +1,7 @@
+{
+  "rules_output": "data/processed/otc_condition_guardrails.jsonl",
+  "chunks_output": "data/chunks/otc_condition_guardrail_chunks.jsonl",
+  "rule_count": 1,
+  "chunk_count": 1,
+  "scope": "Initial curated OTC guardrails for condition-aware public medication advice."
+}

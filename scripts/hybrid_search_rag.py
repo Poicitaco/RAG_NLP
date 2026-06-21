@@ -54,6 +54,7 @@ HIGH_RISK_TERMS = {
 SAFETY_SOURCES = {"dav_recall", "canhgiacduoc"}
 SECONDARY_DUOCTHU_SOURCES = {"trungtamthuoc_duocthu"}
 REGISTRY_SOURCES = {"dav_all", "dav_otc"}
+CONDITION_GUARDRAIL_SOURCES = {"otc_condition_guardrail"}
 COMMON_DRUG_TERMS = {
     "aceclofenac",
     "amoxicillin",
@@ -116,19 +117,27 @@ def chroma_search(
     model_name: str,
     top_k: int,
 ) -> List[Dict[str, Any]]:
-    import chromadb
+    try:
+        import chromadb
+    except Exception as exc:
+        print(f"Chroma unavailable, falling back to BM25 only: {exc}", file=sys.stderr)
+        return []
 
     if not Path(persist_dir).exists():
         return []
-    client = chromadb.PersistentClient(path=persist_dir)
     try:
+        client = chromadb.PersistentClient(path=persist_dir)
         collection = client.get_collection(collection_name)
     except Exception:
         return []
 
     model = load_embedding_model(provider, model_name)
     query_embedding = embed_texts(model, provider, model_name, [query])[0]
-    results = collection.query(query_embeddings=[query_embedding], n_results=top_k)
+    try:
+        results = collection.query(query_embeddings=[query_embedding], n_results=top_k)
+    except Exception as exc:
+        print(f"Chroma query failed, falling back to BM25 only: {exc}", file=sys.stderr)
+        return []
 
     rows: List[Dict[str, Any]] = []
     for index, doc_id in enumerate(results.get("ids", [[]])[0]):
@@ -154,6 +163,7 @@ def source_adjustment(query: str, metadata: Dict[str, Any], document_preview: st
     trust_level = str(metadata.get("trust_level") or "official_registry")
     is_safety_query = has_any_term(query, SAFETY_TERMS)
     is_high_risk_query = has_any_term(query, HIGH_RISK_TERMS)
+    is_condition_otc_query = has_any_term(query, {"tieu duong", "dai thao duong", "thuoc cam", "cam cum"})
     mentioned_drugs = query_drug_terms(query)
     row_text = normalize_text(
         " ".join(
@@ -179,12 +189,15 @@ def source_adjustment(query: str, metadata: Dict[str, Any], document_preview: st
     )
     mentions_query_drug = bool(mentioned_drugs) and any(term in row_text for term in mentioned_drugs)
     title_mentions_query_drug = bool(mentioned_drugs) and any(term in title_text for term in mentioned_drugs)
+    matched_drug_count = sum(1 for term in mentioned_drugs if term in row_text)
     normalized_query = normalize_text(query)
     wants_interaction = "tuong tac" in normalized_query
 
     score = 0.0
     if is_safety_query and source in SAFETY_SOURCES:
         score += 0.45
+    if is_condition_otc_query and source in CONDITION_GUARDRAIL_SOURCES:
+        score += 1.5
     if is_safety_query and source in SECONDARY_DUOCTHU_SOURCES:
         score += 0.3
     if is_safety_query and doc_type in {"safety_recall", "safety_article", "safety"}:
@@ -195,6 +208,10 @@ def source_adjustment(query: str, metadata: Dict[str, Any], document_preview: st
         score += 0.65
     if wants_interaction and source in SECONDARY_DUOCTHU_SOURCES and doc_type == "interaction":
         score += 0.35
+    if source == "ddinter" and doc_type == "interaction" and len(mentioned_drugs) >= 2:
+        score += 0.9
+        if matched_drug_count >= 2:
+            score += 0.9
     if wants_interaction and source in REGISTRY_SOURCES:
         score -= 0.45
     if wants_interaction and doc_type == "drug_info":
@@ -293,7 +310,7 @@ def main() -> None:
     parser.add_argument("--collection", default=DEFAULT_COLLECTION)
     parser.add_argument("--provider", choices=["sentence-transformers", "openai"], default="sentence-transformers")
     parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument("--bm25-k", type=int, default=100)
+    parser.add_argument("--bm25-k", type=int, default=500)
     parser.add_argument("--vector-k", type=int, default=10)
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--bm25-weight", type=float, default=0.65)

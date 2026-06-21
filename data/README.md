@@ -267,15 +267,46 @@ De tranh full vector index bi registry DAV lan at safety/recall evidence, tao pr
 .\.venv\Scripts\python.exe scripts\evaluate_hybrid_retrieval.py --chroma-dir data\embeddings\chroma_priority --collection pharmaceutical_priority --top-k 5 --json-output data\evaluation\hybrid_priority_retrieval_results.json --md-output data\evaluation\hybrid_priority_retrieval_report.md
 ```
 
-Priority corpus gan nhat co 14,156 chunks:
+Priority corpus generated locally after adding DDInter has 209,069 chunks:
 
 - DAV registry slice: 12,000 chunks.
 - DAV PDF text: 88 chunks.
 - DAV OCR PDF: 784 chunks.
 - DAV recall: 84 chunks.
 - CanhGiacDuoc safety: 1,200 chunks.
+- TrungTamThuoc Duoc thu: 34,677 chunks.
+- DDInter drug-drug interaction: 160,235 chunks.
+- Curated OTC condition guardrail: 1 chunk.
 
 Ket qua hybrid priority index tren benchmark 15 cau: Hit@5 = 1.0, Strict Hit@5 = 1.0, MRR = 0.95, Strict MRR = 0.8833. Chroma index directory nam trong `data/embeddings/chroma_priority/` va khong commit len Git.
+
+Note: once DDInter is included, `data/chunks/chroma_priority_corpus.jsonl` can exceed GitHub's 100MB file limit. Treat the full priority corpus as a generated local artifact and rebuild it with `scripts/build_chroma_priority_corpus.py` when needed.
+
+## DDInter and OTC condition guardrails
+
+DDInter public CSV downloads were collected from `https://ddinter.scbdd.com/download/` into `data/raw/ddinter/`.
+
+```bash
+.\.venv\Scripts\python.exe scripts\prepare_ddinter_chunks.py
+.\.venv\Scripts\python.exe scripts\prepare_otc_condition_guardrails.py
+.\.venv\Scripts\python.exe scripts\build_bm25_index.py
+.\.venv\Scripts\python.exe scripts\build_chroma_priority_corpus.py --max-registry 12000
+```
+
+Latest DDInter processed snapshot:
+
+- 160,235 unique drug-drug interaction edges.
+- Major: 26,914.
+- Moderate: 96,675.
+- Minor: 6,833.
+- Unknown: 29,813.
+
+The first curated OTC condition guardrail covers diabetes + common cold medicine. It warns users to avoid or ask a pharmacist/doctor before using oral decongestants such as pseudoephedrine, phenylephrine, and ephedrine, and suggests safer discussion options such as saline nasal spray and non-duplicated paracetamol when appropriate.
+
+Smoke checks:
+
+- `Tui bi tieu duong, gio muon mua thuoc cam thi nen tranh loai nao?` returns `otc-condition:diabetes:cold:oral-decongestants` at rank 1.
+- `Toi dang dung warfarin co uong aspirin duoc khong?` returns `ddinter:acetylsalicylic-acid-warfarin` at rank 1 with `Major` level.
 
 ## Evidence guardrail evaluation
 

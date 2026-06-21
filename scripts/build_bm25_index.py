@@ -18,7 +18,12 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List
 
 
-DEFAULT_INPUTS = ["data/chunks/rag_corpus_parts", "data/chunks/trungtamthuoc_duocthu_chunks.jsonl"]
+DEFAULT_INPUTS = [
+    "data/chunks/rag_corpus_parts",
+    "data/chunks/trungtamthuoc_duocthu_chunks.jsonl",
+    "data/chunks/ddinter_interaction_chunks.jsonl",
+    "data/chunks/otc_condition_guardrail_chunks.jsonl",
+]
 TOKEN_RE = re.compile(r"[a-zA-Z0-9À-ỹ]+")
 
 

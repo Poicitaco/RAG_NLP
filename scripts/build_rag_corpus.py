@@ -14,6 +14,8 @@ DEFAULT_INPUTS = [
     "data/chunks/dav_recalls_chunks.jsonl",
     "data/chunks/canhgiacduoc_safety_chunks.jsonl",
     "data/chunks/trungtamthuoc_duocthu_chunks.jsonl",
+    "data/chunks/ddinter_interaction_chunks.jsonl",
+    "data/chunks/otc_condition_guardrail_chunks.jsonl",
 ]
 
 

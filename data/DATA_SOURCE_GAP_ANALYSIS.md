@@ -123,3 +123,33 @@ Recommended approach:
 4. Evaluate whether DDInter can be downloaded and normalized into the graph.
 5. Add DailyMed as an English cross-check source for high-risk interaction and
    contraindication evidence.
+
+## Newly Added Structured Safety Data
+
+### DDInter public drug-drug interactions
+
+- Source: `https://ddinter.scbdd.com/download/`
+- Raw files: `data/raw/ddinter/ddinter_downloads_code_*.csv`
+- Processed edges: `data/processed/ddinter_interaction_edges.jsonl`
+- RAG chunks: `data/chunks/ddinter_interaction_chunks.jsonl`
+- Unique edges: 160,235
+- Level counts: Major 26,914; Moderate 96,675; Minor 6,833; Unknown 29,813
+- License note: DDInter public downloads are marked CC-BY-NC-SA-4.0.
+
+This is the strongest current source for Neo4j `(:Drug)-[:INTERACTS_WITH]->(:Drug)`
+relationships.
+
+### Curated OTC condition guardrails
+
+- Source file: `data/processed/otc_condition_guardrails.jsonl`
+- RAG chunks: `data/chunks/otc_condition_guardrail_chunks.jsonl`
+- Initial rule: diabetes + cold/flu OTC medicines.
+
+This rule supports public questions like: "Tui bi tieu duong, gio muon mua
+thuoc cam thi nen tranh loai nao?" It flags oral decongestants such as
+pseudoephedrine, phenylephrine, and ephedrine as ingredients the user should not
+self-select without pharmacist/doctor advice.
+
+Next expansion should add condition-aware OTC guardrails for hypertension,
+pregnancy, breastfeeding, children, kidney disease, liver disease, peptic
+ulcer/bleeding risk, asthma/COPD, and allergy history.

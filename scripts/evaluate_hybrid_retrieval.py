@@ -189,7 +189,7 @@ def main() -> None:
     parser.add_argument("--collection", default=DEFAULT_COLLECTION)
     parser.add_argument("--provider", choices=["sentence-transformers", "openai"], default="sentence-transformers")
     parser.add_argument("--model", default=DEFAULT_MODEL)
-    parser.add_argument("--bm25-k", type=int, default=100)
+    parser.add_argument("--bm25-k", type=int, default=500)
     parser.add_argument("--vector-k", type=int, default=10)
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--bm25-weight", type=float, default=0.65)

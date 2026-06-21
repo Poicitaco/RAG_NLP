@@ -14,8 +14,21 @@ from pathlib import Path
 from typing import Any, Dict, Iterator, List
 
 
-DEFAULT_INPUTS = ["data/chunks/rag_corpus_parts", "data/chunks/trungtamthuoc_duocthu_chunks.jsonl"]
-PRIORITY_SOURCES = {"dav_recall", "canhgiacduoc", "dav_pdf", "dav_pdf_ocr", "trungtamthuoc_duocthu"}
+DEFAULT_INPUTS = [
+    "data/chunks/rag_corpus_parts",
+    "data/chunks/trungtamthuoc_duocthu_chunks.jsonl",
+    "data/chunks/ddinter_interaction_chunks.jsonl",
+    "data/chunks/otc_condition_guardrail_chunks.jsonl",
+]
+PRIORITY_SOURCES = {
+    "dav_recall",
+    "canhgiacduoc",
+    "dav_pdf",
+    "dav_pdf_ocr",
+    "trungtamthuoc_duocthu",
+    "ddinter",
+    "otc_condition_guardrail",
+}
 
 
 def iter_jsonl_paths(inputs: List[str]) -> Iterator[Path]:
