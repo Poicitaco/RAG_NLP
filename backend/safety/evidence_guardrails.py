@@ -204,7 +204,7 @@ def contains_any(text: str, terms: Iterable[str]) -> bool:
     for term in terms:
         normalized_term = normalize_text(term)
         if " " in normalized_term:
-            if normalized_term in normalized:
+            if re.search(r"\b" + re.escape(normalized_term) + r"\b", normalized):
                 return True
         elif normalized_term in tokens:
             return True

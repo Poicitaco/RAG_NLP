@@ -181,12 +181,24 @@ class PatientContextService:
             patient_context["breastfeeding"] = True
         if contains_any(normalized, ["mang thai", "co thai", "bau"]):
             patient_context["pregnant"] = True
+        if conditions:
+            patient_context["conditions_confirmed"] = True
+        if "khong di ung" in normalized or "khong co di ung" in normalized:
+            patient_context["allergies_confirmed"] = True
+        if (
+            "khong dang dung thuoc" in normalized
+            or "khong dung thuoc" in normalized
+            or "khong dung thuoc khac" in normalized
+        ):
+            patient_context["current_medications_confirmed"] = True
 
         return patient_context
 
     def _risk_flags(self, normalized: str, intent: str) -> List[str]:
         flags = []
-        if contains_any(normalized, PEDIATRIC_TERMS) or re.search(r"\b\d+\s*(tuoi|thang)\b", normalized):
+        age = self._extract_age(normalized)
+        age_months = self._extract_age_months(normalized)
+        if contains_any(normalized, PEDIATRIC_TERMS) or age_months is not None or (age is not None and age < 16):
             flags.append("pediatric_or_age_sensitive")
         if contains_any(normalized, PREGNANCY_TERMS):
             flags.append("pregnancy_or_breastfeeding")

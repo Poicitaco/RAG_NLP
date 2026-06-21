@@ -28,6 +28,13 @@ ALIASES = {
         "benh tieu duong",
         "duong huyet",
     ],
+    "hypertension": ["hypertension", "huyet ap", "cao huyet ap", "tang huyet ap"],
+    "heart_disease": ["heart disease", "tim mach", "benh tim", "suy tim"],
+    "kidney_disease": ["kidney disease", "suy than", "benh than", "hong than"],
+    "liver_disease": ["liver disease", "suy gan", "benh gan", "vang da", "vang mat"],
+    "stomach_ulcer": ["stomach ulcer", "dau bao tu", "viem loet da day", "loet da day"],
+    "asthma": ["asthma", "hen", "suyen", "hen suyen"],
+    "pregnancy": ["pregnancy", "mang thai", "co thai", "bau", "cho con bu"],
     "cold_flu": [
         "thuoc cam",
         "thuoc cam cum",
@@ -37,6 +44,17 @@ ALIASES = {
         "so mui",
         "cold",
         "flu",
+    ],
+    "pain_fever": [
+        "giam dau",
+        "ha sot",
+        "dau dau",
+        "dau bung",
+        "dau lung",
+        "dau khop",
+        "sot",
+        "pain",
+        "fever",
     ],
 }
 
@@ -67,6 +85,92 @@ INTERACTION_RECOMMENDATION = (
     "h\u1ecfi b\u00e1c s\u0129/d\u01b0\u1ee3c s\u0129 "
     "tr\u01b0\u1edbc khi d\u00f9ng c\u00f9ng nhau."
 )
+
+BUILTIN_CONDITION_RULES: List[Dict[str, Any]] = [
+    {
+        "id": "builtin:hypertension:cold:oral-decongestants",
+        "condition": "hypertension",
+        "otc_category": "cold_flu",
+        "risk_level": "caution",
+        "ingredients_to_avoid_or_check": ["pseudoephedrine", "phenylephrine", "ephedrine"],
+        "recommendation": (
+            "Ng\u01b0\u1eddi c\u00f3 t\u0103ng huy\u1ebft \u00e1p ho\u1eb7c b\u1ec7nh tim m\u1ea1ch "
+            "kh\u00f4ng n\u00ean t\u1ef1 d\u00f9ng thu\u1ed1c c\u1ea3m/ngh\u1eb9t m\u0169i "
+            "c\u00f3 nh\u00f3m co m\u1ea1ch \u0111\u01b0\u1eddng u\u1ed1ng nh\u01b0 pseudoephedrine, "
+            "phenylephrine ho\u1eb7c ephedrine n\u1ebfu ch\u01b0a h\u1ecfi b\u00e1c s\u0129/d\u01b0\u1ee3c s\u0129."
+        ),
+    },
+    {
+        "id": "builtin:heart:cold:oral-decongestants",
+        "condition": "heart_disease",
+        "otc_category": "cold_flu",
+        "risk_level": "caution",
+        "ingredients_to_avoid_or_check": ["pseudoephedrine", "phenylephrine", "ephedrine"],
+        "recommendation": (
+            "Ng\u01b0\u1eddi c\u00f3 b\u1ec7nh tim m\u1ea1ch c\u1ea7n h\u1ecfi chuy\u00ean m\u00f4n "
+            "tr\u01b0\u1edbc khi d\u00f9ng thu\u1ed1c c\u1ea3m c\u00f3 ch\u1ea5t co m\u1ea1ch, "
+            "v\u00ec c\u00f3 th\u1ec3 l\u00e0m t\u0103ng nh\u1ecbp tim ho\u1eb7c huy\u1ebft \u00e1p."
+        ),
+    },
+    {
+        "id": "builtin:kidney:pain_fever:nsaids",
+        "condition": "kidney_disease",
+        "otc_category": "pain_fever",
+        "risk_level": "caution",
+        "ingredients_to_avoid_or_check": ["ibuprofen", "diclofenac", "naproxen", "aspirin"],
+        "recommendation": (
+            "Ng\u01b0\u1eddi c\u00f3 b\u1ec7nh th\u1eadn/suy th\u1eadn kh\u00f4ng n\u00ean t\u1ef1 d\u00f9ng "
+            "NSAID nh\u01b0 ibuprofen, diclofenac, naproxen ho\u1eb7c aspirin \u0111\u1ec3 gi\u1ea3m \u0111au/h\u1ea1 s\u1ed1t "
+            "n\u1ebfu ch\u01b0a h\u1ecfi b\u00e1c s\u0129/d\u01b0\u1ee3c s\u0129."
+        ),
+    },
+    {
+        "id": "builtin:liver:pain_fever:paracetamol",
+        "condition": "liver_disease",
+        "otc_category": "pain_fever",
+        "risk_level": "caution",
+        "ingredients_to_avoid_or_check": ["paracetamol", "acetaminophen", "alcohol"],
+        "recommendation": (
+            "Ng\u01b0\u1eddi c\u00f3 b\u1ec7nh gan c\u1ea7n h\u1ecfi b\u00e1c s\u0129/d\u01b0\u1ee3c s\u0129 "
+            "tr\u01b0\u1edbc khi d\u00f9ng paracetamol/acetaminophen, \u0111\u1eb7c bi\u1ec7t n\u1ebfu c\u00f3 u\u1ed1ng r\u01b0\u1ee3u "
+            "ho\u1eb7c \u0111ang d\u00f9ng nhi\u1ec1u thu\u1ed1c."
+        ),
+    },
+    {
+        "id": "builtin:stomach_ulcer:pain_fever:nsaids",
+        "condition": "stomach_ulcer",
+        "otc_category": "pain_fever",
+        "risk_level": "caution",
+        "ingredients_to_avoid_or_check": ["ibuprofen", "diclofenac", "naproxen", "aspirin"],
+        "recommendation": (
+            "Ng\u01b0\u1eddi \u0111au bao t\u1eed/vi\u00eam lo\u00e9t d\u1ea1 d\u00e0y c\u1ea7n tr\u00e1nh t\u1ef1 d\u00f9ng "
+            "NSAID v\u00ec c\u00f3 th\u1ec3 l\u00e0m t\u0103ng nguy c\u01a1 \u0111au d\u1ea1 d\u00e0y ho\u1eb7c xu\u1ea5t huy\u1ebft."
+        ),
+    },
+    {
+        "id": "builtin:asthma:pain_fever:nsaids",
+        "condition": "asthma",
+        "otc_category": "pain_fever",
+        "risk_level": "caution",
+        "ingredients_to_avoid_or_check": ["aspirin", "ibuprofen", "diclofenac", "naproxen"],
+        "recommendation": (
+            "M\u1ed9t s\u1ed1 ng\u01b0\u1eddi hen/suy\u1ec5n c\u00f3 th\u1ec3 nh\u1ea1y c\u1ea3m v\u1edbi aspirin/NSAID; "
+            "kh\u00f4ng n\u00ean t\u1ef1 d\u00f9ng n\u1ebfu t\u1eebng kh\u00f2 kh\u00e8, kh\u00f3 th\u1edf ho\u1eb7c d\u1ecb \u1ee9ng sau khi d\u00f9ng nh\u00f3m n\u00e0y."
+        ),
+    },
+    {
+        "id": "builtin:pregnancy:any:otc",
+        "condition": "pregnancy",
+        "otc_category": "",
+        "risk_level": "caution",
+        "ingredients_to_avoid_or_check": ["self-medication"],
+        "recommendation": (
+            "Ph\u1ee5 n\u1eef mang thai ho\u1eb7c cho con b\u00fa kh\u00f4ng n\u00ean t\u1ef1 mua thu\u1ed1c OTC "
+            "n\u1ebfu ch\u01b0a h\u1ecfi b\u00e1c s\u0129/d\u01b0\u1ee3c s\u0129, v\u00ec l\u1ef1a ch\u1ecdn thu\u1ed1c ph\u1ee5 thu\u1ed9c tu\u1ed5i thai, "
+            "tri\u1ec7u ch\u1ee9ng v\u00e0 thu\u1ed1c \u0111ang d\u00f9ng."
+        ),
+    },
+]
 
 
 def strip_accents(text: str) -> str:
@@ -166,12 +270,18 @@ class GraphSafetyService:
 
     def check_condition_otc(self, query: str) -> List[Dict[str, Any]]:
         findings = []
-        for rule in self._load_otc_rules():
+        seen_rules = set()
+        for rule in list(self._load_otc_rules()) + BUILTIN_CONDITION_RULES:
+            rule_id = str(rule.get("id") or "")
+            if rule_id and rule_id in seen_rules:
+                continue
+            if rule_id:
+                seen_rules.add(rule_id)
             condition = str(rule.get("condition") or "")
             category = str(rule.get("otc_category") or "")
             if not mentioned(query, ALIASES.get(condition, [condition])):
                 continue
-            if category == "cold_flu" and not mentioned(query, ALIASES["cold_flu"]):
+            if category and category in ALIASES and not mentioned(query, ALIASES[category]):
                 continue
             findings.append(
                 {

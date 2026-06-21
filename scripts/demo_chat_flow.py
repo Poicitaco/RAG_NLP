@@ -21,6 +21,14 @@ DEMO_TURNS: List[Dict[str, str]] = [
         "message": "T\u00f4i u\u1ed1ng aspirin c\u00f9ng ibuprofen \u0111\u01b0\u1ee3c kh\u00f4ng?",
     },
     {
+        "session_id": "demo-kidney",
+        "message": "T\u00f4i b\u1ecb suy th\u1eadn, 50 tu\u1ed5i, kh\u00f4ng d\u1ecb \u1ee9ng, kh\u00f4ng \u0111ang d\u00f9ng thu\u1ed1c kh\u00e1c. Gi\u1edd \u0111au \u0111\u1ea7u th\u00ec u\u1ed1ng thu\u1ed1c gi\u1ea3m \u0111au g\u00ec?",
+    },
+    {
+        "session_id": "demo-bp",
+        "message": "T\u00f4i b\u1ecb huy\u1ebft \u00e1p cao, 60 tu\u1ed5i, kh\u00f4ng d\u1ecb \u1ee9ng, kh\u00f4ng d\u00f9ng thu\u1ed1c kh\u00e1c. Mu\u1ed1n mua thu\u1ed1c c\u1ea3m th\u00ec c\u1ea7n tr\u00e1nh g\u00ec?",
+    },
+    {
         "session_id": "demo-emergency",
         "message": "T\u00f4i kh\u00f3 th\u1edf sau khi u\u1ed1ng thu\u1ed1c th\u00ec l\u00e0m sao?",
     },
