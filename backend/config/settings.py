@@ -117,7 +117,10 @@ class Settings(BaseSettings):
         env="ACCESS_TOKEN_EXPIRE_MINUTES"
     )
     CORS_ORIGINS: str = Field(
-        default="http://localhost:3000,http://localhost:8501",
+        default=(
+            "http://localhost:3000,http://localhost:5173,http://localhost:8501,"
+            "http://127.0.0.1:5173,http://127.0.0.1:8001"
+        ),
         env="CORS_ORIGINS"
     )
     

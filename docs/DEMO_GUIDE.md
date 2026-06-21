@@ -20,7 +20,28 @@ Safety Router
 
 Open another PowerShell window for the demo commands.
 
-## 2. Run Main Demo Flow
+## 2. Start Frontend
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://127.0.0.1:5173
+```
+
+The frontend uses `http://127.0.0.1:8001` by default. To point it at another API:
+
+```powershell
+$env:VITE_API_BASE_URL='http://127.0.0.1:8000'
+npm run dev
+```
+
+## 3. Run Main Demo Flow
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'
@@ -36,14 +57,14 @@ Expected scenarios:
 - Hypertension + cold medicine -> decongestant caution
 - Shortness of breath after medicine -> emergency bypass
 
-## 3. Fast API Smoke Test
+## 4. Fast API Smoke Test
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'
 .\.venv\Scripts\python.exe scripts\smoke_api.py --base-url http://127.0.0.1:8001
 ```
 
-## 4. Evaluation
+## 5. Evaluation
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'

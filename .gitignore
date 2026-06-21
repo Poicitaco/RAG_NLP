@@ -102,3 +102,8 @@ Thumbs.db
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
