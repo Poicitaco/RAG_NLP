@@ -15,7 +15,7 @@ import re
 import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import Any, Dict, Iterable, Iterator, List
+from typing import Any, Dict, Iterator, List
 
 
 DEFAULT_INPUTS = [
@@ -24,7 +24,7 @@ DEFAULT_INPUTS = [
     "data/chunks/ddinter_interaction_chunks.jsonl",
     "data/chunks/otc_condition_guardrail_chunks.jsonl",
 ]
-TOKEN_RE = re.compile(r"[a-zA-Z0-9À-ỹ]+")
+TOKEN_RE = re.compile(r"[a-z0-9]+")
 
 
 def iter_jsonl_paths(inputs: List[str]) -> Iterator[Path]:
@@ -50,7 +50,8 @@ def read_chunks(inputs: List[str], limit: int | None = None) -> Iterator[Dict[st
 
 
 def strip_accents(text: str) -> str:
-    decomposed = unicodedata.normalize("NFD", text)
+    value = (text or "").replace("Đ", "D").replace("đ", "d")
+    decomposed = unicodedata.normalize("NFD", value)
     return "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
 
 

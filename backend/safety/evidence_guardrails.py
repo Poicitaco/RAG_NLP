@@ -106,7 +106,8 @@ HIGH_RISK_INTENTS = {
 
 
 def normalize_text(text: str) -> str:
-    decomposed = unicodedata.normalize("NFD", (text or "").lower())
+    value = (text or "").replace("Đ", "D").replace("đ", "d").lower()
+    decomposed = unicodedata.normalize("NFD", value)
     return " ".join(
         "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn").split()
     )

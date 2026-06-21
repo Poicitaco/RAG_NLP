@@ -20,13 +20,35 @@ DEFAULT_OTC = ROOT_DIR / "data" / "processed" / "otc_condition_guardrails.jsonl"
 ALIASES = {
     "aspirin": ["aspirin", "acetylsalicylic acid", "acid acetylsalicylic"],
     "paracetamol": ["paracetamol", "acetaminophen"],
-    "diabetes": ["diabetes", "tieu duong", "dai thao duong", "đái tháo đường", "tiểu đường"],
-    "cold_flu": ["thuoc cam", "cam cum", "cảm", "cảm cúm", "cold", "flu"],
+    "diabetes": [
+        "diabetes",
+        "tieu duong",
+        "dai thao duong",
+        "tiểu đường",
+        "đái tháo đường",
+        "bệnh tiểu đường",
+        "đường huyết",
+    ],
+    "cold_flu": [
+        "thuoc cam",
+        "thuoc cam cum",
+        "cam",
+        "cam cum",
+        "cảm",
+        "cảm cúm",
+        "nghet mui",
+        "nghẹt mũi",
+        "so mui",
+        "sổ mũi",
+        "cold",
+        "flu",
+    ],
 }
 
 
 def strip_accents(text: str) -> str:
-    decomposed = unicodedata.normalize("NFD", text or "")
+    value = (text or "").replace("Đ", "D").replace("đ", "d")
+    decomposed = unicodedata.normalize("NFD", value)
     return "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
 
 
@@ -48,7 +70,7 @@ def variants(term: str) -> List[str]:
     for canonical, names in ALIASES.items():
         normalized_names = {normalize(name) for name in names}
         if norm == canonical or norm in normalized_names:
-            return list(normalized_names)
+            return sorted(normalized_names)
     return [norm]
 
 
@@ -147,7 +169,9 @@ class GraphSafetyService:
                                 "drug_b": edge.get("drug_b"),
                                 "source": edge.get("source") or "ddinter",
                                 "source_url": edge.get("source_url"),
-                                "recommendation": "Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau.",
+                                "recommendation": (
+                                    "Không tự phối hợp; hỏi bác sĩ/dược sĩ trước khi dùng cùng nhau."
+                                ),
                             }
                         )
         return findings
@@ -156,7 +180,10 @@ class GraphSafetyService:
         order = {"major": 4, "moderate": 3, "caution": 2, "minor": 1, "unknown": 0}
         if not findings:
             return "none"
-        return max((str(row.get("severity") or "unknown") for row in findings), key=lambda item: order.get(item.lower(), 0))
+        return max(
+            (str(row.get("severity") or "unknown") for row in findings),
+            key=lambda item: order.get(item.lower(), 0),
+        )
 
 
 def format_graph_warning(findings: List[Dict[str, Any]]) -> str:
@@ -166,12 +193,16 @@ def format_graph_warning(findings: List[Dict[str, Any]]) -> str:
     for finding in findings:
         if finding["type"] == "condition_otc_caution":
             ingredients = ", ".join(finding.get("ingredients_to_avoid_or_check") or [])
-            lines.append(f"- Bệnh nền/OTC: nên tránh hoặc hỏi dược sĩ trước khi dùng {ingredients}.")
+            lines.append(
+                "- Bệnh nền/OTC: nên tránh hoặc hỏi dược sĩ trước khi dùng "
+                f"{ingredients}."
+            )
             if finding.get("recommendation"):
                 lines.append(f"  Lý do: {finding['recommendation']}")
         elif finding["type"] == "drug_drug_interaction":
             lines.append(
-                f"- Tương tác thuốc: {finding.get('drug_a')} + {finding.get('drug_b')} mức {finding.get('severity')}. "
-                f"{finding.get('recommendation')}"
+                "- Tương tác thuốc: "
+                f"{finding.get('drug_a')} + {finding.get('drug_b')} "
+                f"mức {finding.get('severity')}. {finding.get('recommendation')}"
             )
     return "\n".join(lines)

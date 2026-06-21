@@ -89,6 +89,46 @@ def _rank_for_answer(question: str, results: List[Dict[str, Any]]) -> List[Dict[
     return sorted(results, key=key)
 
 
+def _select_answer_rows(graph_result: Dict[str, Any], ranked: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    findings = graph_result.get("findings") or []
+    if not findings:
+        return ranked
+
+    preferred_sources = set()
+    preferred_types = set()
+    exact_interaction_pairs = []
+    for finding in findings:
+        if finding.get("type") == "condition_otc_caution":
+            preferred_sources.add("otc_condition_guardrail")
+            preferred_types.add("condition_guardrail")
+        elif finding.get("type") == "drug_drug_interaction":
+            preferred_sources.add("ddinter")
+            preferred_types.add("interaction")
+            left = normalize_text(str(finding.get("drug_a") or ""))
+            right = normalize_text(str(finding.get("drug_b") or ""))
+            if left and right:
+                exact_interaction_pairs.append((left, right))
+
+    exact_rows = []
+    for row in ranked:
+        if _source(row) != "ddinter":
+            continue
+        text = _row_text(row)
+        for left, right in exact_interaction_pairs:
+            if left in text and right in text:
+                exact_rows.append(row)
+                break
+    if exact_rows:
+        return exact_rows
+
+    selected = [
+        row
+        for row in ranked
+        if _source(row) in preferred_sources or str(_metadata(row).get("type") or "") in preferred_types
+    ]
+    return selected or ranked
+
+
 def _citation_from_row(index: int, row: Dict[str, Any]) -> Citation:
     metadata = _metadata(row)
     return Citation(
@@ -179,14 +219,15 @@ class SafeRagService:
         results = self.retrieve(message)
         decision = evaluate_evidence(message, results)
         ranked = _rank_for_answer(message, results)
-        citations = [_citation_from_row(index, row) for index, row in enumerate(ranked[:5], 1)]
+        answer_rows = _select_answer_rows(graph_result, ranked)
+        citations = [_citation_from_row(index, row) for index, row in enumerate(answer_rows[:5], 1)]
 
         if decision.action in {EvidenceAction.HANDOFF, EvidenceAction.INSUFFICIENT_EVIDENCE}:
             answer = self._handoff_message(decision.message, citations)
             confidence = 0.25
             agent_type = AgentType.SAFETY_MONITOR
         else:
-            answer = self._allowed_answer(decision.action, ranked[:3], citations[:3])
+            answer = self._allowed_answer(decision.action, answer_rows[:3], citations[:3])
             confidence = 0.72 if decision.action == EvidenceAction.ALLOW else 0.55
             agent_type = self._agent_type(decision.intent.value)
 
@@ -201,7 +242,7 @@ class SafeRagService:
             question=message,
             deterministic_answer=deterministic_answer,
             graph_safety=graph_result,
-            snippets=ranked[:5],
+            snippets=answer_rows[:5],
             citations=citations[:5],
         )
         if llm_answer:
@@ -250,7 +291,12 @@ class SafeRagService:
         for index, row in enumerate(rows, 1):
             citation_id = citations[index - 1].id if index <= len(citations) else f"S{index}"
             metadata = _metadata(row)
-            title = metadata.get("title") or metadata.get("drug_name") or row.get("title_or_drug") or "Nguồn dữ liệu"
+            title = (
+                metadata.get("title")
+                or metadata.get("drug_name")
+                or row.get("title_or_drug")
+                or "Nguồn dữ liệu"
+            )
             lines.append(f"- [{citation_id}] {title}: {_preview(row)}")
 
         if action == EvidenceAction.ALLOW_WITH_CAUTION:
@@ -258,17 +304,25 @@ class SafeRagService:
                 "Vì có yếu tố cần thận trọng, chỉ nên xem đây là thông tin chung; "
                 "không tự đổi liều, phối hợp thuốc hoặc ngưng thuốc trong toa."
             )
-        lines.append("Khi dùng thuốc thật, hãy đối chiếu toa/nhãn thuốc và hỏi dược sĩ nếu còn chưa chắc.")
+        lines.append(
+            "Khi dùng thuốc thật, hãy đối chiếu toa/nhãn thuốc và hỏi dược sĩ nếu còn chưa chắc."
+        )
         return "\n".join(lines)
 
     def _handoff_message(self, reason: str, citations: List[Citation]) -> str:
         lines = [
             "Mình chưa có đủ bằng chứng đã xác minh để trả lời an toàn cho câu hỏi này.",
             reason,
-            "Với câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ.",
+            (
+                "Với câu hỏi về liều dùng, tương tác, thai kỳ, trẻ em, bệnh gan/thận "
+                "hoặc thuốc kê đơn, bạn nên hỏi trực tiếp bác sĩ/dược sĩ."
+            ),
         ]
         if citations:
-            lines.append("Các nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, không dùng để kết luận liều/tương tác:")
+            lines.append(
+                "Các nguồn truy xuất hiện chỉ nên dùng để định danh hoặc kiểm tra lại, "
+                "không dùng để kết luận liều/tương tác:"
+            )
             for citation in citations[:3]:
                 title = citation.title or citation.source
                 lines.append(f"- [{citation.id}] {title} ({citation.source})")

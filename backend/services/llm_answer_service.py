@@ -51,7 +51,10 @@ class LLMAnswerService:
             citations=citations,
         )
         try:
-            return await self._gemini_generate(prompt)
+            answer = await self._gemini_generate(prompt)
+            if not self._is_valid_rewrite(answer, graph_safety, citations):
+                return None
+            return answer
         except Exception:
             return None
 
@@ -106,6 +109,26 @@ class LLMAnswerService:
             f"{json.dumps(payload, ensure_ascii=False, indent=2)}"
         )
 
+    def _is_valid_rewrite(
+        self,
+        answer: Optional[str],
+        graph_safety: Dict[str, Any],
+        citations: List[Citation],
+    ) -> bool:
+        if not answer:
+            return False
+        stripped = answer.strip()
+        if len(stripped) < 160:
+            return False
+        if citations and "[S" not in stripped:
+            return False
+        if graph_safety.get("should_warn"):
+            lowered = stripped.lower()
+            warning_terms = ("cảnh báo", "canh bao", "thận trọng", "than trong", "tránh", "tranh")
+            if not any(term in lowered for term in warning_terms):
+                return False
+        return stripped.endswith((".", "!", "?", "。"))
+
     async def _gemini_generate(self, prompt: str) -> Optional[str]:
         url = (
             f"{settings.GEMINI_BASE_URL.rstrip('/')}/v1beta/models/"
@@ -129,6 +152,9 @@ class LLMAnswerService:
 
         candidates = data.get("candidates") or []
         if not candidates:
+            return None
+        finish_reason = candidates[0].get("finishReason")
+        if finish_reason and finish_reason != "STOP":
             return None
         parts = ((candidates[0].get("content") or {}).get("parts") or [])
         text = "\n".join(part.get("text") or "" for part in parts).strip()
