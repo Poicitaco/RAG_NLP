@@ -23,6 +23,7 @@ from backend.services.final_response_builder import build_response_blocks, forma
 from backend.services.graph_safety_service import GraphSafetyService, format_graph_warning
 from backend.services.llm_answer_service import LLMAnswerService
 from backend.services.drug_name_alignment_service import DrugNameAlignmentService
+from backend.services.patient_context_service import PatientContextService
 from backend.utils import format_medical_disclaimer
 
 
@@ -202,6 +203,45 @@ def _agent_pipeline(
     }
 
 
+def _clarification_response_blocks(
+    *,
+    intent: str,
+    questions: List[str],
+    selected_agents: List[str],
+    reason: str,
+) -> Dict[str, Any]:
+    return {
+        "schema_version": "agent_response_v1",
+        "render_order": ["safety_guardrail", "core_action", "clinical_reason", "citations"],
+        "selected_agents": selected_agents,
+        "blocks": {
+            "safety_guardrail": {
+                "title": "CẢNH BÁO AN TOÀN",
+                "level": "caution",
+                "items": [
+                    "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.",
+                ],
+            },
+            "core_action": {
+                "title": "DẶN DÒ SIÊU NGẮN",
+                "items": questions,
+            },
+            "clinical_reason": {
+                "title": "LÝ DO CHUYÊN KHOA DỄ HIỂU",
+                "items": [
+                    "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+                    f"Lý do hệ thống hỏi lại: {reason}.",
+                ],
+            },
+            "citations": {
+                "title": "DẪN NGUỒN ĐỐI SOÁT",
+                "items": ["Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."],
+                "sources": [],
+            },
+        },
+    }
+
+
 class SafeRagService:
     """Hybrid retrieval + evidence guardrail + deterministic answer builder."""
 
@@ -220,6 +260,7 @@ class SafeRagService:
         self.graph_safety = GraphSafetyService()
         self.llm_answer = LLMAnswerService()
         self.name_alignment = DrugNameAlignmentService()
+        self.patient_context = PatientContextService()
 
     def _load_bm25(self) -> Dict[str, Any]:
         if self._bm25_index is None:
@@ -296,8 +337,82 @@ class SafeRagService:
                     "response_blocks": response_blocks,
                 },
             )
+
+        started_at = time.perf_counter()
+        context_assessment = self.patient_context.assess(
+            message=message,
+            intent=early_decision.intent.value,
+            context=context,
+        )
+        _add_trace_step(
+            trace,
+            "patient_context_collector",
+            details={
+                "should_ask": context_assessment.should_ask,
+                "missing_context": context_assessment.missing_context,
+                "risk_flags": context_assessment.risk_flags,
+            },
+            started_at=started_at,
+        )
+        if context_assessment.should_ask:
+            selected_agents = list(
+                dict.fromkeys(
+                    [
+                        "triage_risk_agent",
+                        "patient_context_collector",
+                        "safety_monitor_agent",
+                        "final_response_builder",
+                    ]
+                )
+            )
+            response_blocks = _clarification_response_blocks(
+                intent=early_decision.intent.value,
+                questions=context_assessment.questions,
+                selected_agents=selected_agents,
+                reason=context_assessment.reason,
+            )
+            _add_trace_step(
+                trace,
+                "clarification_bypass",
+                details={
+                    "retrieval_bypassed": True,
+                    "selected_agents": selected_agents,
+                    "question_count": len(context_assessment.questions),
+                },
+            )
+            return ChatResponse(
+                message=format_response_blocks(response_blocks),
+                conversation_id=conversation,
+                agent_type=AgentType.SAFETY_MONITOR,
+                confidence=0.86,
+                sources=[],
+                warnings=[
+                    "Patient context is required before giving medication advice.",
+                    format_medical_disclaimer(),
+                ],
+                suggestions=context_assessment.questions,
+                metadata={
+                    "rag_action": "needs_clarification",
+                    "intent": early_decision.intent.value,
+                    "retrieval_bypassed": True,
+                    "should_answer": False,
+                    "patient_context": context_assessment.patient_context,
+                    "missing_context": context_assessment.missing_context,
+                    "clarification_questions": context_assessment.questions,
+                    "selected_agents": selected_agents,
+                    "agent_pipeline": _agent_pipeline(trace),
+                    "llm_answer_enabled": self.llm_answer.enabled,
+                    "llm_answer_used": False,
+                    "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                    "response_blocks": response_blocks,
+                    "context_provided": bool(context),
+                },
+            )
         if early_decision.action == EvidenceAction.HANDOFF:
             selected_agents = _selected_agents(early_decision.intent.value, {})
+            if context_assessment.risk_flags:
+                selected_agents.insert(1, "patient_context_collector")
+                selected_agents = list(dict.fromkeys(selected_agents))
             response_blocks = build_response_blocks(
                 action=early_decision.action.value,
                 intent=early_decision.intent.value,
@@ -325,6 +440,9 @@ class SafeRagService:
                     "llm_answer_enabled": self.llm_answer.enabled,
                     "llm_answer_used": False,
                     "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                    "patient_context": context_assessment.patient_context,
+                    "missing_context": context_assessment.missing_context,
+                    "clarification_questions": context_assessment.questions,
                     "selected_agents": selected_agents,
                     "agent_pipeline": _agent_pipeline(trace),
                     "response_blocks": response_blocks,
@@ -417,6 +535,9 @@ class SafeRagService:
 
         deterministic_answer = answer
         selected_agents = _selected_agents(decision.intent.value, graph_result, alignment)
+        if context_assessment.risk_flags:
+            selected_agents.insert(1, "patient_context_collector")
+            selected_agents = list(dict.fromkeys(selected_agents))
         response_blocks = build_response_blocks(
             action=decision.action.value,
             intent=decision.intent.value,
@@ -460,6 +581,9 @@ class SafeRagService:
                 "original_query": message,
                 "effective_query": effective_message,
                 "entity_alignment": alignment,
+                "patient_context": context_assessment.patient_context,
+                "missing_context": context_assessment.missing_context,
+                "clarification_questions": context_assessment.questions,
                 "graph_safety": graph_result,
                 "selected_agents": selected_agents,
                 "agent_pipeline": _agent_pipeline(trace, graph_overrode_rag=graph_overrode_rag),

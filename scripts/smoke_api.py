@@ -8,11 +8,11 @@ from typing import Any, Dict
 
 
 QUESTIONS = [
-    "Aceclofenac Stella 100mg thu hồi",
-    "Paracetamol là thuốc gì?",
-    "Paracetamol 500mg dùng thế nào?",
-    "Tôi uống aspirin cùng ibuprofen được không?",
-    "Tôi khó thở sau khi uống thuốc thì làm sao?",
+    "Aceclofenac Stella 100mg thu h\u1ed3i",
+    "Paracetamol l\u00e0 thu\u1ed1c g\u00ec?",
+    "Tui b\u1ecb c\u1ea3m, mua thu\u1ed1c g\u00ec u\u1ed1ng cho nhanh kh\u1ecfi?",
+    "T\u00f4i u\u1ed1ng aspirin c\u00f9ng ibuprofen \u0111\u01b0\u1ee3c kh\u00f4ng?",
+    "T\u00f4i kh\u00f3 th\u1edf sau khi u\u1ed1ng thu\u1ed1c th\u00ec l\u00e0m sao?",
 ]
 
 
