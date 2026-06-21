@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import {
@@ -80,9 +80,16 @@ function splitResponse(message) {
 
   for (const line of lines) {
     const heading = line.match(/^\*\*(.+?)\*\*:?\s*(.*)$/);
+    const plainHeading = line.match(/^([A-ZÀ-ỴĐ0-9\s/,-]{4,60}):\s*(.*)$/);
     if (heading) {
       if (current) blocks.push(current);
       current = { title: heading[1], body: heading[2] ? [heading[2]] : [] };
+    } else if (plainHeading && !line.startsWith("-")) {
+      if (current) blocks.push(current);
+      current = {
+        title: plainHeading[1].trim(),
+        body: plainHeading[2] ? [plainHeading[2]] : [],
+      };
     } else if (current) {
       current.body.push(line);
     } else {
