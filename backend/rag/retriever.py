@@ -1,5 +1,5 @@
 """
-Document retrieval for RAG system - Truy xuất tài liệu cho hệ thống RAG
+Mo-dun truy xuat tai lieu cho he thong RAG.
 """
 from typing import List, Dict, Any, Optional
 from backend.rag.embeddings import get_embedding_service
@@ -36,8 +36,8 @@ class Retriever:
         self.similarity_threshold = similarity_threshold or settings.SIMILARITY_THRESHOLD
         
         app_logger.info(
-            f"Initialized retriever with top_k={self.top_k}, "
-            f"threshold={self.similarity_threshold}"
+            f"Da khoi tao retriever voi top_k={self.top_k}, "
+            f"nguong={self.similarity_threshold}"
         )
     
     async def retrieve(

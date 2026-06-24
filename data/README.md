@@ -1,4 +1,4 @@
-# Data Pipeline
+﻿# Data Pipeline
 
 Thu muc nay phuc vu phan quan trong nhat cua du an: du lieu cho RAG duoc.
 
@@ -66,40 +66,40 @@ Dataset nay dung cho:
 Lay 2 trang dau cua danh muc OTC de test:
 
 ```bash
-python scripts/collect_dav_drugs.py --dataset otc --max-pages 2 --page-size 100
+python scripts/legacy/collect_dav_drugs.py --dataset otc --max-pages 2 --page-size 100
 ```
 
 Lay toan bo OTC:
 
 ```bash
-python scripts/collect_dav_drugs.py --dataset otc --page-size 500
+python scripts/legacy/collect_dav_drugs.py --dataset otc --page-size 500
 ```
 
 Lay toan bo registry DAV:
 
 ```bash
-python scripts/collect_dav_drugs.py --dataset all --page-size 1000
-python scripts/rebuild_dav_processed_from_raw.py --dataset all
-python scripts/profile_drug_dataset.py --input data/processed/dav_all_drugs.jsonl --json-output data/processed/dav_all_profile.json --md-output data/processed/dav_all_profile.md
-python scripts/prepare_drug_chunks.py --input data/processed/dav_all_drugs.jsonl
+python scripts/legacy/collect_dav_drugs.py --dataset all --page-size 1000
+python scripts/legacy/rebuild_dav_processed_from_raw.py --dataset all
+python scripts/legacy/profile_drug_dataset.py --input data/processed/dav_all_drugs.jsonl --json-output data/processed/dav_all_profile.json --md-output data/processed/dav_all_profile.md
+python scripts/legacy/prepare_drug_chunks.py --input data/processed/dav_all_drugs.jsonl
 ```
 
 Tao chunks tu file processed:
 
 ```bash
-python scripts/prepare_drug_chunks.py --input data/processed/dav_otc_drugs.jsonl
+python scripts/legacy/prepare_drug_chunks.py --input data/processed/dav_otc_drugs.jsonl
 ```
 
 Thong ke dataset cho bao cao NLP:
 
 ```bash
-python scripts/profile_drug_dataset.py --input data/processed/dav_otc_drugs.jsonl
+python scripts/legacy/profile_drug_dataset.py --input data/processed/dav_otc_drugs.jsonl
 ```
 
 Tai thu HDSD/nhan tu DAV:
 
 ```bash
-python scripts/download_dav_documents.py --input data/processed/dav_otc_drugs.jsonl --limit 20
+python scripts/legacy/download_dav_documents.py --input data/processed/dav_otc_drugs.jsonl --limit 20
 ```
 
 Tai toan bo tai lieu OTC co the rat ton dung luong. Nen chay gioi han truoc, sau do moi bo `--limit`.
@@ -107,7 +107,7 @@ Tai toan bo tai lieu OTC co the rat ton dung luong. Nen chay gioi han truoc, sau
 Extract text/chunks tu PDF da tai:
 
 ```bash
-python scripts/extract_dav_pdf_chunks.py --manifest data/raw/documents/dav_otc_manifest.jsonl
+python scripts/legacy/extract_dav_pdf_chunks.py --manifest data/raw/documents/dav_otc_manifest.jsonl
 ```
 
 Luu y: mot so PDF DAV la file scan/anh nen `pypdf` se khong doc duoc text. Output `data/processed/dav_otc_pdf_text.jsonl` co truong `extraction_status=needs_ocr` de danh dau cac file can OCR sau.
@@ -115,7 +115,7 @@ Luu y: mot so PDF DAV la file scan/anh nen `pypdf` se khong doc duoc text. Outpu
 OCR cac PDF scan bang Tesseract. Tai lieu DAV chu yeu la tieng Viet, co xen tieng Anh o ten hoat chat/nhan/manufacturer, nen dung `vie+eng`:
 
 ```bash
-python scripts/ocr_dav_documents.py --dpi 200 --lang vie+eng
+python scripts/legacy/ocr_dav_documents.py --dpi 200 --lang vie+eng
 ```
 
 Script can `pdftoppm` va `tesseract`. Neu thieu model tieng Viet, script se tai `vie.traineddata` vao `tools/tessdata/`.
@@ -123,8 +123,8 @@ Script can `pdftoppm` va `tesseract`. Neu thieu model tieng Viet, script se tai 
 Doi chieu OCR voi DAV registry de danh dau rui ro:
 
 ```bash
-python scripts/validate_ocr_against_registry.py
-python scripts/annotate_ocr_chunks.py
+python scripts/legacy/validate_ocr_against_registry.py
+python scripts/legacy/annotate_ocr_chunks.py
 python scripts/build_rag_corpus.py
 ```
 
@@ -133,20 +133,20 @@ Tat ca chunk OCR duoc gan `trust_level=unverified_ocr` va `requires_human_review
 Chon tap PDF uu tien theo hoat chat pho bien:
 
 ```bash
-python scripts/select_dav_document_sample.py --top-ingredients 20 --per-ingredient 2
-python scripts/download_dav_documents.py --input data/processed/dav_otc_document_priority.jsonl --limit 60 --reset-manifest
+python scripts/legacy/select_dav_document_sample.py --top-ingredients 20 --per-ingredient 2
+python scripts/legacy/download_dav_documents.py --input data/processed/dav_otc_document_priority.jsonl --limit 60 --reset-manifest
 ```
 
 Tao corpus RAG tong hop:
 
 ```bash
-python scripts/collect_canhgiacduoc_articles.py --pages 18
-python scripts/prepare_safety_article_chunks.py
-python scripts/prepare_recall_chunks.py
-python scripts/collect_trungtamthuoc_duocthu.py --include-general --delay 0.15
+python scripts/legacy/collect_canhgiacduoc_articles.py --pages 18
+python scripts/legacy/prepare_safety_article_chunks.py
+python scripts/legacy/prepare_recall_chunks.py
+python scripts/legacy/collect_trungtamthuoc_duocthu.py --include-general --delay 0.15
 python scripts/prepare_trungtamthuoc_duocthu_chunks.py
 python scripts/build_rag_corpus.py
-python scripts/split_jsonl.py --input data/chunks/rag_corpus.jsonl --output-dir data/chunks/rag_corpus_parts --prefix rag_corpus --max-mb 80 --manifest data/processed/rag_corpus_parts_manifest.json
+python scripts/legacy/split_jsonl.py --input data/chunks/rag_corpus.jsonl --output-dir data/chunks/rag_corpus_parts --prefix rag_corpus --max-mb 80 --manifest data/processed/rag_corpus_parts_manifest.json
 ```
 
 Build lexical BM25 index local de smoke-test retrieval khong can OpenAI API:
@@ -179,7 +179,7 @@ Ket qua baseline gan nhat voi 15 cau hoi: Hit@5 = 0.8667, Strict Hit@5 = 0.8667,
 Tao bo test lon hon 1000 cau hoi tu du lieu that:
 
 ```bash
-.\.venv\Scripts\python.exe scripts\generate_rag_testset.py --count 1200
+.\.venv\Scripts\python.exe scripts\legacy\generate_rag_testset.py --count 1200
 ```
 
 Output:
@@ -214,13 +214,13 @@ py -3.11 -m venv .venv
 Quet chat luong JSON/JSONL:
 
 ```bash
-.\.venv\Scripts\python.exe scripts\audit_json_text_quality.py --roots data
+.\.venv\Scripts\python.exe scripts\legacy\audit_json_text_quality.py --roots data
 ```
 
 Sua ky tu dieu khien/mojibake co the phuc hoi:
 
 ```bash
-.\.venv\Scripts\python.exe scripts\repair_json_text_quality.py data
+.\.venv\Scripts\python.exe scripts\legacy\repair_json_text_quality.py data
 ```
 
 Ket qua audit gan nhat: 30 file JSON/JSONL, 886,753 rows, 0 parse error, 0 repairable mojibake, 7 replacement-char tu PDF extraction va 2,402 OCR rows can human review/guardrail.
@@ -231,7 +231,7 @@ Sau khi tao `.venv` bang Python 3.11, co the kiem tra vector store voi 1,000 chu
 
 ```bash
 .\.venv\Scripts\python.exe scripts\ingest_rag_corpus.py --limit 1000 --batch-size 64 --reset --persist-dir data\embeddings\chroma_smoke --collection pharmaceutical_smoke
-.\.venv\Scripts\python.exe scripts\smoke_search_rag.py "Vocinti 10mg hoạt chất" --persist-dir data\embeddings\chroma_smoke --collection pharmaceutical_smoke --top-k 3
+.\.venv\Scripts\python.exe scripts\legacy\smoke_search_rag.py "Vocinti 10mg hoạt chất" --persist-dir data\embeddings\chroma_smoke --collection pharmaceutical_smoke --top-k 3
 ```
 
 Kiem tra gan nhat: Chroma ingest thanh cong 1,000 chunks voi model `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`. Query exact-name co the kem BM25, vi vay huong toi uu nen la hybrid retrieval: BM25 cho exact match ten thuoc/SDK/hoat chat, vector search cho cau hoi dien dat tu nhien.
@@ -329,10 +329,10 @@ Ba ca bi handoff la cac cau rui ro cao ma bang chung chua du loai nguon da xac m
 Preview end-to-end khong goi LLM, dung de chung minh luong production trong bao cao:
 
 ```bash
-.\.venv\Scripts\python.exe scripts\rag_answer_preview.py "Aceclofenac Stella 100mg thu hồi" --json-output data\evaluation\rag_answer_preview_recall.json
-.\.venv\Scripts\python.exe scripts\rag_answer_preview.py "Nafacolex 400 liều dùng ibuprofen như thế nào?" --json-output data\evaluation\rag_answer_preview_dosage.json
-.\.venv\Scripts\python.exe scripts\rag_answer_preview.py "Tôi uống aspirin cùng ibuprofen được không?" --json-output data\evaluation\rag_answer_preview_interaction.json
-.\.venv\Scripts\python.exe scripts\rag_answer_preview.py --questions-file data\evaluation\seed_questions.jsonl --json-output data\evaluation\rag_answer_preview_seed.json
+.\.venv\Scripts\python.exe scripts\legacy\rag_answer_preview.py "Aceclofenac Stella 100mg thu hồi" --json-output data\evaluation\rag_answer_preview_recall.json
+.\.venv\Scripts\python.exe scripts\legacy\rag_answer_preview.py "Nafacolex 400 liều dùng ibuprofen như thế nào?" --json-output data\evaluation\rag_answer_preview_dosage.json
+.\.venv\Scripts\python.exe scripts\legacy\rag_answer_preview.py "Tôi uống aspirin cùng ibuprofen được không?" --json-output data\evaluation\rag_answer_preview_interaction.json
+.\.venv\Scripts\python.exe scripts\legacy\rag_answer_preview.py --questions-file data\evaluation\seed_questions.jsonl --json-output data\evaluation\rag_answer_preview_seed.json
 ```
 
 Luong preview hien tai:

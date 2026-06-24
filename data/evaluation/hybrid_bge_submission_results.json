@@ -1,0 +1,2159 @@
+{
+  "summary": {
+    "case_count": 15,
+    "top_k": 5,
+    "hit_at_k": 0.9333,
+    "strict_hit_at_k": 0.8667,
+    "mrr": 0.88,
+    "strict_mrr": 0.8333,
+    "by_category": {
+      "drug_registry": {
+        "case_count": 4,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 1.0,
+        "mrr": 1.0,
+        "strict_mrr": 1.0
+      },
+      "recall": {
+        "case_count": 4,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 1.0,
+        "mrr": 1.0,
+        "strict_mrr": 1.0
+      },
+      "counterfeit": {
+        "case_count": 1,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 1.0,
+        "mrr": 1.0,
+        "strict_mrr": 1.0
+      },
+      "ocr_leaflet": {
+        "case_count": 1,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 1.0,
+        "mrr": 1.0,
+        "strict_mrr": 0.5
+      },
+      "dosage_ocr_risk": {
+        "case_count": 1,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 1.0,
+        "mrr": 1.0,
+        "strict_mrr": 1.0
+      },
+      "high_risk_context": {
+        "case_count": 1,
+        "hit_at_k": 0.0,
+        "strict_hit_at_k": 0.0,
+        "mrr": 0.0,
+        "strict_mrr": 0.0
+      },
+      "interaction": {
+        "case_count": 1,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 0.0,
+        "mrr": 0.2,
+        "strict_mrr": 0.0
+      },
+      "safety_warning": {
+        "case_count": 1,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 1.0,
+        "mrr": 1.0,
+        "strict_mrr": 1.0
+      },
+      "registration_number": {
+        "case_count": 1,
+        "hit_at_k": 1.0,
+        "strict_hit_at_k": 1.0,
+        "mrr": 1.0,
+        "strict_mrr": 1.0
+      }
+    },
+    "failures": [
+      {
+        "id": "safety_001",
+        "question": "Tôi đang mang thai có dùng ibuprofen được không?",
+        "category": "high_risk_context",
+        "top_result": {
+          "rank": 1,
+          "id": "trungtamthuoc:ibuprofen:8:1",
+          "hybrid_score": 1.29614,
+          "source": "trungtamthuoc_duocthu",
+          "type": "safety",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 61,
+              "score": 19.003
+            },
+            {
+              "retriever": "bm25",
+              "rank": 62,
+              "score": 19.003
+            },
+            {
+              "retriever": "chroma",
+              "rank": 2,
+              "distance": 0.511177
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "drug_registry_001",
+      "question": "Vocinti 10mg có hoạt chất gì và số đăng ký là gì?",
+      "category": "drug_registry",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "499110081926:identity",
+        "hybrid_score": 1.1,
+        "source": "dav_all",
+        "type": "drug_info",
+        "trust_level": "official_registry",
+        "title_or_drug": "Vocinti 10mg",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 42.7813
+          },
+          {
+            "retriever": "chroma",
+            "rank": 1,
+            "distance": 0.556265
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "499110081926:identity",
+          "hybrid_score": 1.1,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Vocinti 10mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 42.7813
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.556265
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "499110081926:manufacturer",
+          "hybrid_score": 0.6,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Vocinti 10mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 38.8602
+            },
+            {
+              "retriever": "chroma",
+              "rank": 2,
+              "distance": 0.678341
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "drug_registry_002",
+      "question": "Glanatec Ophthalmic Solution 0.4% là dạng bào chế gì?",
+      "category": "drug_registry",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "499110081826:identity",
+        "hybrid_score": 1.1,
+        "source": "dav_all",
+        "type": "drug_info",
+        "trust_level": "official_registry",
+        "title_or_drug": "Glanatec Ophthalmic Solution 0.4%",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 36.5112
+          },
+          {
+            "retriever": "chroma",
+            "rank": 1,
+            "distance": 0.635486
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "499110081826:identity",
+          "hybrid_score": 1.1,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Glanatec Ophthalmic Solution 0.4%",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 36.5112
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.635486
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "drug_registry_003",
+      "question": "Ferinject số đăng ký 400110081626 do nước nào sản xuất?",
+      "category": "drug_registry",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "400110081626:manufacturer",
+        "hybrid_score": 0.75,
+        "source": "dav_all",
+        "type": "drug_info",
+        "trust_level": "official_registry",
+        "title_or_drug": "Ferinject",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 65.4986
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "400110081626:manufacturer",
+          "hybrid_score": 0.75,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ferinject",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 65.4986
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "drug_registry_004",
+      "question": "Qlaira có hoạt chất nào?",
+      "category": "drug_registry",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "VN2-47-13:manufacturer",
+        "hybrid_score": 0.75,
+        "source": "dav_all",
+        "type": "drug_info",
+        "trust_level": "official_registry",
+        "title_or_drug": "Qlaira",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 16.0155
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "VN2-47-13:manufacturer",
+          "hybrid_score": 0.75,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Qlaira",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 16.0155
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "trungtamthuoc:nomegestrol-acetate:15:1",
+          "hybrid_score": 0.541667,
+          "source": "trungtamthuoc_duocthu",
+          "type": "drug_info",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Nomegestrol Acetate",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 15.7643
+            },
+            {
+              "retriever": "bm25",
+              "rank": 3,
+              "score": 15.7643
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "recall_001",
+      "question": "Aceclofenac Stella 100mg có bị thu hồi không?",
+      "category": "recall",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "canhgiacduoc:1:1",
+        "hybrid_score": 1.925,
+        "source": "canhgiacduoc",
+        "type": "safety_article",
+        "trust_level": "trusted_safety_article",
+        "title_or_drug": "DAV: Thông báo thu hồi trên toàn quốc lô thuốc Aceclofenac Stella 100mg",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 2,
+            "score": 39.2261
+          },
+          {
+            "retriever": "chroma",
+            "rank": 1,
+            "distance": 0.493509
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "canhgiacduoc:1:1",
+          "hybrid_score": 1.925,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Thông báo thu hồi trên toàn quốc lô thuốc Aceclofenac Stella 100mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 39.2261
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.493509
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "dav_recall:1",
+          "hybrid_score": 1.554167,
+          "source": "dav_recall",
+          "type": "safety_recall",
+          "trust_level": "official_registry",
+          "title_or_drug": "Quyết định số 184/QĐ-QLD về việc thu hồi do vi phạm mức độ 2 của thuốc Aceclofenac STELLA 100mg (Số giấy đăng ký lưu hành: VD-20124-13)",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 3,
+              "score": 38.6912
+            },
+            {
+              "retriever": "chroma",
+              "rank": 4,
+              "distance": 0.593822
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 3,
+          "id": "canhgiacduoc:1:3",
+          "hybrid_score": 1.262745,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Thông báo thu hồi trên toàn quốc lô thuốc Aceclofenac Stella 100mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 51,
+              "score": 26.8446
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 4,
+          "id": "trungtamthuoc:aceclofenac:9:1",
+          "hybrid_score": 1.25119,
+          "source": "trungtamthuoc_duocthu",
+          "type": "dosage",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Aceclofenac",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 6,
+              "score": 36.1821
+            },
+            {
+              "retriever": "bm25",
+              "rank": 7,
+              "score": 36.1821
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": false,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 5,
+          "id": "893110757224:identity",
+          "hybrid_score": 1.2,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Aceclofenac STELLA 100 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 39.9141
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": false,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "recall_002",
+      "question": "Clorocid TW3 cloramphenicol 250mg giả mạo là sao?",
+      "category": "counterfeit",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "canhgiacduoc:2:1",
+        "hybrid_score": 0.916667,
+        "source": "canhgiacduoc",
+        "type": "safety_article",
+        "trust_level": "trusted_safety_article",
+        "title_or_drug": "DAV: Cảnh báo về thuốc Clorocid TW3 (cloramphenicol 250mg) giả mạo",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 3,
+            "score": 73.5323
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "canhgiacduoc:2:1",
+          "hybrid_score": 0.916667,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Cảnh báo về thuốc Clorocid TW3 (cloramphenicol 250mg) giả mạo",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 3,
+              "score": 73.5323
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "canhgiacduoc:2:3",
+          "hybrid_score": 0.78125,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Cảnh báo về thuốc Clorocid TW3 (cloramphenicol 250mg) giả mạo",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 8,
+              "score": 56.9054
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 3,
+          "id": "canhgiacduoc:2:2",
+          "hybrid_score": 0.719118,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Cảnh báo về thuốc Clorocid TW3 (cloramphenicol 250mg) giả mạo",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 34,
+              "score": 35.1927
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 4,
+          "id": "canhgiacduoc:9:2",
+          "hybrid_score": 0.704114,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Kiểm tra, xử lý, truy tìm nguồn gốc thuốc giả DIAMICRON® MR 60mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 158,
+              "score": 27.87
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 5,
+          "id": "canhgiacduoc:5:2",
+          "hybrid_score": 0.703385,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Cảnh báo về các sản phẩm chứa phenylbutazone không rõ nguồn gốc",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 192,
+              "score": 27.1461
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "recall_003",
+      "question": "Padobaby bị thu hồi vì lý do gì?",
+      "category": "recall",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "dav_recall:5",
+        "hybrid_score": 1.466667,
+        "source": "dav_recall",
+        "type": "safety_recall",
+        "trust_level": "official_registry",
+        "title_or_drug": "Quyết định số 696/QĐ-QLD về việc thu hồi do vi phạm mức độ 3 của thuốc Padobaby (Số giấy đăng ký lưu hành: 893100414024 (SĐK cũ: VD-32292-19))",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 22.4727
+          },
+          {
+            "retriever": "chroma",
+            "rank": 3,
+            "distance": 0.85113
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "dav_recall:5",
+          "hybrid_score": 1.466667,
+          "source": "dav_recall",
+          "type": "safety_recall",
+          "trust_level": "official_registry",
+          "title_or_drug": "Quyết định số 696/QĐ-QLD về việc thu hồi do vi phạm mức độ 3 của thuốc Padobaby (Số giấy đăng ký lưu hành: 893100414024 (SĐK cũ: VD-32292-19))",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 22.4727
+            },
+            {
+              "retriever": "chroma",
+              "rank": 3,
+              "distance": 0.85113
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "canhgiacduoc:3:1",
+          "hybrid_score": 1.025,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Thông báo thu hồi toàn quốc một lô thuốc bột uống Padobaby",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 21.0218
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 3,
+          "id": "canhgiacduoc:72:1",
+          "hybrid_score": 0.718056,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "Cục Quản lý Dược Việt Nam: Công văn về việc phát hiện thuốc ranitidin bị nhiễm tạp chất",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 36,
+              "score": 13.6245
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": false,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 4,
+          "id": "canhgiacduoc:27:1",
+          "hybrid_score": 0.713542,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "Cục Quản lý Dược: Thu hồi toàn quốc lô thuốc viên nén bao phim Capetero 500 do vi phạm mức độ 2",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 48,
+              "score": 13.1135
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 5,
+          "id": "canhgiacduoc:14:1",
+          "hybrid_score": 0.710484,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Thu hồi Giấy đăng ký lưu hành thuốc, đình chỉ lưu hành, thu hồi thuốc đối với thuốc Methotrexat Bidiphar 50mg/2ml",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 62,
+              "score": 12.8637
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "recall_004",
+      "question": "Pyfaclor Kid cefaclor 125mg có thông báo thu hồi không?",
+      "category": "recall",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "dav_recall:12",
+        "hybrid_score": 1.49,
+        "source": "dav_recall",
+        "type": "safety_recall",
+        "trust_level": "official_registry",
+        "title_or_drug": "Công văn số 841/QLD-CL về việc thông báo thu hồi thuốc vi phạm mức độ 3 (Cốm pha hỗn dịch uống Pyfaclor Kid (Cefaclor 125mg), Số GĐKLH: VD-26427-17, Số lô: 330823, NSX: 10823, HD: 210826; Số lô: 050124, NSX: 250124, HD: 250127)",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 10,
+            "score": 49.4987
+          },
+          {
+            "retriever": "chroma",
+            "rank": 2,
+            "distance": 0.506841
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "dav_recall:12",
+          "hybrid_score": 1.49,
+          "source": "dav_recall",
+          "type": "safety_recall",
+          "trust_level": "official_registry",
+          "title_or_drug": "Công văn số 841/QLD-CL về việc thông báo thu hồi thuốc vi phạm mức độ 3 (Cốm pha hỗn dịch uống Pyfaclor Kid (Cefaclor 125mg), Số GĐKLH: VD-26427-17, Số lô: 330823, NSX: 10823, HD: 210826; Số lô: 050124, NSX: 250124, HD: 250127)",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 10,
+              "score": 49.4987
+            },
+            {
+              "retriever": "chroma",
+              "rank": 2,
+              "distance": 0.506841
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "canhgiacduoc:4:1",
+          "hybrid_score": 1.304167,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Thông báo thu hồi trên toàn quốc lô thuốc cốm pha hỗn dịch uống Pyfaclor Kid",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 12,
+              "score": 44.66
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.48225
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 3,
+          "id": "VD-13586-10:identity",
+          "hybrid_score": 0.85,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Pyfaclor Kid",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 59.7057
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": false,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 4,
+          "id": "dav_recall:7",
+          "hybrid_score": 0.820755,
+          "source": "dav_recall",
+          "type": "safety_recall",
+          "trust_level": "official_registry",
+          "title_or_drug": "Quyết định số 475/QĐ-QLD về việc thu hồi do vi phạm mức độ 2 của thuốc Pyfaclor Kid (Số giấy đăng ký lưu hành: VD-26427-17)",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 159,
+              "score": 27.9088
+            },
+            {
+              "retriever": "chroma",
+              "rank": 3,
+              "distance": 0.556376
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 5,
+          "id": "dav_recall:6",
+          "hybrid_score": 0.755159,
+          "source": "dav_recall",
+          "type": "safety_recall",
+          "trust_level": "official_registry",
+          "title_or_drug": "Quyết định số 554/QĐ-QLD về việc thu hồi thuốc Cốm pha hỗn dịch uống Pyfaclor Kid, Số GĐKLH: VD-26427-17",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 126,
+              "score": 29.2446
+            },
+            {
+              "retriever": "chroma",
+              "rank": 7,
+              "distance": 0.617481
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "recall_005",
+      "question": "Diacerin 50 số đăng ký 893110447024 có quyết định thu hồi nào?",
+      "category": "recall",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "dav_recall:3",
+        "hybrid_score": 1.42,
+        "source": "dav_recall",
+        "type": "safety_recall",
+        "trust_level": "official_registry",
+        "title_or_drug": "Quyết định số 46/QĐ-QLD về việc thu hồi do vi phạm mức độ 3 của thuốc Diacerin 50 (Số giấy đăng ký lưu hành: 893110447024)",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 87.179
+          },
+          {
+            "retriever": "chroma",
+            "rank": 5,
+            "distance": 0.612439
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "dav_recall:3",
+          "hybrid_score": 1.42,
+          "source": "dav_recall",
+          "type": "safety_recall",
+          "trust_level": "official_registry",
+          "title_or_drug": "Quyết định số 46/QĐ-QLD về việc thu hồi do vi phạm mức độ 3 của thuốc Diacerin 50 (Số giấy đăng ký lưu hành: 893110447024)",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 87.179
+            },
+            {
+              "retriever": "chroma",
+              "rank": 5,
+              "distance": 0.612439
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "893110447024:registration",
+          "hybrid_score": 0.566667,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Diacerein 50",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 3,
+              "score": 57.4774
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.586149
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": false,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "ocr_001",
+      "question": "Nafacolex 400 mg thành phần là gì?",
+      "category": "ocr_leaflet",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 2,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 0.5,
+      "top_result": {
+        "rank": 1,
+        "id": "531100059726:leaflet:ocr:p1:composition:3",
+        "hybrid_score": 0.65,
+        "source": "dav_pdf_ocr",
+        "type": "drug_info",
+        "trust_level": "official_registry",
+        "title_or_drug": "Nafacolex 400 mg",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 51.7579
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": false,
+          "relevant": true,
+          "strict_relevant": false
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "531100059726:leaflet:ocr:p1:composition:3",
+          "hybrid_score": 0.65,
+          "source": "dav_pdf_ocr",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 51.7579
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 2,
+          "id": "531100059726:identity",
+          "hybrid_score": 0.53125,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 8,
+              "score": 39.5154
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.593575
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "ocr_002",
+      "question": "Nafacolex 400 liều dùng ibuprofen như thế nào?",
+      "category": "dosage_ocr_risk",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "531100059726:identity",
+        "hybrid_score": 1.3,
+        "source": "dav_all",
+        "type": "drug_info",
+        "trust_level": "official_registry",
+        "title_or_drug": "Nafacolex 400 mg",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 43.108
+          },
+          {
+            "retriever": "chroma",
+            "rank": 1,
+            "distance": 0.527415
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "531100059726:identity",
+          "hybrid_score": 1.3,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Nafacolex 400 mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 43.108
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.527415
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "VD-14907-11:identity",
+          "hybrid_score": 0.701389,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ibuprofen 400",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 52,
+              "score": 29.6863
+            },
+            {
+              "retriever": "chroma",
+              "rank": 9,
+              "distance": 0.75282
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 3,
+          "id": "893100587624:documents",
+          "hybrid_score": 0.7,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ibuprofen 400",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 13,
+              "score": 35.2955
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 4,
+          "id": "893100544324:documents",
+          "hybrid_score": 0.696429,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ibuprofen 400",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 14,
+              "score": 35.2955
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 5,
+          "id": "VD-33040-19:identity",
+          "hybrid_score": 0.695156,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ibuprofen 400",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 64,
+              "score": 29.3021
+            },
+            {
+              "retriever": "chroma",
+              "rank": 10,
+              "distance": 0.755349
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "safety_001",
+      "question": "Tôi đang mang thai có dùng ibuprofen được không?",
+      "category": "high_risk_context",
+      "hit_at_k": false,
+      "strict_hit_at_k": false,
+      "first_relevant_rank": null,
+      "first_strict_rank": null,
+      "reciprocal_rank": 0.0,
+      "strict_reciprocal_rank": 0.0,
+      "top_result": {
+        "rank": 1,
+        "id": "trungtamthuoc:ibuprofen:8:1",
+        "hybrid_score": 1.29614,
+        "source": "trungtamthuoc_duocthu",
+        "type": "safety",
+        "trust_level": "secondary_duocthu_reference",
+        "title_or_drug": "Ibuprofen",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 61,
+            "score": 19.003
+          },
+          {
+            "retriever": "bm25",
+            "rank": 62,
+            "score": 19.003
+          },
+          {
+            "retriever": "chroma",
+            "rank": 2,
+            "distance": 0.511177
+          }
+        ],
+        "match": {
+          "source_ok": false,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": false,
+          "strict_relevant": false
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "trungtamthuoc:ibuprofen:8:1",
+          "hybrid_score": 1.29614,
+          "source": "trungtamthuoc_duocthu",
+          "type": "safety",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 61,
+              "score": 19.003
+            },
+            {
+              "retriever": "bm25",
+              "rank": 62,
+              "score": 19.003
+            },
+            {
+              "retriever": "chroma",
+              "rank": 2,
+              "distance": 0.511177
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 2,
+          "id": "trungtamthuoc:ibuprofen:26:1",
+          "hybrid_score": 1.15,
+          "source": "trungtamthuoc_duocthu",
+          "type": "safety",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "chroma",
+              "rank": 7,
+              "distance": 0.600926
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 3,
+          "id": "trungtamthuoc:ibuprofen:6:1",
+          "hybrid_score": 1.138889,
+          "source": "trungtamthuoc_duocthu",
+          "type": "safety",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "chroma",
+              "rank": 9,
+              "distance": 0.616025
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 4,
+          "id": "trungtamthuoc:ornidazole:8:1",
+          "hybrid_score": 1.075,
+          "source": "trungtamthuoc_duocthu",
+          "type": "safety",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ornidazole",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 24.0078
+            },
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 24.0078
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": false,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 5,
+          "id": "trungtamthuoc:ibuprofen:4:1",
+          "hybrid_score": 0.933958,
+          "source": "trungtamthuoc_duocthu",
+          "type": "drug_info",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 15,
+              "score": 20.2532
+            },
+            {
+              "retriever": "bm25",
+              "rank": 16,
+              "score": 20.2532
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "safety_002",
+      "question": "Tôi uống aspirin cùng ibuprofen được không?",
+      "category": "interaction",
+      "hit_at_k": true,
+      "strict_hit_at_k": false,
+      "first_relevant_rank": 5,
+      "first_strict_rank": null,
+      "reciprocal_rank": 0.2,
+      "strict_reciprocal_rank": 0.0,
+      "top_result": {
+        "rank": 1,
+        "id": "ddinter:acetylsalicylic-acid-ibuprofen",
+        "hybrid_score": 2.353262,
+        "source": "ddinter",
+        "type": "interaction",
+        "trust_level": "curated_interaction_database",
+        "title_or_drug": "Acetylsalicylic acid - Ibuprofen",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 398,
+            "score": 13.2761
+          },
+          {
+            "retriever": "bm25",
+            "rank": 399,
+            "score": 13.2761
+          }
+        ],
+        "match": {
+          "source_ok": false,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": false,
+          "strict_relevant": false
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "ddinter:acetylsalicylic-acid-ibuprofen",
+          "hybrid_score": 2.353262,
+          "source": "ddinter",
+          "type": "interaction",
+          "trust_level": "curated_interaction_database",
+          "title_or_drug": "Acetylsalicylic acid - Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 398,
+              "score": 13.2761
+            },
+            {
+              "retriever": "bm25",
+              "rank": 399,
+              "score": 13.2761
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 2,
+          "id": "trungtamthuoc:ibuprofen:20:1",
+          "hybrid_score": 1.875,
+          "source": "trungtamthuoc_duocthu",
+          "type": "interaction",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 23.1418
+            },
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 23.1418
+            },
+            {
+              "retriever": "chroma",
+              "rank": 1,
+              "distance": 0.467072
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 3,
+          "id": "trungtamthuoc:ibuprofen:4:1",
+          "hybrid_score": 0.788333,
+          "source": "trungtamthuoc_duocthu",
+          "type": "drug_info",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 5,
+              "score": 20.3162
+            },
+            {
+              "retriever": "bm25",
+              "rank": 6,
+              "score": 20.3162
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 4,
+          "id": "trungtamthuoc:ibuprofen:3:1",
+          "hybrid_score": 0.724107,
+          "source": "trungtamthuoc_duocthu",
+          "type": "drug_info",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Ibuprofen",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 7,
+              "score": 19.3583
+            },
+            {
+              "retriever": "bm25",
+              "rank": 8,
+              "score": 19.3583
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 5,
+          "id": "893100267625:manufacturer",
+          "hybrid_score": 0.654483,
+          "source": "dav_all",
+          "type": "drug_info",
+          "trust_level": "official_registry",
+          "title_or_drug": "Ibuprofen 400mg",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 145,
+              "score": 15.0215
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": true,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "safety_003",
+      "question": "Có thuốc chứa phenylbutazone không rõ nguồn gốc có nguy hiểm không?",
+      "category": "safety_warning",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "canhgiacduoc:5:1",
+        "hybrid_score": 1.35,
+        "source": "canhgiacduoc",
+        "type": "safety_article",
+        "trust_level": "trusted_safety_article",
+        "title_or_drug": "DAV: Cảnh báo về các sản phẩm chứa phenylbutazone không rõ nguồn gốc",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 42.9499
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "canhgiacduoc:5:1",
+          "hybrid_score": 1.35,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Cảnh báo về các sản phẩm chứa phenylbutazone không rõ nguồn gốc",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 42.9499
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 2,
+          "id": "canhgiacduoc:5:2",
+          "hybrid_score": 1.025,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Cảnh báo về các sản phẩm chứa phenylbutazone không rõ nguồn gốc",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 2,
+              "score": 35.4777
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        },
+        {
+          "rank": 3,
+          "id": "trungtamthuoc:molnupiravir:9:1",
+          "hybrid_score": 0.929167,
+          "source": "trungtamthuoc_duocthu",
+          "type": "safety",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Molnupiravir",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 3,
+              "score": 33.8706
+            },
+            {
+              "retriever": "bm25",
+              "rank": 4,
+              "score": 33.8706
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": false,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 4,
+          "id": "canhgiacduoc:387:3",
+          "hybrid_score": 0.743333,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "Health Canada: Cảnh báo về nguy cơ hội chứng bệnh não sau (PRES) và hội chứng co thắt mạch máu não (RCVS) khi sử dụng pseudoephedrin",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 15,
+              "score": 29.0379
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": false,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        },
+        {
+          "rank": 5,
+          "id": "trungtamthuoc:neisseria-catarrhalis:17:1",
+          "hybrid_score": 0.724107,
+          "source": "trungtamthuoc_duocthu",
+          "type": "safety",
+          "trust_level": "secondary_duocthu_reference",
+          "title_or_drug": "Moraxella Catarrhalis (Neisseria Catarrhalis)",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 7,
+              "score": 30.9116
+            },
+            {
+              "retriever": "bm25",
+              "rank": 8,
+              "score": 30.9116
+            }
+          ],
+          "match": {
+            "source_ok": false,
+            "type_ok": false,
+            "trust_ok": true,
+            "term_ok": false,
+            "strict_term_ok": false,
+            "relevant": false,
+            "strict_relevant": false
+          }
+        }
+      ]
+    },
+    {
+      "id": "registration_001",
+      "question": "VD-25305-16 liên quan thuốc nào?",
+      "category": "registration_number",
+      "hit_at_k": true,
+      "strict_hit_at_k": true,
+      "first_relevant_rank": 1,
+      "first_strict_rank": 1,
+      "reciprocal_rank": 1.0,
+      "strict_reciprocal_rank": 1.0,
+      "top_result": {
+        "rank": 1,
+        "id": "canhgiacduoc:2:1",
+        "hybrid_score": 0.65,
+        "source": "canhgiacduoc",
+        "type": "safety_article",
+        "trust_level": "trusted_safety_article",
+        "title_or_drug": "DAV: Cảnh báo về thuốc Clorocid TW3 (cloramphenicol 250mg) giả mạo",
+        "retrievers": [
+          {
+            "retriever": "bm25",
+            "rank": 1,
+            "score": 41.2811
+          }
+        ],
+        "match": {
+          "source_ok": true,
+          "type_ok": true,
+          "trust_ok": true,
+          "term_ok": true,
+          "strict_term_ok": true,
+          "relevant": true,
+          "strict_relevant": true
+        }
+      },
+      "results": [
+        {
+          "rank": 1,
+          "id": "canhgiacduoc:2:1",
+          "hybrid_score": 0.65,
+          "source": "canhgiacduoc",
+          "type": "safety_article",
+          "trust_level": "trusted_safety_article",
+          "title_or_drug": "DAV: Cảnh báo về thuốc Clorocid TW3 (cloramphenicol 250mg) giả mạo",
+          "retrievers": [
+            {
+              "retriever": "bm25",
+              "rank": 1,
+              "score": 41.2811
+            }
+          ],
+          "match": {
+            "source_ok": true,
+            "type_ok": true,
+            "trust_ok": true,
+            "term_ok": true,
+            "strict_term_ok": true,
+            "relevant": true,
+            "strict_relevant": true
+          }
+        }
+      ]
+    }
+  ]
+}

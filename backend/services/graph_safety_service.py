@@ -35,16 +35,42 @@ ALIASES = {
     "stomach_ulcer": ["stomach ulcer", "dau bao tu", "viem loet da day", "loet da day"],
     "asthma": ["asthma", "hen", "suyen", "hen suyen"],
     "pregnancy": ["pregnancy", "mang thai", "co thai", "bau", "cho con bu"],
+    "general": ["toi", "minh", "nguoi lon", "adult", "nam", "nu"],
+    "zinc_supplement": [
+        "kem",
+        "zinc",
+        "bo sung kem",
+        "vien kem",
+        "uong kem",
+        "loai kem",
+    ],
     "cold_flu": [
         "thuoc cam",
         "thuoc cam cum",
-        "cam",
+        "mua thuoc cam",
+        "bi cam",
         "cam cum",
         "nghet mui",
         "so mui",
         "cold",
         "flu",
     ],
+    "cough": ["ho", "thuoc ho", "siro ho", "ho khan", "ho dom", "long dom"],
+    "diarrhea": [
+        "tieu chay",
+        "di ngoai",
+        "ia",
+        "buon ia",
+        "buon di ngoai",
+        "dau bung",
+        "dau bung di ngoai",
+        "quan bung",
+        "tao thao",
+        "di toilet",
+        "cam tieu chay",
+        "oresol",
+    ],
+    "vitamin_c": ["vitamin c", "c vitamin", "c sui", "c sủi", "lieu cao"],
     "pain_fever": [
         "giam dau",
         "ha sot",
@@ -55,6 +81,46 @@ ALIASES = {
         "sot",
         "pain",
         "fever",
+    ],
+}
+CATEGORY_NEGATIVES = {
+    "diarrhea": [
+        "khong di ngoai",
+        "khong di duoc",
+        "may ngay roi khong di ngoai",
+        "tao bon",
+        "bon",
+    ],
+    "zinc_supplement": [
+        "khang sinh",
+        "bia",
+        "ruou",
+        "dau dau",
+        "dau khop",
+        "dau lung",
+        "gout",
+        "huyet ap",
+        "dau bao tu",
+        "dau da day",
+    ],
+    "cold_flu": [
+        "khang sinh",
+        "bia",
+        "ruou",
+        "gout",
+        "dau khop",
+        "dau lung",
+        "dau bao tu",
+        "dau da day",
+    ],
+    "cough": [
+        "loang xuong",
+        "alendronic",
+        "alendronate",
+        "alendronat",
+        "bisphosphonate",
+        "ppi",
+        "trao nguoc da day",
     ],
 }
 
@@ -180,7 +246,8 @@ def strip_accents(text: str) -> str:
 
 
 def normalize(text: str) -> str:
-    return re.sub(r"\s+", " ", strip_accents(text).lower()).strip()
+    text_with_spaces = str(text or "").replace("_", " ")
+    return re.sub(r"\s+", " ", strip_accents(text_with_spaces).lower()).strip()
 
 
 def iter_jsonl(path: Path) -> Iterable[Dict[str, Any]]:
@@ -203,7 +270,21 @@ def variants(term: str) -> List[str]:
 
 def mentioned(text: str, terms: List[str]) -> bool:
     normalized = normalize(text)
-    return any(normalize(term) in normalized for term in terms)
+    tokens = set(re.findall(r"[a-z0-9]+", normalized))
+    for term in terms:
+        normalized_term = normalize(term)
+        if not normalized_term:
+            continue
+        if " " in normalized_term:
+            if re.search(r"\b" + re.escape(normalized_term) + r"\b", normalized):
+                return True
+        elif normalized_term in tokens:
+            return True
+    return False
+
+
+def category_blocked(query: str, category: str) -> bool:
+    return any(mentioned(query, [term]) for term in CATEGORY_NEGATIVES.get(category, []))
 
 
 class GraphSafetyService:
@@ -218,7 +299,7 @@ class GraphSafetyService:
 
     def check(self, query: str) -> Dict[str, Any]:
         drugs = self.detect_query_drugs(query)
-        findings = self.check_condition_otc(query) + self.check_interactions(drugs)
+        findings = self.check_condition_otc(query, drugs) + self.check_interactions(drugs)
         return {
             "detected_drugs": drugs,
             "findings": findings,
@@ -268,9 +349,10 @@ class GraphSafetyService:
             deduped.setdefault(normalize(name), name)
         return [deduped[key] for key in sorted(deduped)]
 
-    def check_condition_otc(self, query: str) -> List[Dict[str, Any]]:
+    def check_condition_otc(self, query: str, drugs: List[str] = None) -> List[Dict[str, Any]]:
         findings = []
         seen_rules = set()
+        drugs = drugs or self.detect_query_drugs(query)
         for rule in list(self._load_otc_rules()) + BUILTIN_CONDITION_RULES:
             rule_id = str(rule.get("id") or "")
             if rule_id and rule_id in seen_rules:
@@ -279,9 +361,24 @@ class GraphSafetyService:
                 seen_rules.add(rule_id)
             condition = str(rule.get("condition") or "")
             category = str(rule.get("otc_category") or "")
-            if not mentioned(query, ALIASES.get(condition, [condition])):
+            ingredients = rule.get("ingredients_to_avoid_or_check") or []
+            if condition and not mentioned(query, ALIASES.get(condition, [condition])):
                 continue
-            if category and category in ALIASES and not mentioned(query, ALIASES[category]):
+            
+            category_mentioned = False
+            if not category or (category in ALIASES and mentioned(query, ALIASES[category])):
+                category_mentioned = True
+            
+            ingredient_matched = False
+            for drug in drugs:
+                if normalize(drug) in [normalize(i) for i in ingredients]:
+                    ingredient_matched = True
+                    break
+                    
+            if not category_mentioned and not ingredient_matched:
+                continue
+                
+            if category and category_blocked(query, category):
                 continue
             findings.append(
                 {

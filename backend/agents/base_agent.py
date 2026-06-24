@@ -72,7 +72,7 @@ class BaseAgent(ABC):
 
                 self._retriever = get_retriever()
             except ModuleNotFoundError as exc:
-                app_logger.warning(f"RAG dependency is missing, using NullRetriever: {exc}")
+                app_logger.warning(f"RAG dependency bi thieu, dung NullRetriever: {exc}")
                 self._retriever = NullRetriever()
         return self._retriever
 
@@ -84,7 +84,7 @@ class BaseAgent(ABC):
 
                 self._generator = get_generator()
             except ModuleNotFoundError as exc:
-                app_logger.warning(f"LLM dependency is missing, using NullGenerator: {exc}")
+                app_logger.warning(f"LLM dependency bi thieu, dung NullGenerator: {exc}")
                 self._generator = NullGenerator()
         return self._generator
     

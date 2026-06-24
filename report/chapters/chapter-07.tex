@@ -1,0 +1,114 @@
+\chapter{Kết luận và hướng phát triển}
+
+\section{Kết luận}
+
+Đồ án đã xây dựng hệ thống SafeRAG Pharma theo hướng Multi-Agent RAG an toàn cho hỏi đáp thuốc tiếng Việt. Hệ thống kết hợp xử lý dữ liệu dược phẩm, chuẩn hóa thực thể thuốc, semantic rule mapping, hybrid retrieval BM25--Chroma, graph safety guardrails, evidence validation và final response có citation.
+
+Về mặt NLP, đồ án không chỉ sử dụng LLM như một hộp đen. Các thành phần như BM25, embedding cosine similarity, fuzzy matching, metadata-aware chunking, query augmentation, heuristic re-ranking/custom boost và context resumption được đặt vào pipeline rõ ràng. Về mặt an toàn, hệ thống ưu tiên hỏi lại, cảnh báo hoặc chuyển tuyến khi thiếu bằng chứng, thay vì cố sinh câu trả lời.
+
+\section{Đóng góp của đồ án}
+
+Các đóng góp chính gồm:
+
+\begin{itemize}
+  \item Xây dựng corpus dược phẩm tiếng Việt có metadata, phục vụ truy xuất theo nguồn, section và loại tài liệu.
+  \item Thiết kế drug name alignment để xử lý biệt dược, tên hoạt chất, lỗi chính tả và cách gọi không chuẩn.
+  \item Xây dựng semantic rule matrix cho các tình huống OTC/bệnh nền, giảm phụ thuộc vào hard-code rải rác.
+  \item Triển khai hybrid retrieval kết hợp BM25 và Chroma, có source adjustment cho nguồn an toàn.
+  \item Tích hợp graph safety và evidence guardrail để kiểm soát tương tác thuốc, bệnh nền, thai kỳ, cấp cứu và bằng chứng không đủ.
+  \item Đánh giá bằng kết quả thực nghiệm: retrieval benchmark, evidence guardrail, SafeRAG 100 câu hỏi và API smoke.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Đóng góp cụ thể của đồ án theo sản phẩm cuối}
+\begin{tabularx}{\linewidth}{p{0.28\linewidth} p{0.25\linewidth} Y}
+\toprule
+\textbf{Nhóm đóng góp} & \textbf{Sản phẩm đã tạo} & \textbf{Giá trị đạt được} \\
+\midrule
+Dữ liệu & Corpus 382.559 chunk và priority corpus 209.080 chunk & Có nền dữ liệu đủ lớn để thử nghiệm RAG dược phẩm tiếng Việt \\
+Tiền xử lý NLP & Chuẩn hóa Unicode, không dấu, metadata, section-aware chunking & Giảm nhiễu tiếng Việt và giữ ranh giới ngữ nghĩa y khoa \\
+Entity alignment & Từ điển alias + fuzzy matching tên thuốc & Xử lý cách nhập phổ thông như biệt dược, tên không dấu, lỗi gõ \\
+Retrieval & BM25 + Chroma + source adjustment + heuristic re-ranking & Nâng chất lượng lấy nguồn, đạt Hit@5/Strict Hit@5 bằng 1.0000 trên benchmark nội bộ 15 ca, chưa thay thế blind test \\
+Safety & Safety router, patient context, graph guardrail, evidence guardrail & Biết hỏi lại, cảnh báo, emergency hoặc từ chối khi thiếu bằng chứng \\
+Auditability & Lịch sử agent, nguồn trích dẫn và quyết định an toàn & Có thể giải thích vì sao hệ thống đưa ra hành động cuối \\
+Đánh giá & 15 ca retrieval, 15 ca evidence, 100 ca SafeRAG, API smoke & Có số liệu thực nghiệm thay vì chỉ mô tả ý tưởng \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Bảng này là điểm tổng kết quan trọng của đồ án. Nếu chỉ xét từng kỹ thuật riêng lẻ, BM25, embedding, fuzzy matching hay guardrail đều là thành phần quen thuộc. Đóng góp của nhóm nằm ở việc ghép các kỹ thuật đó thành một pipeline có thể chạy được, có dữ liệu thật, có số liệu đánh giá và có chính sách an toàn phù hợp với miền dược phẩm.
+
+\section{Hạn chế}
+
+Hệ thống hiện vẫn còn các hạn chế:
+
+\begin{itemize}
+  \item Dữ liệu chưa bao phủ toàn bộ thuốc, toàn bộ guideline lâm sàng và mọi tình huống bệnh nhân.
+  \item Một số nguồn OCR có thể lỗi, nên phải gắn mức tin cậy thấp và hạn chế dùng cho câu hỏi rủi ro cao.
+  \item Đánh giá hiện chủ yếu là kiểm thử kỹ thuật và benchmark nội bộ, chưa có đánh giá bởi dược sĩ/bác sĩ.
+  \item Latency phụ thuộc vào embedding provider, Chroma index và môi trường chạy.
+  \item Knowledge graph hiện là file-backed; chưa triển khai graph database đầy đủ với truy vấn quan hệ phức tạp.
+\end{itemize}
+
+\section{Nguồn dữ liệu nên mở rộng để hệ thống chuẩn hơn}
+
+Để nâng hệ thống từ mức đồ án kỹ thuật lên gần hơn với một trợ lý dược lâm sàng có thể đánh giá nghiêm túc, phần dữ liệu cần được mở rộng theo hướng có kiểm định, có cấu trúc và có khả năng cập nhật. Các nguồn sau được đề xuất cho giai đoạn phát triển tiếp theo:
+
+\begin{table}[H]
+\centering
+\small
+\caption{Nguồn dữ liệu đề xuất để mở rộng SafeRAG Pharma}
+\begin{tabularx}{\linewidth}{L{0.25\linewidth} L{0.25\linewidth} Y}
+\toprule
+\textbf{Nguồn dữ liệu} & \textbf{Thông tin có thể khai thác} & \textbf{Giá trị đối với hệ thống} \\
+\midrule
+Cổng công bố thuốc của Cục Quản lý Dược Việt Nam & Số giấy đăng ký lưu hành, tên thuốc, hoạt chất, dạng bào chế, doanh nghiệp đăng ký/sản xuất & Chuẩn hóa danh mục thuốc đang lưu hành tại Việt Nam, giảm sai lệch giữa dữ liệu quốc tế và thuốc người dùng Việt Nam gặp thực tế. \\
+Trung tâm DI \& ADR Quốc gia / Cảnh giác dược & Cảnh báo an toàn, phản ứng có hại, thu hồi, khuyến cáo dùng thuốc & Tăng độ phủ cho guardrail, đặc biệt với phản ứng có hại, thuốc bị cảnh báo và tình huống cần chuyển tuyến. \\
+DailyMed/FDA Structured Product Labeling & Nhãn thuốc có cấu trúc, chỉ định, chống chỉ định, cảnh báo, liều dùng, OTC Drug Facts & Dùng làm nguồn đối chiếu quốc tế có cấu trúc; hữu ích để kiểm tra cơ chế, cảnh báo và phần chống chỉ định khi nguồn tiếng Việt thiếu chi tiết. \\
+WHO ATC/DDD & Mã ATC, nhóm dược lý, phân loại hoạt chất, DDD & Chuẩn hóa hoạt chất theo hệ phân loại quốc tế, hỗ trợ gom nhóm thuốc cùng cơ chế hoặc cùng lớp điều trị. \\
+Cơ sở dữ liệu tương tác thuốc có bản quyền như DrugBank & Tương tác thuốc--thuốc, cơ chế tương tác, mức độ nghiêm trọng & Mở rộng graph safety và cảnh báo tương tác; chỉ nên dùng khi có quyền truy cập hợp lệ. \\
+Hướng dẫn điều trị của Bộ Y tế và hội chuyên ngành & Phác đồ, khuyến cáo theo bệnh, tiêu chí chuyển tuyến & Giúp hệ thống trả lời theo bối cảnh bệnh, không chỉ theo từng thuốc riêng lẻ. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Trong các nguồn trên, nhóm nên ưu tiên nguồn Việt Nam trước vì hệ thống phục vụ người dùng tiếng Việt và bối cảnh thuốc lưu hành tại Việt Nam. DailyMed, WHO ATC/DDD và các cơ sở dữ liệu tương tác quốc tế nên được dùng như lớp đối chiếu bổ sung, không thay thế hoàn toàn nguồn trong nước. Với nguồn có bản quyền hoặc điều khoản sử dụng riêng, cần kiểm tra quyền khai thác trước khi đưa vào corpus chính thức.
+
+\section{Hướng phát triển}
+
+Trong tương lai, hệ thống có thể được phát triển theo các hướng:
+
+\begin{itemize}
+  \item Mở rộng dữ liệu sang guideline điều trị, nhãn thuốc chuẩn hóa và nguồn cảnh giác dược cập nhật tự động.
+  \item Tích hợp Neo4j hoặc graph database để biểu diễn quan hệ thuốc--hoạt chất--bệnh nền--chống chỉ định--tương tác.
+  \item Bổ sung cross-encoder re-ranker chuyên cho tiếng Việt/y dược.
+  \item Xây dựng bộ test lâm sàng lớn hơn, có nhãn bởi chuyên gia.
+  \item Đo latency chi tiết trước/sau Kaggle embedding API trong điều kiện mạng ổn định.
+  \item Phát triển cơ chế audit dashboard để xem từng agent đã ra quyết định như thế nào.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Lộ trình phát triển tiếp theo của SafeRAG Pharma}
+\begin{tabularx}{\linewidth}{p{0.22\linewidth} p{0.28\linewidth} Y}
+\toprule
+\textbf{Giai đoạn} & \textbf{Việc cần làm} & \textbf{Kết quả kỳ vọng} \\
+\midrule
+Ngắn hạn & Mở rộng rule matrix cho trẻ em, thai kỳ, gan, thận, tăng huyết áp, tiểu đường & Tăng độ phủ guardrail cho các ca tự mua thuốc phổ biến \\
+Ngắn hạn & Chuẩn hóa thêm alias biệt dược Việt Nam và lỗi gõ thường gặp & Giảm fail do không nhận diện đúng tên thuốc \\
+Trung hạn & Xây dựng bộ test lâm sàng 300--500 câu có nhãn chuyên gia & Đánh giá chính xác precision/recall của intent, retrieval và safety action \\
+Trung hạn & Tách embedding service ổn định thay vì phụ thuộc tunnel tạm thời & Giảm latency và tăng khả năng tái lập khi demo \\
+Dài hạn & Triển khai Neo4j/knowledge graph toàn diện & Truy vấn quan hệ thuốc--hoạt chất--bệnh nền--chống chỉ định sâu hơn \\
+Dài hạn & Audit dashboard cho từng lượt hội thoại & Cho phép giảng viên/chuyên gia xem trace agent, citation và action cuối \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Kết luận cuối}
+
+SafeRAG Pharma cho thấy hướng tiếp cận phù hợp cho bài toán hỏi đáp thuốc: không để LLM tự trả lời từ trí nhớ, mà đặt LLM trong một hệ thống truy xuất và kiểm soát an toàn. Với kiến trúc này, mỗi câu trả lời đều có thể truy vết về nguồn, agent xử lý và action an toàn. Đây là nền tảng quan trọng để tiếp tục phát triển các trợ lý NLP trong miền y tế có trách nhiệm.
+
+Từ góc nhìn học thuật, điểm giá trị của đồ án nằm ở việc kết nối các kỹ thuật NLP rời rạc thành một hệ thống hoàn chỉnh. BM25 giải quyết lớp truy xuất từ khóa, embedding giải quyết lớp ngữ nghĩa, fuzzy matching xử lý nhiễu nhập liệu, context extraction xử lý hội thoại nhiều lượt, còn guardrail biến kết quả truy xuất thành quyết định an toàn. Khi đặt các thành phần này cạnh nhau, hệ thống không chỉ là một ứng dụng hỏi đáp, mà là một kiến trúc ra quyết định có kiểm chứng.

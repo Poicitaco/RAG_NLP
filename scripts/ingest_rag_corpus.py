@@ -2,14 +2,31 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import json
+import os
+import urllib.error
+import urllib.request
 from pathlib import Path
 from typing import Any, Dict, Iterable, Iterator, List
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+try:
+    from backend.config import settings
+except Exception:
+    settings = None
 
 
 DEFAULT_INPUTS = [
     "data/chunks/rag_corpus_parts",
 ]
+DEFAULT_COLLECTION = "pharmaceutical_local_bge_1024"
+DEFAULT_PROVIDER = "sentence-transformers"
+DEFAULT_MODEL = "BAAI/bge-m3"
+KAGGLE_API_URL = (getattr(settings, "KAGGLE_API_URL", None) or os.getenv("KAGGLE_API_URL", "")).rstrip("/")
 
 
 def iter_jsonl_paths(inputs: List[str]) -> Iterator[Path]:
@@ -46,11 +63,11 @@ def flatten_metadata(metadata: Dict[str, Any]) -> Dict[str, str | int | float | 
     return flat
 
 
+@functools.lru_cache(maxsize=1)
 def load_embedding_model(provider: str, model: str):
     if provider == "sentence-transformers":
-        from sentence_transformers import SentenceTransformer
-
-        return SentenceTransformer(model)
+        endpoint = f"{KAGGLE_API_URL}/embed" if KAGGLE_API_URL else ""
+        return {"provider": provider, "model": model, "endpoint": endpoint}
     if provider == "openai":
         from openai import OpenAI
 
@@ -58,10 +75,58 @@ def load_embedding_model(provider: str, model: str):
     raise ValueError(f"Unsupported provider: {provider}")
 
 
+@functools.lru_cache(maxsize=1)
+def load_local_sentence_transformer(model_name: str):
+    from sentence_transformers import SentenceTransformer
+
+    print(f"Loading local CPU embedding model: {model_name}")
+    return SentenceTransformer(model_name, device="cpu")
+
+
+def embed_texts_local_cpu(model_name: str, texts: List[str]) -> List[List[float]]:
+    local_model = load_local_sentence_transformer(model_name)
+    embeddings = local_model.encode(
+        texts,
+        batch_size=32,
+        show_progress_bar=False,
+        normalize_embeddings=True,
+    )
+    return embeddings.tolist() if hasattr(embeddings, "tolist") else embeddings
+
+
 def embed_texts(model: Any, provider: str, model_name: str, texts: List[str]) -> List[List[float]]:
     if provider == "sentence-transformers":
-        vectors = model.encode(texts, batch_size=len(texts), normalize_embeddings=True, show_progress_bar=False)
-        return [vector.tolist() for vector in vectors]
+        if not KAGGLE_API_URL:
+            print("KAGGLE_API_URL chua duoc cau hinh trong .env; fallback local CPU.")
+            return embed_texts_local_cpu(model_name, texts)
+        endpoint = f"{KAGGLE_API_URL}/embed"
+        payload = json.dumps({"texts": texts}, ensure_ascii=False).encode("utf-8")
+        request = urllib.request.Request(
+            endpoint,
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=180) as response:
+                data = json.loads(response.read().decode("utf-8"))
+            embeddings = data.get("embeddings")
+            if not isinstance(embeddings, list):
+                raise RuntimeError("Kaggle embedding API response is missing embeddings")
+            if len(embeddings) != len(texts):
+                raise RuntimeError(
+                    f"Kaggle embedding API returned {len(embeddings)} vectors for {len(texts)} texts"
+            )
+            return embeddings
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
+            print("Lỗi kết nối API Kaggle GPU. Vui lòng kiểm tra lại link Cloudflare!")
+            print(f"Kaggle embedding API request failed: {exc}")
+        except RuntimeError as exc:
+            print("Lỗi phản hồi API Kaggle GPU qua link Cloudflare.")
+            print(str(exc))
+
+        print("Fallback: dùng sentence-transformers local CPU để nhúng batch hiện tại.")
+        return embed_texts_local_cpu(model_name, texts)
     if provider == "openai":
         response = model.embeddings.create(model=model_name, input=texts)
         return [item.embedding for item in response.data]
@@ -84,17 +149,38 @@ def existing_ids(collection: Any) -> set[str]:
     return {str(row_id) for row_id in ids}
 
 
+def iter_missing_chunks(
+    rows: Iterable[Dict[str, Any]],
+    seen_ids: set[str],
+    stats: Dict[str, int],
+) -> Iterator[Dict[str, Any]]:
+    for row in rows:
+        chunk_id = str(row.get("id") or "")
+        if not chunk_id:
+            continue
+        if chunk_id in seen_ids:
+            stats["skipped_existing"] = stats.get("skipped_existing", 0) + 1
+            print(f"Skipping existing chunk... {chunk_id}")
+            continue
+        yield row
+        seen_ids.add(chunk_id)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--inputs", nargs="*", default=DEFAULT_INPUTS)
     parser.add_argument("--persist-dir", default="data/embeddings/chroma")
-    parser.add_argument("--collection", default="pharmaceutical_knowledge")
-    parser.add_argument("--provider", choices=["sentence-transformers", "openai"], default="sentence-transformers")
-    parser.add_argument("--model", default="sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-    parser.add_argument("--batch-size", type=int, default=128)
+    parser.add_argument("--collection", default=DEFAULT_COLLECTION)
+    parser.add_argument("--provider", choices=["sentence-transformers", "openai"], default=DEFAULT_PROVIDER)
+    parser.add_argument("--model", default=DEFAULT_MODEL)
+    parser.add_argument("--batch-size", type=int, default=64)
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--reset", action="store_true")
-    parser.add_argument("--skip-existing", action="store_true")
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Deprecated: existing chunks are skipped automatically.",
+    )
     args = parser.parse_args()
 
     import chromadb
@@ -117,16 +203,13 @@ def main() -> None:
         },
     )
     model = load_embedding_model(args.provider, args.model)
-    seen_ids = existing_ids(collection) if args.skip_existing else set()
+    seen_ids = existing_ids(collection)
     if seen_ids:
-        print(f"skipping {len(seen_ids)} existing chunks")
+        print(f"Found {len(seen_ids)} existing chunks in collection; skipping them automatically.")
 
     total = 0
-    rows = (
-        row
-        for row in read_chunks(args.inputs, args.limit)
-        if not seen_ids or str(row.get("id")) not in seen_ids
-    )
+    stats = {"skipped_existing": 0}
+    rows = iter_missing_chunks(read_chunks(args.inputs, args.limit), seen_ids, stats)
     for batch in batched(rows, args.batch_size):
         ids = [str(row.get("id")) for row in batch]
         docs = [str(row.get("document") or "") for row in batch]
@@ -144,6 +227,7 @@ def main() -> None:
                 "provider": args.provider,
                 "model": args.model,
                 "ingested": total,
+                "skipped_existing": stats["skipped_existing"],
                 "collection_count": collection.count(),
             },
             ensure_ascii=False,

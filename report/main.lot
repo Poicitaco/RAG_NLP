@@ -1,0 +1,37 @@
+\babel@toc {vietnamese}{}\relax 
+\contentsline {table}{\numberline {1}{\ignorespaces Tổng hợp các hạng mục đã hoàn thành trong đồ án}}{3}{table.caption.13}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1.1}{\ignorespaces Phạm vi chức năng của SafeRAG Pharma}}{6}{table.caption.14}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {2.1}{\ignorespaces So sánh Naive RAG và Multi-Agent RAG an toàn}}{9}{table.caption.15}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Các nhóm dữ liệu chính trong hệ thống}}{11}{table.caption.16}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Kết quả xử lý dữ liệu sau khi chuẩn hóa và phân mảnh}}{12}{table.caption.17}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Metadata cốt lõi của một chunk dược phẩm}}{15}{table.caption.20}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Ví dụ ánh xạ tên thuốc/biệt dược sang hoạt chất}}{16}{table.caption.21}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {4.1}{\ignorespaces Các agent đã triển khai và dấu vết đầu ra}}{19}{table.caption.23}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Ý định và cách xử lý tương ứng}}{20}{table.caption.24}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Trường hồ sơ bệnh nhân được thu thập}}{20}{table.caption.25}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Các action của lớp evidence/safety guardrail}}{24}{table.caption.27}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {5.1}{\ignorespaces Các module triển khai chính}}{26}{table.caption.28}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Thông tin audit quan trọng trong response}}{27}{table.caption.29}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces So sánh local embedding và Kaggle embedding API}}{28}{table.caption.30}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Các kết quả triển khai có thể nghiệm thu}}{29}{table.caption.31}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {6.1}{\ignorespaces Kế hoạch đánh giá mở rộng cho giai đoạn sau}}{31}{table.caption.32}%
+\contentsline {table}{\numberline {6.2}{\ignorespaces So sánh BM25 baseline và Hybrid Retrieval}}{32}{table.caption.33}%
+\contentsline {table}{\numberline {6.3}{\ignorespaces Phân bố hành động trong evidence guardrail}}{33}{table.caption.35}%
+\contentsline {table}{\numberline {6.4}{\ignorespaces Phân bố hành động trên 100 câu hỏi SafeRAG}}{33}{table.caption.36}%
+\contentsline {table}{\numberline {6.5}{\ignorespaces So sánh thiết kế giữa LLM thuần và SafeRAG Pharma}}{36}{table.caption.40}%
+\contentsline {table}{\numberline {6.6}{\ignorespaces Một số node pipeline được kích hoạt trong 100 câu hỏi}}{37}{table.caption.41}%
+\contentsline {table}{\numberline {6.7}{\ignorespaces Một số kết quả kiểm thử kỹ thuật từ submission report}}{39}{table.caption.43}%
+\contentsline {table}{\numberline {6.8}{\ignorespaces Phân tích lỗi và giới hạn còn lại của SafeRAG}}{40}{table.caption.44}%
+\contentsline {table}{\numberline {6.9}{\ignorespaces Failure cases tiêu biểu cần kiểm thử thêm}}{41}{table.caption.45}%
+\contentsline {table}{\numberline {6.10}{\ignorespaces Ablation study theo các lớp xử lý chính}}{42}{table.caption.46}%
+\contentsline {table}{\numberline {6.11}{\ignorespaces Một số case study lâm sàng tiêu biểu}}{43}{table.caption.47}%
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {7.1}{\ignorespaces Đóng góp cụ thể của đồ án theo sản phẩm cuối}}{45}{table.caption.48}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces Nguồn dữ liệu đề xuất để mở rộng SafeRAG Pharma}}{46}{table.caption.49}%
+\contentsline {table}{\numberline {7.3}{\ignorespaces Lộ trình phát triển tiếp theo của SafeRAG Pharma}}{48}{table.caption.50}%

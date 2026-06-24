@@ -1,0 +1,40 @@
+{
+  "total": 8,
+  "rag_action_counts": {
+    "needs_clarification": 8
+  },
+  "intent_counts": {
+    "pediatric_symptom": 2,
+    "otc_recommendation": 3,
+    "drug_info": 2,
+    "high_risk_context": 1
+  },
+  "graph_warning_count": 0,
+  "graph_override_count": 0,
+  "alignment_used_count": 0,
+  "llm_answer_used_count": 0,
+  "response_block_schema_count": 8,
+  "no_source_count": 8,
+  "first_source_counts": {
+    "no_source": 8
+  },
+  "selected_agent_counts": {
+    "triage_risk_agent": 8,
+    "semantic_rule_mapper_agent": 8,
+    "patient_context_collector": 8,
+    "safety_monitor_agent": 8,
+    "final_response_builder": 8
+  },
+  "pipeline_node_counts": {
+    "safety_router": 8,
+    "semantic_rule_mapper_agent": 8,
+    "patient_context_collector": 8,
+    "clarification_bypass": 8
+  },
+  "by_group_action_counts": {
+    "nhom_1_mua_thuoc_va_tu_van_le_lang": {
+      "needs_clarification": 8
+    }
+  },
+  "high_attention_cases": []
+}

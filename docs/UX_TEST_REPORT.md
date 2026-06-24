@@ -1,4 +1,4 @@
-# UX Test Report - Medication Safety Agent
+﻿# UX Test Report - Medication Safety Agent
 
 Date: 2026-06-21
 
@@ -7,14 +7,14 @@ Date: 2026-06-21
 Tested the current web demo at:
 
 - Frontend: `http://127.0.0.1:5173`
-- Backend: `http://127.0.0.1:8001`
+- Backend: `http://127.0.0.1:8000`
 
 Primary test goal: evaluate whether a real public user can ask medication-safety questions, provide missing context, understand the result, and trust the system.
 
 ## Test Method
 
 - Production build check: `npm run build`
-- System readiness check: `scripts/system_check.py`
+- System readiness check: `scripts/legacy/system_check.py`
 - Browser interaction via Playwright:
   - Initial page load
   - Quick question cards
@@ -37,7 +37,7 @@ The project is demo-capable, but not yet safe or polished enough for a public-us
 
 ### 1. System Readiness
 
-`scripts/system_check.py` passed all checks:
+`scripts/legacy/system_check.py` passed all checks:
 
 - API health
 - Frontend served
@@ -345,4 +345,3 @@ Target experience:
 - Bot never shows irrelevant drug sources.
 - Bot clearly says when it cannot safely recommend a medicine.
 - Shopping or pharmacy handoff happens only after safety checks.
-

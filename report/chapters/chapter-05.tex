@@ -1,0 +1,126 @@
+\chapter{Triển khai hệ thống và tối ưu hóa}
+
+\section{Kiến trúc hệ thống}
+
+SafeRAG Pharma được triển khai theo kiến trúc backend-first. Backend Python/FastAPI phụ trách API chat, điều phối pipeline, truy xuất, safety guardrails và dựng phản hồi. Frontend demo dùng Next.js, nhưng trọng tâm kỹ thuật của đồ án nằm ở pipeline backend và dữ liệu.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Các module triển khai chính}
+\begin{tabularx}{\linewidth}{p{0.40\linewidth} Y}
+\toprule
+\textbf{Module} & \textbf{Vai trò} \\
+\midrule
+FastAPI entrypoint & Nhận request chat và trả response có metadata \\
+SafeRAG orchestration & Điều phối pipeline RAG an toàn \\
+Retrieval pipeline & Lọc, boost, rank kết quả BM25/Chroma \\
+Semantic rule mapper & Ánh xạ câu hỏi OTC vào rule matrix \\
+Drug name alignment & Chuẩn hóa tên thuốc/hoạt chất \\
+Patient context collector & Trích xuất và hỏi lại ngữ cảnh bệnh nhân \\
+Graph safety service & Kiểm tra tương tác và bệnh nền/OTC \\
+Evidence guardrail & Đánh giá bằng chứng và quyết định action \\
+Evaluation orchestrator & Chạy kiểm thử truy xuất, SafeRAG và API smoke \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Backend API}
+
+Luồng API chính bắt đầu từ endpoint chat. Request gồm câu hỏi người dùng, mã phiên hội thoại và ngữ cảnh tùy chọn. Response gồm nội dung trả lời, loại agent xử lý, độ tin cậy, nguồn trích dẫn, cảnh báo, gợi ý và metadata phục vụ audit. Metadata là phần quan trọng vì nó lưu quyết định an toàn, ý định, loại truy xuất, kết quả chuẩn hóa tên thuốc, hồ sơ bệnh nhân, luật ngữ nghĩa, graph safety và lịch sử agent.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Thông tin audit quan trọng trong response}
+\begin{tabularx}{\linewidth}{p{0.30\linewidth} Y}
+\toprule
+\textbf{Nhóm thông tin} & \textbf{Ý nghĩa} \\
+\midrule
+Quyết định an toàn & Cho biết hệ thống trả lời, hỏi lại, cảnh báo, chuyển tuyến hay cấp cứu \\
+Ý định người dùng & Xác định câu hỏi là tra cứu thuốc, liều dùng, tương tác, OTC hay cấp cứu \\
+Nguồn trích dẫn & Liệt kê bằng chứng hoặc chính sách an toàn được dùng trong câu trả lời \\
+Hồ sơ bệnh nhân & Lưu tuổi, bệnh nền, dị ứng, thuốc đang dùng nếu trích xuất được \\
+Lịch sử agent & Cho biết những agent nào đã tham gia xử lý câu hỏi \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Giải pháp tối ưu tài nguyên mô hình}
+
+\subsection{Bài toán rào cản phần cứng}
+
+Embedding model BGE có chất lượng tốt nhưng tốn tài nguyên CPU/GPU khi ingest hoặc truy vấn khối lượng lớn. Trong môi trường sinh viên, việc chạy embedding local có thể làm tăng latency, đặc biệt khi vừa chạy API, vừa chạy Chroma, vừa xử lý test set.
+
+\subsection{Kaggle Embedding API}
+
+Đồ án định hướng triển khai embedding như một microservice có thể chạy trên Kaggle Notebook và expose qua tunnel như Ngrok/Cloudflare. Backend gọi API embedding từ xa; nếu API lỗi mạng hoặc không sẵn sàng, hệ thống fallback về sentence-transformers local CPU. Trong log đánh giá submission, retrieval task ghi nhận trường hợp Kaggle embedding API lỗi kết nối và fallback local, nhưng task vẫn hoàn thành. Điều này cho thấy fallback là yêu cầu thực tế, không chỉ là tùy chọn.
+
+\begin{table}[H]
+\centering
+\small
+\caption{So sánh local embedding và Kaggle embedding API}
+\begin{tabularx}{\linewidth}{p{0.25\linewidth} Y Y}
+\toprule
+\textbf{Tiêu chí} & \textbf{Local CPU/GPU} & \textbf{Kaggle API qua tunnel} \\
+\midrule
+Tài nguyên & Phụ thuộc máy cá nhân & Tận dụng GPU T4/P100 miễn phí khi có session \\
+Ổn định mạng & Không cần Internet nội bộ & Phụ thuộc tunnel/API endpoint \\
+Latency & Có thể cao trên CPU & Có thể thấp hơn nếu GPU ổn định \\
+Khả năng fallback & Là mặc định an toàn & Cần fallback khi tunnel lỗi \\
+Phù hợp báo cáo & Dễ tái lập & Thể hiện sáng tạo system engineering \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Prompt engineering trong y tế}
+
+Prompt cuối không được phép để LLM tự thêm khuyến nghị vượt nguồn. Vì vậy, hệ thống dựng câu trả lời deterministic theo block trước, sau đó LLM chỉ rewrite nếu được bật. Cấu trúc 4 block gồm:
+
+\begin{enumerate}
+  \item Cảnh báo an toàn.
+  \item Dặn dò siêu ngắn/hướng dẫn nhanh.
+  \item Lý do chuyên khoa dễ hiểu.
+  \item Dẫn nguồn đối soát.
+\end{enumerate}
+
+Cách này giảm rủi ro mô hình bỏ qua cảnh báo. Nếu LLM không hoạt động hoặc bị tắt, response builder vẫn trả lời được bằng template deterministic. Trong lần đánh giá 100 câu hỏi, hệ thống không dùng LLM để viết câu trả lời cuối nhưng vẫn có đủ 100/100 phản hồi theo cấu trúc chuẩn; điều này chứng minh pipeline không phụ thuộc LLM để đảm bảo format an toàn.
+
+\section{Kiểm thử kỹ thuật}
+
+Hệ thống có bộ kiểm thử tổng hợp để chạy kiểm tra cú pháp, unit test/backend test, build frontend, pipeline smoke, retrieval benchmark, SafeRAG evaluation và API smoke. Các kiểm thử quan trọng:
+
+\begin{itemize}
+  \item Kiểm tra cú pháp/import cho backend và scripts.
+  \item Chạy bộ test backend, safety và API.
+  \item Build frontend Next.js.
+  \item pipeline smoke: emergency paracetamol overdose và interaction graph fast path.
+  \item retrieval benchmark: đo Hit@K, Strict Hit@K, MRR.
+  \item safe-rag full evaluation: chạy 100 câu hỏi an toàn.
+  \item API smoke: gửi request FastAPI qua TestClient.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Các kết quả triển khai có thể nghiệm thu}
+\begin{tabularx}{\linewidth}{p{0.28\linewidth} p{0.24\linewidth} Y}
+\toprule
+\textbf{Thành phần} & \textbf{Trạng thái} & \textbf{Ý nghĩa} \\
+\midrule
+Backend FastAPI & Đã có endpoint chat và API smoke HTTP 200 & Chứng minh pipeline chạy end-to-end qua lớp API \\
+Pipeline SafeRAG & Chạy 100 câu hỏi với Chroma & Đánh giá được hành động, ý định, nguồn trích dẫn và lịch sử agent \\
+Cấu trúc phản hồi & 100/100 phản hồi đúng khung & Frontend hoặc công cụ audit có thể đọc cấu trúc trả lời ổn định \\
+Chính sách citation & 0 phản hồi thiếu nguồn & Không có phản hồi cuối thiếu nguồn/chính sách đối soát \\
+Graph fast path & Có ca aspirin + diclofenac & Chứng minh tương tác thuốc có thể đi qua graph trước full RAG \\
+Emergency bypass & Có ca quá liều paracetamol & Chứng minh tình huống cấp cứu không chờ truy xuất thường \\
+Fallback LLM/embedding & LLM rewrite không bắt buộc; embedding có fallback cục bộ & Hệ thống vẫn vận hành khi dịch vụ ngoài không ổn định \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Các kết quả trên cho thấy phần triển khai không dừng ở mức prototype giao diện. Backend đã có khả năng nhận câu hỏi, phân tích an toàn, truy xuất bằng chứng, dựng câu trả lời và trả metadata đủ để kiểm toán. Vì vậy, ngay trong báo cáo có thể thấy hệ thống đã chạy qua các kịch bản quan trọng mà không cần đối chiếu từng file triển khai.
+
+\section{Tóm tắt chương}
+
+Chương này trình bày phần triển khai hệ thống: backend FastAPI, truy xuất, guardrail, embedding fallback và bộ kiểm thử. Kết quả quan trọng là hệ thống vẫn trả lời theo cấu trúc an toàn và có nguồn đối soát.

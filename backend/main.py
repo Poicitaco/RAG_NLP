@@ -84,6 +84,8 @@ async def root():
 app.include_router(chat.router, prefix="/api/v1/chat", tags=["Chat"])
 app.include_router(drug.router, prefix="/api/v1/drug", tags=["Drug"])
 app.include_router(feedback.router, prefix="/api/v1", tags=["Feedback"])
+from backend.api.routes import metrics
+app.include_router(metrics.router, prefix="/api/v1/metrics", tags=["Metrics"])
 
 
 # Xử lý lỗi

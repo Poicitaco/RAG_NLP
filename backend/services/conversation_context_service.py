@@ -13,6 +13,7 @@ class ConversationState:
     patient_context: Dict[str, Any] = field(default_factory=dict)
     pending_question: Optional[str] = None
     pending_reason: Optional[str] = None
+    last_question: Optional[str] = None
 
 
 class ConversationContextService:
@@ -30,12 +31,18 @@ class ConversationContextService:
     ) -> Dict[str, Any]:
         state = self._states.setdefault(session_id, ConversationState())
         merged = deepcopy(incoming_context or {})
+        
+        # Hỗ trợ cả trường hợp API gửi flat dict (chứa age, weight_kg...) và trường hợp lồng trong key 'patient_context'
+        incoming_patient_context = merged.get("patient_context") or {}
+        if not incoming_patient_context and any(k in merged for k in ["age", "age_months", "weight_kg", "conditions", "allergies", "pregnant", "breastfeeding"]):
+            incoming_patient_context = {k: merged[k] for k in ["age", "age_months", "weight_kg", "conditions", "allergies", "current_medications", "pregnant", "pregnancy_month", "breastfeeding"] if k in merged}
+
         patient_context = self._merge_patient_context(
             state.patient_context,
-            merged.get("patient_context") or {},
+            incoming_patient_context,
         )
 
-        if state.pending_question and self._looks_like_context_answer(message):
+        if (state.pending_question or state.last_question) and self._looks_like_context_answer(message):
             extracted = self._patient_context.assess(message, intent="high_risk_context").patient_context
             patient_context = self._merge_patient_context(patient_context, extracted)
             normalized = normalize_text(message)
@@ -46,14 +53,18 @@ class ConversationContextService:
                 patient_context["current_medications_confirmed"] = True
             if patient_context.get("pregnant") is not None or patient_context.get("breastfeeding") is not None:
                 patient_context["pregnancy_breastfeeding_confirmed"] = True
-            merged["resume_pending_question"] = state.pending_question
+            resume_question = state.pending_question or state.last_question
+            if state.pending_question:
+                merged["resume_pending_question"] = resume_question
+            else:
+                merged["resume_last_question"] = resume_question
             merged["resumed_from_user_message"] = message
 
         merged["patient_context"] = patient_context
         return merged
 
     def message_for_processing(self, session_id: str, message: str, context: Dict[str, Any]) -> str:
-        return str(context.get("resume_pending_question") or message)
+        return str(context.get("resume_pending_question") or context.get("resume_last_question") or message)
 
     def update_from_response(self, session_id: str, user_message: str, response_metadata: Dict[str, Any]) -> None:
         state = self._states.setdefault(session_id, ConversationState())
@@ -64,9 +75,13 @@ class ConversationContextService:
         if response_metadata.get("rag_action") == "needs_clarification":
             state.pending_question = response_metadata.get("original_query") or user_message
             state.pending_reason = response_metadata.get("reason") or "needs_clarification"
-        elif response_metadata.get("resumed_from_pending_question"):
+        elif response_metadata.get("resumed_from_pending_question") or response_metadata.get("resumed_from_previous_question"):
             state.pending_question = None
             state.pending_reason = None
+        elif response_metadata.get("original_query"):
+            state.last_question = response_metadata.get("original_query")
+        elif user_message:
+            state.last_question = user_message
 
     def _merge_patient_context(self, base: Dict[str, Any], incoming: Dict[str, Any]) -> Dict[str, Any]:
         merged = deepcopy(base or {})

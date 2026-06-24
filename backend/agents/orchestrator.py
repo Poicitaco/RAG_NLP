@@ -154,7 +154,7 @@ class AgentOrchestrator:
             return [response]
         
         # Nhiều ý định - xử lý với tất cả các agent khả dụng
-        app_logger.info(f"Processing multi-intent request with {len(capable_agents)} agents")
+        app_logger.info(f"Xu ly yeu cau co nhieu y dinh voi {len(capable_agents)} agent")
         
         tasks = [agent.process(request) for agent in capable_agents]
         responses = await asyncio.gather(*tasks, return_exceptions=True)
@@ -183,11 +183,11 @@ class AgentOrchestrator:
         return None
     
     def get_all_agents(self) -> List[BaseAgent]:
-        """Get list of all agents"""
+        """Lay danh sach tat ca cac agent"""
         return self.agents.copy()
     
     def get_agent_info(self) -> List[dict]:
-        """Get information about all agents"""
+        """Lay thong tin ve tat ca cac agent"""
         return [
             {
                 'name': agent.name,
@@ -198,12 +198,12 @@ class AgentOrchestrator:
         ]
 
 
-# Global orchestrator instance
+# Instance orchestrator toan cuc
 _orchestrator: Optional[AgentOrchestrator] = None
 
 
 def get_orchestrator() -> AgentOrchestrator:
-    """Get or create global orchestrator instance"""
+    """Lay hoac tao instance orchestrator toan cuc"""
     global _orchestrator
     if _orchestrator is None:
         _orchestrator = AgentOrchestrator()

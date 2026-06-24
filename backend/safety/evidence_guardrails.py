@@ -23,6 +23,7 @@ class EvidenceAction(str, Enum):
 
 class QuestionIntent(str, Enum):
     DRUG_INFO = "drug_info"
+    OTC_RECOMMENDATION = "otc_recommendation"
     DOSAGE = "dosage"
     INTERACTION = "interaction"
     RECALL = "recall"
@@ -43,7 +44,19 @@ class EvidenceDecision:
     required_sources: List[str] = field(default_factory=list)
     usable_sources: List[str] = field(default_factory=list)
     blocked_sources: List[str] = field(default_factory=list)
+    subtype: str = ""
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        if not self.subtype and isinstance(self.metadata, dict):
+            self.subtype = str(self.metadata.get("subtype") or "")
+        if self.subtype:
+            self.metadata["subtype"] = self.subtype
+
+
+SUBTYPE_PARACETAMOL_OVERDOSE = "paracetamol_overdose"
+SUBTYPE_HYPERTENSIVE_CRISIS = "hypertensive_crisis"
+SUBTYPE_NSAID_GASTRIC_RISK = "nsaid_gastric_risk"
 
 
 EMERGENCY_TERMS = {
@@ -108,11 +121,17 @@ PEDIATRIC_TERMS = {
     "be",
     "con tui",
     "con toi",
+    "con trai toi",
+    "con gai toi",
+    "con trai tui",
+    "con gai tui",
     "tre",
     "tre em",
     "tre so sinh",
     "so sinh",
     "con nit",
+    "chau toi",
+    "chau tui",
     "3 tuoi",
     "6 tuoi",
     "1 tuoi",
@@ -127,6 +146,13 @@ SYMPTOM_TERMS = {
     "dau",
     "tieu chay",
     "di ngoai",
+    "ia",
+    "buon ia",
+    "dau bung",
+    "dau bung di ngoai",
+    "quan bung",
+    "tao thao",
+    "di toilet",
     "non",
     "mat do",
     "dau tai",
@@ -145,6 +171,7 @@ DOSAGE_TERMS = {
     "uong nhu the nao",
     "uong the nao",
     "uong may vien",
+    "may vien",
     "dung bao nhieu",
     "uong bao nhieu",
     "ngay may lan",
@@ -174,6 +201,45 @@ COMMON_DRUG_TERMS = {
     "flixonase",
     "rhinocort",
 }
+OTC_ADVICE_TERMS = {
+    "mua thuoc",
+    "thuoc cam",
+    "thuoc ho",
+    "thuoc ha sot",
+    "thuoc giam dau",
+    "mua thuoc gi",
+    "co thuoc gi",
+    "thuoc gi",
+    "nen mua",
+    "nen uong",
+    "uong thuoc gi",
+    "uong do",
+    "uong do dau bung",
+    "dung thuoc gi",
+    "loai nao",
+    "cho nhanh khoi",
+    "nhanh khoi",
+}
+PUBLIC_SYMPTOM_TERMS = {
+    "cam",
+    "cum",
+    "ho",
+    "sot",
+    "nghet mui",
+    "so mui",
+    "dau dau",
+    "dau bung",
+    "tieu chay",
+    "di ngoai",
+    "ia",
+    "buon ia",
+    "dau bung di ngoai",
+    "quan bung",
+    "tao thao",
+    "di toilet",
+    "non",
+    "ngua",
+}
 RECALL_TERMS = {"thu hoi", "dinh chi", "khong dat tieu chuan"}
 COUNTERFEIT_TERMS = {"gia mao", "thuoc gia", "khong ro nguon goc", "tren mang"}
 
@@ -182,6 +248,7 @@ REGISTRY_SOURCES = {"dav_all", "dav_otc"}
 PDF_SOURCES = {"dav_pdf"}
 OCR_SOURCES = {"dav_pdf_ocr"}
 HIGH_RISK_INTENTS = {
+    QuestionIntent.OTC_RECOMMENDATION,
     QuestionIntent.DOSAGE,
     QuestionIntent.INTERACTION,
     QuestionIntent.HIGH_RISK_CONTEXT,
@@ -211,8 +278,67 @@ def contains_any(text: str, terms: Iterable[str]) -> bool:
     return False
 
 
+PARACETAMOL_TERMS = {"paracetamol", "acetaminophen", "panadol", "efferalgan", "hapacol"}
+NSAID_GASTRIC_TERMS = {
+    "dau bao tu",
+    "dau da day",
+    "viem loet da day",
+    "loet da day",
+    "xot ruot",
+    "dau thuong vi",
+    "nong rat da day",
+}
+NSAID_ANALGESIC_TERMS = {
+    "thuoc giam dau",
+    "thuoc khang viem",
+    "nsaid",
+    "aspirin",
+    "diclofenac",
+    "ibuprofen",
+    "naproxen",
+    "meloxicam",
+    "celecoxib",
+}
+HYPERTENSIVE_CRISIS_TERMS = {
+    "cao ngat nguong",
+    "ap huyet hang ngay ma van cao",
+    "huyet ap hang ngay ma van cao",
+    "do thay cao",
+}
+OVERDOSE_PATTERNS = [
+    r"\b(?:10|[1-9]\d+)\s*(?:vien|v)\b",
+    r"\buong\s+het\s+(?:vi|vỉ)\b",
+    r"\buong\s+cung\s+luc\b",
+    r"\bqua\s+lieu\b",
+]
+
+
+def detect_clinical_subtype(question: str) -> str:
+    normalized = normalize_text(question)
+    has_paracetamol = contains_any(normalized, PARACETAMOL_TERMS)
+    if has_paracetamol and any(re.search(pattern, normalized) for pattern in OVERDOSE_PATTERNS):
+        return SUBTYPE_PARACETAMOL_OVERDOSE
+
+    if contains_any(normalized, HYPERTENSIVE_CRISIS_TERMS):
+        return SUBTYPE_HYPERTENSIVE_CRISIS
+    if ("huyet ap" in normalized or "ap huyet" in normalized) and (
+        "van cao" in normalized or "rat cao" in normalized or "cao qua" in normalized
+    ):
+        return SUBTYPE_HYPERTENSIVE_CRISIS
+
+    if contains_any(normalized, NSAID_GASTRIC_TERMS) and contains_any(normalized, NSAID_ANALGESIC_TERMS):
+        return SUBTYPE_NSAID_GASTRIC_RISK
+
+    return ""
+
+
 def classify_question_intent(question: str) -> QuestionIntent:
     normalized = normalize_text(question)
+    subtype = detect_clinical_subtype(question)
+    if subtype in {SUBTYPE_PARACETAMOL_OVERDOSE, SUBTYPE_HYPERTENSIVE_CRISIS}:
+        return QuestionIntent.EMERGENCY
+    if subtype == SUBTYPE_NSAID_GASTRIC_RISK:
+        return QuestionIntent.HIGH_RISK_CONTEXT
     if contains_any(question, EMERGENCY_TERMS):
         return QuestionIntent.EMERGENCY
     if contains_any(question, COUNTERFEIT_TERMS):
@@ -228,6 +354,8 @@ def classify_question_intent(question: str) -> QuestionIntent:
         return QuestionIntent.INTERACTION
     if contains_any(question, DOSAGE_TERMS):
         return QuestionIntent.DOSAGE
+    if is_public_otc_request_without_drug(question):
+        return QuestionIntent.OTC_RECOMMENDATION
     if contains_any(question, HIGH_RISK_TERMS):
         return QuestionIntent.HIGH_RISK_CONTEXT
     if contains_any(question, {"canh bao", "tac dung phu", "nguy hiem", "di ung", "dau bao tu"}):
@@ -267,6 +395,13 @@ def result_text(result: Dict[str, Any]) -> str:
 def mentioned_common_drugs(question: str) -> List[str]:
     normalized = normalize_text(question)
     return [term for term in COMMON_DRUG_TERMS if term in normalized]
+
+
+def is_public_otc_request_without_drug(question: str) -> bool:
+    normalized = normalize_text(question)
+    if mentioned_common_drugs(question):
+        return False
+    return contains_any(normalized, OTC_ADVICE_TERMS) or contains_any(normalized, PUBLIC_SYMPTOM_TERMS)
 
 
 def is_relevant_to_question_drugs(result: Dict[str, Any], question_drugs: List[str]) -> bool:
@@ -317,6 +452,7 @@ def evidence_summary(results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 def _early_handoff(intent: QuestionIntent, summary: Dict[str, Any]) -> EvidenceDecision | None:
     if intent == QuestionIntent.EMERGENCY:
+        subtype = str(summary.get("subtype") or "")
         return EvidenceDecision(
             action=EvidenceAction.EMERGENCY,
             intent=intent,
@@ -325,7 +461,14 @@ def _early_handoff(intent: QuestionIntent, summary: Dict[str, Any]) -> EvidenceD
                 "Có dấu hiệu cấp cứu hoặc nguy cơ nặng. Không nên trả lời bằng RAG; "
                 "cần hướng dẫn người dùng gọi 115 hoặc đến cơ sở y tế gần nhất."
             ),
-            warnings=["Emergency/red-flag question must bypass RAG answer generation."],
+            warnings=[
+                "Paracetamol overdose must be treated as emergency."
+                if subtype == SUBTYPE_PARACETAMOL_OVERDOSE
+                else "Hypertensive crisis subtype must be treated as emergency."
+                if subtype == SUBTYPE_HYPERTENSIVE_CRISIS
+                else "Emergency/red-flag question must bypass RAG answer generation."
+            ],
+            subtype=subtype,
             metadata=summary,
         )
     if intent == QuestionIntent.PEDIATRIC_SYMPTOM:
@@ -338,14 +481,16 @@ def _early_handoff(intent: QuestionIntent, summary: Dict[str, Any]) -> EvidenceD
                 "khi chưa có tuổi/cân nặng/chẩn đoán và nguồn nhi khoa phù hợp."
             ),
             warnings=["Pediatric symptom question must be handed off unless a vetted pediatric protocol exists."],
+            subtype=str(summary.get("subtype") or ""),
             metadata=summary,
         )
     return None
 
 
-def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceDecision:
-    intent = classify_question_intent(question)
+def evaluate_evidence(question: str, intent: QuestionIntent, results: List[Dict[str, Any]]) -> EvidenceDecision:
     summary = evidence_summary(results)
+    subtype = detect_clinical_subtype(question)
+    summary["subtype"] = subtype
     sources = list(dict.fromkeys(summary["sources"]))
     question_drugs = mentioned_common_drugs(question)
     warnings: List[str] = []
@@ -353,6 +498,8 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
     early = _early_handoff(intent, summary)
     if early is not None:
         early.usable_sources = sources
+        early.subtype = early.subtype or subtype
+        early.metadata["subtype"] = early.subtype
         return early
 
     if not results:
@@ -452,6 +599,29 @@ def evaluate_evidence(question: str, results: List[Dict[str, Any]]) -> EvidenceD
         )
 
     if intent == QuestionIntent.DRUG_INFO:
+        if is_public_otc_request_without_drug(question):
+            if summary["has_safety_source"]:
+                return EvidenceDecision(
+                    action=EvidenceAction.ALLOW_WITH_CAUTION if warnings else EvidenceAction.ALLOW,
+                    intent=intent,
+                    should_answer=True,
+                    message="Có nguồn an toàn OTC phù hợp để trả lời câu hỏi tự mua thuốc.",
+                    warnings=warnings,
+                    usable_sources=sources,
+                    metadata=summary,
+                )
+            return EvidenceDecision(
+                action=EvidenceAction.INSUFFICIENT_EVIDENCE,
+                intent=intent,
+                should_answer=False,
+                message=(
+                    "Câu hỏi tự mua thuốc theo triệu chứng cần nguồn hướng dẫn OTC đúng loại. "
+                    "Không được dùng một thuốc registry ngẫu nhiên để suy ra khuyến nghị."
+                ),
+                warnings=warnings + ["OTC symptom request lacks a relevant safety source."],
+                usable_sources=sources,
+                metadata=summary,
+            )
         if summary["has_registry_source"] or summary["has_verified_non_ocr"]:
             return EvidenceDecision(
                 action=EvidenceAction.ALLOW_WITH_CAUTION if warnings else EvidenceAction.ALLOW,

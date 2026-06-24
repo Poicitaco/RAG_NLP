@@ -1,5 +1,5 @@
 """
-Text processing service - Dịch vụ xử lý văn bản
+Dich vu xu ly hoi thoai dua tren van ban.
 """
 from typing import Dict, Any, Optional
 from backend.models import ChatResponse
@@ -16,7 +16,7 @@ class TextService:
         """Khởi tạo text service"""
         self.safe_rag = get_safe_rag_service()
         self.conversation_context = ConversationContextService()
-        app_logger.info("Initialized text service")
+        app_logger.info("Da khoi tao dich vu xu ly van ban")
     
     async def process_message(
         self,
@@ -71,6 +71,9 @@ class TextService:
             if session_context.get("resume_pending_question"):
                 response.metadata["resumed_from_pending_question"] = True
                 response.metadata["resumed_from_user_message"] = clean_message
+            if session_context.get("resume_last_question"):
+                response.metadata["resumed_from_previous_question"] = True
+                response.metadata["resumed_from_user_message"] = clean_message
             self.conversation_context.update_from_response(
                 session_id=session_id,
                 user_message=processing_message,
@@ -78,21 +81,21 @@ class TextService:
             )
             
             duration = time.time() - start_time
-            app_logger.info(f"Processed text message in {duration:.3f}s")
+            app_logger.info(f"Da xu ly tin nhan van ban trong {duration:.3f}s")
             
             return response
             
         except Exception as e:
-            app_logger.error(f"Lỗi khi xử lý tin nhắn văn bản: {e}")
+            app_logger.error(f"Loi khi xu ly tin nhan van ban: {e}")
             raise
 
 
-# Global instance
+# Bien instance toan cuc
 _text_service: Optional[TextService] = None
 
 
 def get_text_service() -> TextService:
-    """Lấy hoặc tạo text service toàn cục"""
+    """Lay hoac tao instance TextService toan cuc."""
     global _text_service
     if _text_service is None:
         _text_service = TextService()

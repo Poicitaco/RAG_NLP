@@ -1,16 +1,13 @@
 """
-Drug information API routes - Endpoint API thông tin thuốc
+Các endpoint API quản lý thông tin thuốc.
 """
 from fastapi import APIRouter, HTTPException
-from typing import List
 from backend.models import (
     DrugQuery,
-    DrugResponse,
     DrugInteractionCheck,
-    DrugInteractionResponse,
     DosageRequest,
-    DosageResponse
 )
+from backend.services.drug_registry_service import get_drug_registry_service
 from backend.utils import app_logger, format_response
 
 router = APIRouter()
@@ -20,15 +17,17 @@ router = APIRouter()
 async def search_drugs(query: DrugQuery):
     """Tìm kiếm thuốc theo tên hoặc danh mục"""
     try:
-        # TODO: Implement drug search
+        service = get_drug_registry_service()
+        drugs = service.search(query.query, limit=query.limit)
         return format_response(
             success=True,
             data={
-                "drugs": [],
-                "total": 0,
+                "drugs": drugs,
+                "total": len(drugs),
                 "query": query.query
             },
-            message="Tìm kiếm thuốc hoàn tất"
+            message="Tìm kiếm thuốc hoàn tất",
+            metadata={"source": "dav_registry_jsonl"},
         )
     except Exception as e:
         app_logger.error(f"Lỗi khi tìm kiếm thuốc: {e}")
@@ -39,15 +38,13 @@ async def search_drugs(query: DrugQuery):
 async def check_drug_interactions(request: DrugInteractionCheck):
     """Kiểm tra tương tác giữa nhiều thuốc"""
     try:
-        # TODO: Implement interaction checking
+        service = get_drug_registry_service()
+        result = service.check_interactions(request.drugs)
         return format_response(
             success=True,
-            data={
-                "has_interactions": False,
-                "interactions": [],
-                "total_interactions": 0
-            },
-            message="Kiểm tra tương tác hoàn tất"
+            data=result,
+            message="Kiểm tra tương tác hoàn tất",
+            metadata={"source": "ddinter_graph_safety"},
         )
     except Exception as e:
         app_logger.error(f"Lỗi khi kiểm tra tương tác: {e}")
@@ -58,16 +55,23 @@ async def check_drug_interactions(request: DrugInteractionCheck):
 async def get_dosage_advice(request: DosageRequest):
     """Lấy gợi ý liều lượng"""
     try:
-        # TODO: Implement dosage advice
+        service = get_drug_registry_service()
+        result = service.dosage_lookup(request.drug_name)
+        if request.age is not None:
+            result["patient_age"] = request.age
+        if request.weight is not None:
+            result["patient_weight"] = request.weight
+        if request.prescription_text:
+            result["prescription_text_provided"] = True
         return format_response(
             success=True,
-            data={
-                "drug_name": request.drug_name,
-                "recommended_dosage": "Tham khảo bác sĩ",
-                "frequency": "Theo chỉ định",
-                "warnings": []
+            data=result,
+            message="Đã cung cấp thông tin đối chiếu liều an toàn",
+            metadata={
+                "mode": "safety_lookup_only",
+                "dosage_generated": False,
+                "requires_clinician_or_pharmacist": True,
             },
-            message="Đã cung cấp tư vấn liều lượng"
         )
     except Exception as e:
         app_logger.error(f"Lỗi khi lấy tư vấn liều lượng: {e}")
@@ -78,9 +82,17 @@ async def get_dosage_advice(request: DosageRequest):
 async def get_drug_details(drug_id: str):
     """Lấy thông tin chi tiết về một thuốc cụ thể"""
     try:
-        # TODO: Implement drug details retrieval
+        service = get_drug_registry_service()
+        drug = service.get(drug_id)
+        if drug:
+            return format_response(
+                success=True,
+                data=drug,
+                message="Lấy thông tin thuốc thành công",
+                metadata={"source": "dav_registry_jsonl"},
+            )
         return format_response(
-            success=True,
+            success=False,
             data=None,
             message=f"Không tìm thấy thuốc {drug_id}"
         )

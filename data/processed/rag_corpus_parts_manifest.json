@@ -5,14 +5,24 @@
     {
       "path": "data/chunks/rag_corpus_parts/rag_corpus_part001.jsonl",
       "rows": 121935,
-      "bytes": 84007923
+      "bytes": 84007842
     },
     {
       "path": "data/chunks/rag_corpus_parts/rag_corpus_part002.jsonl",
-      "rows": 65708,
-      "bytes": 46316076
+      "rows": 98208,
+      "bytes": 83984276
+    },
+    {
+      "path": "data/chunks/rag_corpus_parts/rag_corpus_part003.jsonl",
+      "rows": 100820,
+      "bytes": 83986529
+    },
+    {
+      "path": "data/chunks/rag_corpus_parts/rag_corpus_part004.jsonl",
+      "rows": 61596,
+      "bytes": 51094889
     }
   ],
-  "total_rows": 187643,
-  "total_bytes": 130323999
+  "total_rows": 382559,
+  "total_bytes": 303073536
 }

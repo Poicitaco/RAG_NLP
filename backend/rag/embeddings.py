@@ -1,9 +1,8 @@
 """
-Embedding generation for RAG system - Tạo embedding cho hệ thống RAG
+Dich vu tao embedding van ban cho he thong RAG.
 """
 from typing import List, Optional
-import openai
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.embeddings.base import Embeddings
 from sentence_transformers import SentenceTransformer
 import numpy as np
@@ -29,14 +28,14 @@ class EmbeddingService:
         self.provider = provider
         self.model_name = model_name or self._get_default_model()
         self.embeddings = self._initialize_embeddings()
-        app_logger.info(f"Initialized embedding service: {provider} - {self.model_name}")
+        app_logger.info(f"Da khoi tao dich vu embedding: {provider} - {self.model_name}")
     
     def _get_default_model(self) -> str:
         """Lấy tên mô hình mặc định dựa trên provider"""
         defaults = {
             "openai": settings.OPENAI_EMBEDDING_MODEL,
-            "huggingface": "sentence-transformers/all-MiniLM-L6-v2",
-            "sentence-transformers": "paraphrase-multilingual-MiniLM-L12-v2",
+            "huggingface": settings.LOCAL_EMBEDDING_MODEL,
+            "sentence-transformers": settings.LOCAL_EMBEDDING_MODEL,
         }
         return defaults.get(self.provider, defaults["openai"])
     
@@ -121,18 +120,15 @@ class EmbeddingService:
         return float(dot_product / (norm1 * norm2))
     
     def get_embedding_dimension(self) -> int:
-        """Lấy số chiều của embeddings"""
+        """Return the configured embedding dimension."""
         if self.provider == "openai":
             if "3-large" in self.model_name:
                 return 3072
             elif "3-small" in self.model_name:
                 return 1536
-            else:
-                return 1536  # Mặc định
-        else:
-            # Với sentence transformers, cần kiểm tra mô hình
-            return 384  # Chiều phổ biến
-    
+            return 1536
+        return settings.LOCAL_EMBEDDING_DIMENSION
+
 
 class HuggingFaceEmbeddings(Embeddings):
     """Wrapper cho HuggingFace embeddings"""
@@ -142,11 +138,11 @@ class HuggingFaceEmbeddings(Embeddings):
     
     def embed_query(self, text: str) -> List[float]:
         """Embed một query"""
-        return self.model.encode(text, convert_to_numpy=True).tolist()
+        return self.model.encode(text, convert_to_numpy=True, normalize_embeddings=True).tolist()
     
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """Embed nhiều documents"""
-        embeddings = self.model.encode(texts, convert_to_numpy=True)
+        embeddings = self.model.encode(texts, convert_to_numpy=True, normalize_embeddings=True)
         return [emb.tolist() for emb in embeddings]
 
 
@@ -158,7 +154,7 @@ def get_embedding_service() -> EmbeddingService:
     """Lấy hoặc tạo instance embedding service toàn cục"""
     global _embedding_service
     if _embedding_service is None:
-        _embedding_service = EmbeddingService(provider="openai")
+        _embedding_service = EmbeddingService(provider="sentence-transformers")
     return _embedding_service
 
 

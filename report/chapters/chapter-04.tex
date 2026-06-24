@@ -1,0 +1,244 @@
+\chapter{Xây dựng kiến trúc Multi-Agent RAG}
+
+\section{Kiến trúc tổng thể}
+
+SafeRAG Pharma được thiết kế như một pipeline nhiều agent. Mỗi agent nhận trạng thái hiện tại của câu hỏi, bổ sung dấu vết xử lý và quyết định chuyển tiếp. Thiết kế này phù hợp với miền y tế vì mọi quyết định phải có khả năng giải thích.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=0.55cm and 0.6cm,
+  box/.style={rectangle, rounded corners=2pt, draw=phenikaaBlue, align=center, minimum width=3.1cm, minimum height=0.9cm, font=\small},
+  warn/.style={rectangle, rounded corners=2pt, draw=red!70!black, fill=red!4, align=center, minimum width=3.1cm, minimum height=0.9cm, font=\small},
+  arrow/.style={-{Latex[length=2mm]}, thick}
+]
+\node[box] (api) {API Chat\\nhận câu hỏi};
+\node[warn, right=of api] (safety) {Safety Router\\cấp cứu/chuyển tuyến};
+\node[box, right=of safety] (intent) {LLM Intent\\Planner};
+\node[box, below=of intent] (rule) {Semantic Rule\\Mapper};
+\node[box, left=of rule] (context) {Patient Context\\Collector};
+\node[box, left=of context] (align) {Drug Name\\Alignment};
+\node[warn, below=of align] (graph) {Graph Safety\\Agent};
+\node[box, right=of graph] (retrieval) {Hybrid Retrieval\\BM25 + Chroma};
+\node[box, right=of retrieval] (rerank) {Heuristic\\Re-ranker};
+\node[warn, below=of rerank] (evidence) {Evidence\\Guardrail};
+\node[box, left=of evidence] (final) {Final Response\\Builder};
+
+\draw[arrow] (api) -- (safety);
+\draw[arrow] (safety) -- (intent);
+\draw[arrow] (intent) -- (rule);
+\draw[arrow] (rule) -- (context);
+\draw[arrow] (context) -- (align);
+\draw[arrow] (align) -- (graph);
+\draw[arrow] (graph) -- ++(0,-1.0) -| (final);
+\draw[arrow] (graph) -- (retrieval);
+\draw[arrow] (retrieval) -- (rerank);
+\draw[arrow] (rerank) -- (evidence);
+\draw[arrow] (evidence) -- (final);
+\end{tikzpicture}
+\caption{Luồng xử lý tổng thể của Multi-Agent RAG trong SafeRAG Pharma}
+\end{figure}
+
+Luồng xử lý thực tế của hệ thống có các điểm chính: API chat nhận câu hỏi và khởi tạo trạng thái hội thoại; safety/evidence guardrail định tuyến sớm các tình huống cấp cứu hoặc thiếu ngữ cảnh; câu hỏi tương tác thuốc có thể đi vào graph safety trước khi chạy truy xuất đầy đủ; bộ thu thập hồ sơ bệnh nhân sẽ hỏi lại khi thiếu tuổi, bệnh nền, dị ứng hoặc thuốc đang dùng; nếu graph safety đã có cảnh báo kèm nguồn, hệ thống có thể trả lời bằng fast path; full hybrid RAG chỉ chạy khi các lớp an toàn ban đầu cho phép.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Các agent đã triển khai và dấu vết đầu ra}
+\begin{tabularx}{\linewidth}{p{0.28\linewidth} p{0.25\linewidth} Y}
+\toprule
+\textbf{Agent/module} & \textbf{Đầu ra chính} & \textbf{Vai trò nghiệm thu} \\
+\midrule
+Safety Router & Quyết định an toàn ban đầu & Bắt cấp cứu, quá liều, triệu chứng đỏ trước khi truy xuất \\
+Ambiguity Checker & Cờ thiếu ngữ cảnh & Quyết định hỏi lại thay vì tư vấn thuốc khi câu hỏi mơ hồ \\
+Intent Planner & Ý định người dùng & Gán nhãn tra cứu thuốc, OTC, cấp cứu, nhi khoa, bối cảnh nguy cơ cao \\
+Semantic Rule Mapper & Luật OTC/bệnh nền phù hợp & Ánh xạ câu hỏi vào ma trận luật an toàn \\
+Patient Context Collector & Hồ sơ bệnh nhân & Trích xuất tuổi, cân nặng, bệnh nền, dị ứng, thuốc đang dùng \\
+Drug Name Alignment & Tên thuốc/hoạt chất chuẩn & Chuẩn hóa biệt dược/tên sai chính tả trước graph và retrieval \\
+Graph Safety Agent & Cảnh báo có nguồn & Phát hiện tương tác thuốc hoặc rủi ro bệnh nền \\
+Hybrid Retrieval Agent & Tập bằng chứng liên quan & Lấy nguồn từ BM25/Chroma khi đủ điều kiện an toàn \\
+Heuristic Re-ranker Agent & Bằng chứng đã sắp xếp & Đưa tài liệu phù hợp lên đầu bằng custom boost/source adjustment \\
+Evidence Guardrail & Cho phép, hỏi lại hoặc chuyển tuyến & Kiểm tra bằng chứng trước khi dựng câu trả lời \\
+Final Response Builder & Câu trả lời 4 phần & Sinh câu trả lời có cảnh báo, giải thích và citation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Điểm quan trọng là mỗi agent không chỉ xử lý nội bộ, mà đều ghi lại dấu vết trong kết quả đánh giá. Vì vậy, khi đánh giá 100 câu hỏi, báo cáo có thể thống kê được bước nào đã chạy, chạy bao nhiêu lần, quyết định cuối là gì và nguồn đầu tiên của câu trả lời đến từ đâu. Đây là cơ sở để chứng minh hệ thống đã triển khai thật, không phải chỉ mô tả kiến trúc trên giấy.
+
+\section{Khối phân tích ý định và quản lý ngữ cảnh}
+
+\subsection{Phân loại ý định người dùng}
+
+Intent giúp hệ thống chọn chiến lược xử lý. Các ý định quan trọng gồm tra cứu thông tin thuốc, hỏi liều dùng/cách dùng, hỏi tương tác, tư vấn OTC, bối cảnh nguy cơ cao, câu hỏi nhi khoa, thu hồi/cảnh báo thuốc giả và tình huống cấp cứu. Trong pipeline, ý định ban đầu được xác định bởi safety router/evidence guardrail; sau đó intent planner có thể bổ sung phân tích nếu cấu hình cho phép.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Ý định và cách xử lý tương ứng}
+\begin{tabularx}{\linewidth}{p{0.25\linewidth} Y Y}
+\toprule
+\textbf{Ý định} & \textbf{Ví dụ câu hỏi} & \textbf{Xử lý ưu tiên} \\
+\midrule
+Tra cứu thông tin thuốc & Thuốc X có hoạt chất gì? & Tra registry/Dược thư, trả lời có nguồn \\
+Liều dùng/cách dùng & Uống mấy viên một ngày? & Kiểm tra ngữ cảnh, bằng chứng, có thể chuyển tuyến \\
+Tương tác thuốc & Aspirin uống chung diclofenac? & Kiểm tra graph safety/DDInter trước \\
+Tư vấn OTC & Bị cảm nên mua thuốc gì? & Ánh xạ luật an toàn + hồ sơ bệnh nhân \\
+Bối cảnh nguy cơ cao & Mang thai dùng ibuprofen? & Guardrail/chuyển tuyến nếu nguồn chưa đủ \\
+Cấp cứu/quá liều & Uống 10 viên Panadol? & Bypass RAG, khuyến nghị cấp cứu ngay \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Trích xuất hồ sơ bệnh nhân}
+
+Bộ thu thập hồ sơ bệnh nhân trích xuất các trường như tuổi, tháng tuổi, cân nặng, thai kỳ, cho con bú, bệnh nền, dị ứng và thuốc đang dùng. Với câu hỏi thuốc, các trường này không phải thông tin phụ; chúng thay đổi trực tiếp rủi ro lâm sàng.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Trường hồ sơ bệnh nhân được thu thập}
+\begin{tabularx}{\linewidth}{p{0.28\linewidth} Y Y}
+\toprule
+\textbf{Trường} & \textbf{Nguồn trích xuất} & \textbf{Ý nghĩa an toàn} \\
+\midrule
+Tuổi/tháng tuổi & Cụm ``tuổi'', ``tháng'' & Liều dùng và cảnh báo trẻ em \\
+Cân nặng & Cụm ``kg'' & Tính liều theo cân nặng cho trẻ em \\
+Bệnh nền & Từ khóa bệnh nền & Tăng huyết áp, gan, thận, dạ dày, hen, tiểu đường \\
+Thai kỳ/cho con bú & Từ khóa thai kỳ/cho bú & Chặn tự dùng thuốc OTC nguy cơ cao \\
+Dị ứng & Cụm ``dị ứng ...'' & Tránh thuốc gây dị ứng \\
+Thuốc đang dùng & Ngữ cảnh hội thoại/API & Phát hiện tương tác thuốc \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Nếu thiếu trường quan trọng, hệ thống yêu cầu người dùng bổ sung thông tin trước khi tư vấn. Đây là quyết định an toàn: không tư vấn thuốc cụ thể khi chưa biết người dùng là trẻ em hay người lớn, có bệnh nền hay đang dùng thuốc khác.
+
+\subsection{Coreference Resolution và context resumption}
+
+Hội thoại thuốc thường diễn ra nhiều lượt. Người dùng có thể hỏi trước ``Tôi bị cảm uống thuốc gì?'' rồi sau đó mới trả lời ``Tôi 65 tuổi, bị cao huyết áp''. Hệ thống lưu câu hỏi đang chờ, câu hỏi gần nhất và hồ sơ bệnh nhân tạm thời. Khi lượt sau giống câu bổ sung ngữ cảnh, hệ thống tự nối lại với câu hỏi trước để tiếp tục cùng một ca tư vấn.
+
+Ở góc nhìn NLP, đây là dạng coreference/context resumption đơn giản nhưng thực dụng: hệ thống không cần giải toàn bộ tham chiếu ngôn ngữ, mà nhận diện các dấu hiệu ngữ cảnh như tuổi, kg, bệnh nền, dị ứng, đang dùng thuốc để khôi phục câu hỏi đang chờ.
+
+\section{Khối truy xuất lai}
+
+\subsection{Semantic Search bằng ChromaDB}
+
+Vector retrieval dùng embedding để tìm tài liệu liên quan về nghĩa. Trong cấu hình hiện tại, hệ thống dùng mô hình embedding BGE và lưu vector trong ChromaDB. Vector search đặc biệt hữu ích khi người dùng không nhớ chính xác tên mục y khoa hoặc diễn đạt theo triệu chứng.
+
+\subsection{Lexical Search bằng BM25}
+
+BM25 mạnh trong các truy vấn có token chính xác: tên thuốc, số đăng ký, hoạt chất, hàm lượng, mã thu hồi. Hệ thống truy xuất nhiều kết quả ứng viên bằng BM25, sau đó mới kết hợp với kết quả vector và lọc theo nguồn/loại tài liệu.
+
+\subsection{Gộp kết quả}
+
+Thiết kế hiện tại gán trọng số mặc định BM25 là 0.65 và vector search là 0.35. Công thức về bản chất là weighted reciprocal rank cộng với điều chỉnh theo nguồn và loại tài liệu.
+
+\begin{formulabox}[Điểm kết hợp truy xuất lai]
+\[
+\mathrm{score}(d)=
+\frac{w_b}{\mathrm{rank}_{BM25}(d)}
++
+\frac{w_v}{\mathrm{rank}_{Vector}(d)}
++
+\Delta_{\mathrm{source}}(q,d)
+\]
+\[
+w_b=0.65,\quad w_v=0.35
+\]
+\end{formulabox}
+
+Thành phần \(\Delta_{\mathrm{source}}\) giúp ưu tiên nguồn cảnh báo khi câu hỏi có từ khóa an toàn, ưu tiên DDInter cho tương tác, giảm điểm OCR chưa kiểm chứng với câu hỏi rủi ro cao và ưu tiên registry với câu hỏi định danh thuốc.
+
+\section{Tối ưu hóa truy xuất}
+
+\subsection{Query augmentation}
+
+Query augmentation bổ sung thông tin từ ba nguồn:
+
+\begin{itemize}
+  \item \textbf{Ngữ cảnh luật an toàn}: thêm ý định chính, nhóm OTC và truy vấn mở rộng.
+  \item \textbf{Chuẩn hóa tên thuốc}: thêm tên chuẩn của thuốc/hoạt chất.
+  \item \textbf{Hồ sơ bệnh nhân}: thêm bệnh nền, thai kỳ, thuốc đang dùng nếu có.
+\end{itemize}
+
+Ví dụ, câu ``mệt quá tôi tự mua kẽm uống tăng đề kháng'' có thể được semantic rule mapper ánh xạ vào nhóm bổ sung kẽm. Truy vấn sau đó được bơm thêm các cụm liên quan đến liều kẽm nguyên tố, tác dụng phụ và cảnh báo dùng kéo dài. Điều này làm RAG tìm đúng phần cần thiết thay vì bị nhiễu bởi các tài liệu không liên quan.
+
+\subsection{Semantic Rule Mapper}
+
+Semantic Rule Mapper dùng hai tầng. Tầng lexical tính overlap giữa câu hỏi và văn bản đại diện của luật; nếu điểm từ 0.72 trở lên thì nhận luật ngay. Nếu chưa đủ, hệ thống tính embedding/cosine với rule vectors và so với ngưỡng mặc định 0.48. Cuối cùng, nếu lexical vẫn đạt từ 0.25, hệ thống có thể dùng fallback theo từ khóa. Thiết kế này giữ cho rule mapping có đường xử lý cục bộ ngay cả khi dịch vụ embedding không sẵn sàng.
+
+\subsection{Heuristic re-ranking và custom boost logic}
+
+Sau khi retrieval trả về tập kết quả, hệ thống hiện dùng \textit{heuristic re-ranking} thay vì cross-encoder neural re-ranker. Cụ thể, điểm tài liệu được điều chỉnh bằng custom boost logic dựa trên loại nguồn, độ tin cậy, section, intent, tín hiệu an toàn và mức khớp tên thuốc/hoạt chất. Cách làm này nhẹ hơn cross-encoder, phù hợp với điều kiện triển khai hiện tại và dễ audit vì mỗi lần tăng/giảm điểm đều có thể giải thích được.
+
+Với câu hỏi chỉ định, hệ thống còn gộp lại các tài liệu thuộc mục chỉ định để tránh làm mất tài liệu đúng vai trò. Với câu hỏi tương tác, nguồn DDInter hoặc graph safety được ưu tiên hơn tài liệu OCR/monograph chung. Với câu hỏi cảnh báo/thu hồi, nguồn Cảnh giác dược hoặc DAV được đẩy lên cao hơn nguồn tham khảo phổ thông.
+
+Cross-encoder re-ranking vẫn là hướng phát triển hợp lý ở giai đoạn sau, nhưng không nên mô tả như thành phần đã triển khai đầy đủ trong phiên bản hiện tại. Nếu bổ sung cross-encoder, cần đánh giá thêm latency và độ cải thiện MRR/Strict MRR trên benchmark lớn hơn.
+
+\section{Graph Safety Guardrails}
+
+\subsection{Mô hình kiểm tra đồ thị}
+
+Graph safety trong phiên bản hiện tại là file-backed graph, có thể thay bằng Neo4j sau này nhưng giữ contract đầu ra ổn định. Dữ liệu chính gồm:
+
+\begin{itemize}
+  \item DDInter edges cho tương tác thuốc--thuốc;
+  \item OTC condition rules cho bệnh nền và nhóm thuốc OTC;
+  \item built-in condition rules cho tăng huyết áp, tim mạch, thận, gan, dạ dày, hen, thai kỳ.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  node distance=1.0cm,
+  entity/.style={ellipse, draw=phenikaaBlue, fill=blue!3, minimum width=2.8cm, align=center},
+  risk/.style={rectangle, rounded corners=2pt, draw=red!70!black, fill=red!4, minimum width=3.2cm, align=center},
+  edge/.style={-{Latex[length=2mm]}, thick}
+]
+\node[entity] (patient) {Bệnh nhân\\tăng huyết áp};
+\node[entity, right=2.2cm of patient] (otc) {Thuốc cảm\\nghẹt mũi};
+\node[risk, below=1.0cm of otc] (ingredient) {Pseudoephedrine\\Phenylephrine};
+\node[risk, below=1.0cm of patient] (warning) {Cảnh báo:\\không tự dùng};
+
+\draw[edge] (patient) -- node[above,font=\scriptsize]{có bệnh nền} (otc);
+\draw[edge] (otc) -- node[right,font=\scriptsize]{có thể chứa} (ingredient);
+\draw[edge] (ingredient) -- node[below,font=\scriptsize]{làm tăng rủi ro} (warning);
+\draw[edge] (patient) -- (warning);
+\end{tikzpicture}
+\caption{Ví dụ guardrail đồ thị cho thuốc cảm ở người tăng huyết áp}
+\end{figure}
+
+\subsection{Fast path an toàn}
+
+Nếu câu hỏi có dấu hiệu tương tác và phát hiện ít nhất hai thuốc, graph safety được chạy sớm. Khi DDInter hoặc guardrail có cảnh báo kèm citation, hệ thống có thể trả lời theo đường nhanh của graph safety mà không chờ Chroma. Đây là tối ưu vừa giảm latency, vừa giảm nguy cơ retrieval lạc nguồn.
+
+\subsection{Evidence Guardrail}
+
+Sau retrieval, lớp evidence guardrail quyết định hành động. Các nhóm hành động gồm:
+
+\begin{table}[H]
+\centering
+\small
+\caption{Các action của lớp evidence/safety guardrail}
+\begin{tabularx}{\linewidth}{p{0.26\linewidth} Y}
+\toprule
+\textbf{Hành động} & \textbf{Ý nghĩa} \\
+\midrule
+Cho phép trả lời & Có đủ bằng chứng phù hợp để trả lời thông tin tham khảo \\
+Cho phép nhưng kèm cảnh báo & Có thể trả lời nhưng phải kèm cảnh báo an toàn \\
+Cần hỏi lại & Thiếu thông tin bệnh nhân/ngữ cảnh, cần hỏi lại \\
+Chuyển tuyến chuyên gia & Câu hỏi rủi ro cao hoặc bằng chứng không đủ, nên hỏi chuyên gia \\
+Không đủ bằng chứng & Không có nguồn đủ liên quan để kết luận \\
+Cấp cứu/quá liều & Tình huống cấp cứu/quá liều, bỏ qua RAG thông thường \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Prompt Engineering và final response}
+
+LLM trong hệ thống chỉ đóng vai trò viết lại câu trả lời theo khung có kiểm soát, không phải nguồn sự thật y tế. Câu trả lời cuối được dựng thành các block cố định: cảnh báo an toàn, dặn dò ngắn, giải thích chuyên khoa dễ hiểu và dẫn nguồn đối soát. Kết quả trả về còn kèm nguồn, cảnh báo, độ tin cậy, hành động an toàn và lịch sử agent đã xử lý.
+
+\section{Tóm tắt chương}
+
+Kiến trúc Multi-Agent RAG của SafeRAG Pharma biến một câu hỏi thuốc thành chuỗi quyết định có kiểm soát. Thay vì để LLM quyết định trực tiếp, hệ thống dùng các agent chuyên biệt để phân tích ý định, thu thập ngữ cảnh, chuẩn hóa entity, truy xuất lai, kiểm tra graph safety, đánh giá bằng chứng và chỉ sau đó mới sinh phản hồi. Đây là điểm khác biệt cốt lõi giữa một chatbot dùng LLM và một hệ thống RAG an toàn cho miền dược phẩm.

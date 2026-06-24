@@ -1,8 +1,8 @@
 """
-Rule-based safety guardrails for OTC and prescription-use support in Vietnam.
+Cac quy tac bao ve an toan dua tren rule cho OTC va ho tro don thuoc tai Viet Nam.
 
-These rules do not diagnose. They decide whether the RAG pipeline may answer,
-should ask for missing context, or must direct the user to a clinician.
+Cac quy tac nay khong chan doan benh. Chung quyet dinh RAG pipeline co the tra loi,
+can hoi them ngu canh con thieu, hay phai huong dan nguoi dung gap bac si.
 """
 from dataclasses import dataclass, field
 from enum import Enum

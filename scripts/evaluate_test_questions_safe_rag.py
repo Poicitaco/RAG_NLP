@@ -16,6 +16,11 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 
+def configure_stdout() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
+
 def load_questions(path: Path) -> List[Dict[str, Any]]:
     data = json.loads(path.read_text(encoding="utf-8"))
     groups = data.get("test_scenarios_phu_hop_nguoi_dung_pho_thong") or {}
@@ -158,6 +163,7 @@ def summarize(results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 async def main() -> None:
+    configure_stdout()
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", default="test_q.json")
     parser.add_argument("--output", default="data/evaluation/test_q_safe_rag_results.json")

@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import gzip
 import json
+import os
 import pickle
 import re
 import sys
@@ -21,11 +22,16 @@ from typing import Any, Dict, List
 from ingest_rag_corpus import embed_texts, load_embedding_model
 from smoke_search_bm25 import search as bm25_search
 
+# Nguong diem toi thieu de giu lai ket qua hybrid search
+# Co the ghi de bang bien moi truong MIN_HYBRID_SCORE
+NGUONG_DIEM_HYBRID_MAC_DINH: float = float(os.environ.get("MIN_HYBRID_SCORE", "0.5"))
+
 
 DEFAULT_BM25_INDEX = "data/embeddings/bm25/rag_bm25.pkl.gz"
-DEFAULT_CHROMA_DIR = "data/embeddings/chroma"
-DEFAULT_COLLECTION = "pharmaceutical_knowledge"
-DEFAULT_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+DEFAULT_CHROMA_DIR = "data/embeddings/chroma_priority"
+DEFAULT_COLLECTION = "pharmaceutical_local_bge_1024"
+DEFAULT_PROVIDER = "sentence-transformers"
+DEFAULT_MODEL = "BAAI/bge-m3"
 
 SAFETY_TERMS = {
     "thu hoi",
@@ -51,6 +57,14 @@ HIGH_RISK_TERMS = {
     "qua lieu",
     "tuong tac",
 }
+OVERDOSE_TERMS = {
+    "qua lieu",
+    "uong qua",
+    "uong nhieu",
+    "uong het",
+    "uong cung luc",
+}
+
 SAFETY_SOURCES = {"dav_recall", "canhgiacduoc"}
 SECONDARY_DUOCTHU_SOURCES = {"trungtamthuoc_duocthu"}
 REGISTRY_SOURCES = {"dav_all", "dav_otc"}
@@ -83,8 +97,30 @@ def configure_stdout() -> None:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
+def mojibake_score(text: str) -> int:
+    markers = ("Ã", "Ä", "Â", "áº", "á»", "â€", "")
+    return sum(text.count(marker) for marker in markers)
+
+
+def repair_mojibake(text: str) -> str:
+    if not text or mojibake_score(text) == 0:
+        return text
+    best = text
+    best_score = mojibake_score(text)
+    for encoding in ("cp1252", "latin1"):
+        try:
+            candidate = text.encode(encoding).decode("utf-8")
+        except UnicodeError:
+            continue
+        score = mojibake_score(candidate)
+        if score < best_score:
+            best = candidate
+            best_score = score
+    return best
+
+
 def normalize_text(text: str) -> str:
-    value = (text or "").replace("Đ", "D").replace("đ", "d").lower()
+    value = repair_mojibake(text or "").replace("Đ", "D").replace("đ", "d").lower()
     decomposed = unicodedata.normalize("NFD", value)
     return "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
 
@@ -103,6 +139,22 @@ def metadata_source(metadata: Dict[str, Any]) -> str:
     return str(metadata.get("source") or metadata.get("source_dataset") or "")
 
 
+def metadata_list(value: Any) -> List[str]:
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(item) for item in value]
+    if isinstance(value, str):
+        try:
+            parsed = json.loads(value)
+        except json.JSONDecodeError:
+            return [value]
+        if isinstance(parsed, list):
+            return [str(item) for item in parsed]
+        return [value]
+    return [str(value)]
+
+
 def load_bm25_index(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise SystemExit(f"Missing BM25 index: {path}")
@@ -117,6 +169,7 @@ def chroma_search(
     provider: str,
     model_name: str,
     top_k: int,
+    metadata_filter: Dict[str, Any] | None = None,
 ) -> List[Dict[str, Any]]:
     try:
         import chromadb
@@ -125,17 +178,48 @@ def chroma_search(
         return []
 
     if not Path(persist_dir).exists():
-        return []
+        Path(persist_dir).mkdir(parents=True, exist_ok=True)
     try:
         client = chromadb.PersistentClient(path=persist_dir)
-        collection = client.get_collection(collection_name)
-    except Exception:
+        collection = client.get_or_create_collection(
+            name=collection_name,
+            metadata={
+                "description": "Vietnamese pharmaceutical RAG corpus embedded with local BAAI/bge-m3",
+                "embedding_provider": provider,
+                "embedding_model": model_name,
+            },
+        )
+    except Exception as exc:
+        print(f"Chroma collection unavailable, falling back to BM25 only: {exc}", file=sys.stderr)
         return []
 
-    model = load_embedding_model(provider, model_name)
-    query_embedding = embed_texts(model, provider, model_name, [query])[0]
+    if collection.count() == 0:
+        print(
+            (
+                f"WARNING: Chroma collection '{collection_name}' is empty. "
+                "Run scripts/ingest_rag_corpus.py with --provider sentence-transformers "
+                "--collection pharmaceutical_local_bge_1024 to re-index the corpus "
+                "before relying on vector retrieval."
+            ),
+            file=sys.stderr,
+        )
+        return []
+
     try:
-        results = collection.query(query_embeddings=[query_embedding], n_results=top_k)
+        model = load_embedding_model(provider, model_name)
+        query_embedding = embed_texts(model, provider, model_name, [query])[0]
+    except Exception as exc:
+        print(f"Embedding query failed, falling back to BM25 only: {exc}", file=sys.stderr)
+        return []
+
+    try:
+        query_kwargs: Dict[str, Any] = {
+            "query_embeddings": [query_embedding],
+            "n_results": top_k,
+        }
+        if metadata_filter:
+            query_kwargs["where"] = metadata_filter
+        results = collection.query(**query_kwargs)
     except Exception as exc:
         print(f"Chroma query failed, falling back to BM25 only: {exc}", file=sys.stderr)
         return []
@@ -193,6 +277,10 @@ def source_adjustment(query: str, metadata: Dict[str, Any], document_preview: st
     matched_drug_count = sum(1 for term in mentioned_drugs if term in row_text)
     normalized_query = normalize_text(query)
     wants_interaction = "tuong tac" in normalized_query
+    wants_overdose = has_any_term(query, OVERDOSE_TERMS)
+    section_types = {normalize_text(item) for item in metadata_list(metadata.get("section_types"))}
+    section_text = normalize_text(str(metadata.get("section") or "") + " " + str(metadata.get("section_title") or ""))
+    is_overdose_section = "overdose" in section_types or "qua lieu" in section_text
 
     score = 0.0
     if is_safety_query and source in SAFETY_SOURCES:
@@ -217,10 +305,24 @@ def source_adjustment(query: str, metadata: Dict[str, Any], document_preview: st
         score -= 0.45
     if wants_interaction and doc_type == "drug_info":
         score -= 0.25
+    if wants_overdose and is_overdose_section:
+        score += 0.75
+        if source in SECONDARY_DUOCTHU_SOURCES:
+            score += 0.25
+        if source in {"dav_pdf_ocr", "dav_otc", "dav_all"}:
+            score += 0.2
+        if "xu tri" in section_text or "giai doc" in row_text:
+            score += 0.25
+        if mentioned_drugs and not mentions_query_drug:
+            score -= 1.25
+    if wants_overdose and source in SAFETY_SOURCES and not is_overdose_section:
+        score -= 0.45
     if mentioned_drugs and title_mentions_query_drug:
         score += 0.55
     elif mentioned_drugs and mentions_query_drug:
         score += 0.2
+    if mentioned_drugs and source in SECONDARY_DUOCTHU_SOURCES and mentions_query_drug and not title_mentions_query_drug:
+        score -= 0.85
     if mentioned_drugs and is_high_risk_query and source in SECONDARY_DUOCTHU_SOURCES and not mentions_query_drug:
         score -= 0.45
     if not is_safety_query and source in REGISTRY_SOURCES:
@@ -237,6 +339,7 @@ def combine_results(
     bm25_weight: float,
     vector_weight: float,
     top_k: int,
+    nguong_diem: float = NGUONG_DIEM_HYBRID_MAC_DINH,
 ) -> List[Dict[str, Any]]:
     merged: Dict[str, Dict[str, Any]] = {}
 
@@ -292,13 +395,17 @@ def combine_results(
         rows.append(item)
 
     rows.sort(key=lambda row: row["hybrid_score"], reverse=True)
-    for rank, row in enumerate(rows[:top_k], 1):
+
+    # Loc bo ket qua co diem qua thap (co the chinh qua ENV MIN_HYBRID_SCORE)
+    filtered_rows = [row for row in rows if row["hybrid_score"] >= nguong_diem]
+
+    for rank, row in enumerate(filtered_rows[:top_k], 1):
         row["rank"] = rank
         row["source"] = metadata_source(row["metadata"])
         row["type"] = row["metadata"].get("type")
         row["trust_level"] = row["metadata"].get("trust_level") or "official_registry"
         row["title_or_drug"] = row["metadata"].get("title") or row["metadata"].get("drug_name")
-    return rows[:top_k]
+    return filtered_rows[:top_k]
 
 
 def main() -> None:
@@ -309,7 +416,7 @@ def main() -> None:
     parser.add_argument("--bm25-index", default=DEFAULT_BM25_INDEX)
     parser.add_argument("--chroma-dir", default=DEFAULT_CHROMA_DIR)
     parser.add_argument("--collection", default=DEFAULT_COLLECTION)
-    parser.add_argument("--provider", choices=["sentence-transformers", "openai"], default="sentence-transformers")
+    parser.add_argument("--provider", choices=["sentence-transformers", "openai"], default=DEFAULT_PROVIDER)
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--bm25-k", type=int, default=500)
     parser.add_argument("--vector-k", type=int, default=10)
@@ -317,11 +424,14 @@ def main() -> None:
     parser.add_argument("--bm25-weight", type=float, default=0.65)
     parser.add_argument("--vector-weight", type=float, default=0.35)
     args = parser.parse_args()
+    query = repair_mojibake(args.query)
+    if query != args.query:
+        print(f"Repaired mojibake query: {query}", file=sys.stderr)
 
     bm25_index = load_bm25_index(Path(args.bm25_index))
-    bm25_results = bm25_search(bm25_index, args.query, args.bm25_k)
+    bm25_results = bm25_search(bm25_index, query, args.bm25_k)
     chroma_results = chroma_search(
-        args.query,
+        query,
         args.chroma_dir,
         args.collection,
         args.provider,
@@ -329,7 +439,7 @@ def main() -> None:
         args.vector_k,
     )
     combined = combine_results(
-        args.query,
+        query,
         bm25_results,
         chroma_results,
         args.bm25_weight,
@@ -340,7 +450,7 @@ def main() -> None:
     print(
         json.dumps(
             {
-                "query": args.query,
+                "query": query,
                 "bm25_results": len(bm25_results),
                 "chroma_results": len(chroma_results),
                 "results": combined,

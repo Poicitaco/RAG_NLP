@@ -1,0 +1,96 @@
+\chapter{Cơ sở lý thuyết}
+
+\section{Kỹ thuật xử lý ngôn ngữ tự nhiên cốt lõi}
+
+\subsection{Biểu diễn từ và văn bản}
+
+Biểu diễn văn bản là bước chuyển đổi chuỗi ngôn ngữ tự nhiên thành dạng số để mô hình có thể tính toán. Các phương pháp truyền thống như bag-of-words và TF-IDF xem tài liệu như tập từ rời rạc, phù hợp với tìm kiếm từ khóa nhưng yếu khi người dùng diễn đạt cùng ý bằng nhiều cách khác nhau.
+
+Các mô hình dựa trên Transformer tạo embedding ngữ nghĩa bằng cách đặt từ trong ngữ cảnh câu. Với câu hỏi dược phẩm tiếng Việt, embedding giúp hệ thống hiểu các truy vấn như ``thuốc cảm cho người cao huyết áp'' và ``nghẹt mũi nhưng bị huyết áp cao'' có quan hệ ngữ nghĩa gần nhau, dù không trùng hoàn toàn từ khóa.
+
+\begin{formulabox}[Cosine similarity giữa query và tài liệu]
+\[
+\mathrm{cosine}(q,d)=
+\frac{\vec{q}\cdot \vec{d}}
+{\|\vec{q}\|_2\|\vec{d}\|_2}
+\]
+\end{formulabox}
+
+Trong hệ thống, cosine similarity được dùng khi ánh xạ semantic rule và khi truy xuất vector trong ChromaDB. Giá trị càng gần 1 thì query và tài liệu càng gần nhau trong không gian embedding.
+
+\subsection{Vietnamese NLP và Medical NLP}
+
+Với tiếng Việt, bài toán NLP có thêm các đặc thù như dấu thanh, từ ghép, cách viết không dấu, lỗi gõ và sự khác biệt giữa biệt dược/hoạt chất. Các mô hình như PhoBERT cho thấy việc tiền huấn luyện trên dữ liệu tiếng Việt giúp cải thiện nhiều tác vụ như gán nhãn từ loại, phân tích phụ thuộc, nhận diện thực thể và suy luận ngôn ngữ tự nhiên. Tuy nhiên, miền dược phẩm còn khó hơn văn bản phổ thông vì có nhiều tên hoạt chất Latin, tên thương mại, hàm lượng, dạng bào chế và thuật ngữ chuyên ngành.
+
+Trong Medical NLP, các mô hình như BioBERT và ClinicalBERT cho thấy mô hình ngôn ngữ được huấn luyện hoặc thích nghi trên dữ liệu y sinh/y tế thường hiểu thuật ngữ chuyên ngành tốt hơn mô hình tổng quát. Điều này giải thích vì sao hệ thống SafeRAG Pharma không chỉ dựa vào LLM tổng quát, mà phải kết hợp corpus chuyên ngành, drug name alignment, nguồn có metadata và guardrail an toàn.
+
+\subsection{TF-IDF và BM25}
+
+BM25 là thuật toán truy xuất lexical mạnh cho các bài toán cần bắt chính xác tên thuốc, hoạt chất, mã đăng ký hoặc cụm cảnh báo. Khác với TF-IDF cơ bản, BM25 có thành phần bão hòa tần suất từ và chuẩn hóa độ dài tài liệu, giúp tránh việc tài liệu dài luôn được điểm cao hơn.
+
+\begin{formulabox}[Điểm BM25]
+\[
+\mathrm{BM25}(q,d)=
+\sum_{t\in q}
+\mathrm{IDF}(t)
+\cdot
+\frac{f(t,d)(k_1+1)}
+{f(t,d)+k_1\left(1-b+b\frac{|d|}{\mathrm{avgdl}}\right)}
+\]
+\end{formulabox}
+
+Trong đó, \(f(t,d)\) là số lần xuất hiện của từ \(t\) trong tài liệu \(d\), \(|d|\) là độ dài tài liệu, \(\mathrm{avgdl}\) là độ dài trung bình của corpus, \(k_1\) và \(b\) là tham số điều chỉnh.
+
+\section{Kiến trúc Retrieval-Augmented Generation}
+
+\subsection{Naive RAG}
+
+RAG cơ bản gồm ba bước: nhận câu hỏi, truy xuất tài liệu liên quan, sau đó đưa tài liệu vào prompt để LLM sinh câu trả lời. Cách tiếp cận này giúp giảm hallucination so với việc để LLM trả lời từ trí nhớ nội tại. Tuy nhiên, Naive RAG vẫn có hạn chế nếu retrieval lấy sai tài liệu, nguồn không đủ tin cậy hoặc prompt không buộc mô hình tuân thủ bằng chứng.
+
+\subsection{Advanced RAG trong miền an toàn}
+
+Advanced RAG bổ sung các bước như query rewriting, hybrid retrieval, re-ranking, metadata filtering, source prioritization và post-retrieval validation. Trong miền y tế, bước validation đặc biệt quan trọng vì hệ thống phải phân biệt:
+
+\begin{itemize}
+  \item bằng chứng đủ để trả lời thông tin chung;
+  \item bằng chứng chỉ đủ để cảnh báo;
+  \item bằng chứng không đủ nên cần chuyển tuyến;
+  \item câu hỏi thuộc tình huống cấp cứu nên bỏ qua RAG và khuyến nghị đi khám ngay.
+\end{itemize}
+
+\section{Multi-Agent trong AI}
+
+Multi-Agent là cách chia bài toán phức tạp thành nhiều module chuyên trách. Trong SafeRAG Pharma, mỗi agent có đầu vào, đầu ra và dấu vết xử lý riêng. Thiết kế này giúp hệ thống có tính truy vết: khi có câu trả lời sai hoặc thiếu nguồn, ta có thể kiểm tra lỗi nằm ở bước phân tích ý định, chuẩn hóa tên thuốc, truy xuất, kiểm tra đồ thị an toàn hay dựng phản hồi cuối.
+
+\begin{table}[H]
+\centering
+\small
+\caption{So sánh Naive RAG và Multi-Agent RAG an toàn}
+\begin{tabularx}{\linewidth}{p{0.26\linewidth} Y Y}
+\toprule
+\textbf{Tiêu chí} & \textbf{Naive RAG} & \textbf{Multi-Agent RAG trong đồ án} \\
+\midrule
+Phân tích ý định & Thường phụ thuộc prompt & Có safety router và intent planner \\
+Ngữ cảnh bệnh nhân & Không bắt buộc & Patient context collector hỏi lại khi thiếu dữ liệu \\
+Tên thuốc sai/biệt dược & Dễ bỏ sót & Drug name alignment dùng alias, lexicon, fuzzy matching \\
+Truy xuất & Một kênh vector hoặc keyword & Hybrid BM25 + Chroma + policy boost \\
+An toàn & Thường ở prompt cuối & Guardrail trước, trong và sau retrieval \\
+Truy vết & Khó xác định lỗi & Có lịch sử xử lý và dấu vết quyết định \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Các chỉ số đánh giá}
+
+Đối với truy xuất, báo cáo sử dụng Hit@K và MRR. Hit@K kiểm tra liệu trong top \(K\) kết quả có tài liệu đúng hay không. MRR đo thứ hạng của kết quả đúng đầu tiên, phản ánh mức độ tài liệu đúng xuất hiện sớm.
+
+\begin{formulabox}[Hit@K và Mean Reciprocal Rank]
+\[
+\mathrm{Hit@K}=\frac{1}{N}\sum_{i=1}^{N}\mathbb{I}(\mathrm{rank}_i\le K)
+\]
+\[
+\mathrm{MRR}=\frac{1}{N}\sum_{i=1}^{N}\frac{1}{\mathrm{rank}_i}
+\]
+\end{formulabox}
+
+Đối với an toàn, báo cáo sử dụng các thống kê như số ca cấp cứu, số ca cần hỏi lại, số phản hồi không có nguồn và số lần agent an toàn được kích hoạt. Ngoài ra, RAGAS là một hướng đánh giá phù hợp cho giai đoạn sau vì cung cấp các chỉ số như context precision, context recall, faithfulness và answer relevancy. Tuy nhiên, với miền y tế, RAGAS chỉ nên xem là đánh giá tự động bổ trợ; kết luận cuối vẫn cần human evaluation bởi chuyên gia.

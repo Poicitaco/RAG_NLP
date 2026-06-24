@@ -1,0 +1,132 @@
+{
+  "schema_version": "clinical_policy_v1",
+  "description": "Config-driven clinical routing policy for Vietnamese medication safety questions.",
+  "rules": [
+    {
+      "id": "paracetamol_overdose",
+      "priority": 100,
+      "intent": "emergency",
+      "action": "emergency",
+      "subtype": "paracetamol_overdose",
+      "reason": "Paracetamol overdose phrasing must bypass RAG and go straight to emergency guidance.",
+      "all_groups": [
+        ["paracetamol", "acetaminophen", "panadol", "efferalgan", "hapacol"]
+      ],
+      "any_patterns": [
+        "\\b(?:10|[1-9]\\d+)\\s*(?:vien|vi\\?n|vin)\\b",
+        "\\buong\\s+het\\s+(?:vi|v\\?)\\b",
+        "\\bu\\?ng\\s+h\\?t\\s+(?:vi|v\\?)\\b",
+        "\\buong\\s+cung\\s+luc\\b",
+        "\\bu\\?ng\\s+c\\?ng\\s+l\\?c\\b",
+        "\\bqua\\s+lieu\\b",
+        "\\bqu\\?\\s+li\\?u\\b"
+      ],
+      "numeric_overdose": {
+        "min_value": 8,
+        "requires_context_pattern": "\\b(?:vien|vi\\?n|vin|cung luc|c\\?ng l\\?c|qua lieu|qu\\? li\\?u|uong het|u\\?ng h\\?t)\\b"
+      }
+    },
+    {
+      "id": "hypertensive_crisis",
+      "priority": 95,
+      "intent": "emergency",
+      "action": "emergency",
+      "subtype": "hypertensive_crisis",
+      "reason": "Uncontrolled or crisis-like hypertension language needs emergency triage.",
+      "all_groups": [
+        ["huyet ap", "ap huyet"]
+      ],
+      "any_terms": [
+        "cao ngat nguong",
+        "ap huyet hang ngay ma van cao",
+        "huyet ap hang ngay ma van cao",
+        "do thay cao",
+        "van cao",
+        "rat cao",
+        "cao qua"
+      ]
+    },
+    {
+      "id": "nsaid_gastric_risk",
+      "priority": 80,
+      "intent": "high_risk_context",
+      "action": "allow_with_caution",
+      "subtype": "nsaid_gastric_risk",
+      "reason": "Gastric pain after analgesic/NSAID use should be routed as NSAID gastric risk, not counterfeit.",
+      "all_groups": [
+        [
+          "dau bao tu",
+          "dau da day",
+          "viem loet da day",
+          "loet da day",
+          "xot ruot",
+          "dau thuong vi",
+          "nong rat da day"
+        ],
+        [
+          "thuoc giam dau",
+          "thuoc khang viem",
+          "nsaid",
+          "aspirin",
+          "diclofenac",
+          "ibuprofen",
+          "naproxen",
+          "meloxicam",
+          "celecoxib"
+        ]
+      ]
+    },
+    {
+      "id": "pediatric_symptom",
+      "priority": 60,
+      "intent": "pediatric_symptom",
+      "action": "handoff",
+      "subtype": "pediatric_symptom",
+      "reason": "Child symptom questions need age/weight-aware safety triage before OTC advice.",
+      "all_groups": [
+        [
+          "be",
+          "con tui",
+          "con trai tui",
+          "con gai tui",
+          "con toi",
+          "con trai toi",
+          "con gai toi",
+          "tre",
+          "tre em",
+          "tre so sinh",
+          "so sinh",
+          "con nit",
+          "chau toi",
+          "chau tui",
+          "nhoc",
+          "3 tuoi",
+          "6 tuoi",
+          "1 tuoi",
+          "6 thang",
+          "15kg"
+        ],
+        [
+          "ho",
+          "sot",
+          "nghet mui",
+          "so mui",
+          "tieu chay",
+          "di ngoai",
+          "ia",
+          "buon ia",
+          "dau bung",
+          "non",
+          "mat do",
+          "dau tai",
+          "viem",
+          "loet",
+          "ngua"
+        ]
+      ],
+      "blocked_patterns": [
+        "\\b(?:paracetamol|panadol|hapacol)\\b.*\\b(?:15kg|\\d+\\s*kg)\\b.*\\b(?:lieu|may vien|bao nhieu)\\b"
+      ]
+    }
+  ]
+}

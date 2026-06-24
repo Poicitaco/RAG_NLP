@@ -1,0 +1,261 @@
+\chapter{Phương pháp xử lý dữ liệu tự nhiên}
+
+\section{Thu thập và làm sạch dữ liệu}
+
+\subsection{Nguồn dữ liệu}
+
+Corpus của SafeRAG Pharma được hợp nhất từ nhiều nhóm nguồn nhằm phục vụ cả tra cứu thông tin thuốc lẫn kiểm soát an toàn. Sau quá trình xử lý, dữ liệu không được gom thành một khối văn bản duy nhất, mà được tách theo vai trò: đăng ký thuốc, Dược thư/monograph, OCR tờ hướng dẫn sử dụng, cảnh báo/thu hồi, DDInter và guardrail OTC.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Các nhóm dữ liệu chính trong hệ thống}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.22\linewidth} >{\raggedright\arraybackslash}p{0.28\linewidth} Y}
+\toprule
+\textbf{Nguồn} & \textbf{Số chunk ghi nhận} & \textbf{Vai trò trong RAG} \\
+\midrule
+DAV registry & 12.000 chunk ưu tiên; 185.487 chunk gốc & Tra cứu đăng ký thuốc, tên thuốc, hoạt chất, dạng bào chế \\
+Dược thư/monograph & 34.677 & Monograph/Dược thư tham khảo, chỉ định, chống chỉ định, liều dùng \\
+DDInter & 160.235 & Cạnh tương tác thuốc--thuốc cho graph safety \\
+Cảnh giác dược & 1.200 & Cảnh báo an toàn và thông tin thu hồi/cảnh giác dược \\
+DAV recall & 84 & Quyết định thu hồi từ nguồn quản lý \\
+PDF/OCR & 872 & Tờ hướng dẫn sử dụng và dữ liệu OCR cần kiểm soát độ tin cậy \\
+OTC guardrail & 12 & Luật OTC theo bệnh nền/nhóm triệu chứng \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Tổng corpus xử lý đầy đủ có 382.559 chunk, xấp xỉ 400 nghìn đơn vị dữ liệu sau phân mảnh. Trong đó, tập ưu tiên cho truy xuất vector có 209.080 chunk. Sự khác biệt này là chủ động: hệ thống giới hạn một phần bản ghi registry ít giá trị ngữ nghĩa để tối ưu tốc độ ingest, giảm nhiễu truy xuất và tập trung tài nguyên vào các nhóm có giá trị lâm sàng cao như Dược thư, DDInter, cảnh báo an toàn và guardrail OTC.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Kết quả xử lý dữ liệu sau khi chuẩn hóa và phân mảnh}
+\begin{tabularx}{\linewidth}{p{0.30\linewidth} C Y}
+\toprule
+\textbf{Tập dữ liệu} & \textbf{Số dòng/chunk} & \textbf{Ý nghĩa trong hệ thống} \\
+\midrule
+Corpus đầy đủ & 382.559 & Corpus đầy đủ sau khi hợp nhất các nguồn dữ liệu dược phẩm \\
+Corpus ưu tiên cho truy xuất vector & 209.080 & Tập ưu tiên đưa vào Chroma/vector retrieval để giảm nhiễu và tối ưu tốc độ \\
+Nhóm đăng ký thuốc DAV & 185.487 & Chunk đăng ký thuốc/registry phục vụ định danh thuốc, hoạt chất, dạng bào chế \\
+Nhóm tương tác thuốc DDInter & 160.235 & Chunk/cạnh tương tác thuốc--thuốc phục vụ graph safety \\
+Nhóm Dược thư/monograph & 34.677 & Dược thư/monograph tham khảo cho chỉ định, liều dùng, chống chỉ định \\
+Bản ghi thuốc DAV đã xử lý & 54.186 & Bản ghi đăng ký thuốc đã xử lý từ nguồn DAV \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Như vậy, phần xử lý dữ liệu của đồ án đã tạo ra hai lớp corpus. Lớp thứ nhất là corpus đầy đủ để lưu vết và có thể tái xây dựng chỉ mục. Lớp thứ hai là priority corpus để phục vụ truy xuất thực tế. Thiết kế hai lớp này giúp cân bằng giữa độ bao phủ dữ liệu và hiệu năng truy xuất: nếu đưa toàn bộ registry vào vector store, hệ thống có thể lấy được nhiều bản ghi trùng lặp nhưng không tăng đáng kể chất lượng câu trả lời lâm sàng.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar,
+  width=\linewidth,
+  height=7cm,
+  ymin=0,
+  ylabel={Tỷ lệ chunk trong priority corpus (\%)},
+  symbolic x coords={DDInter,Dược thư,DAV registry,Cảnh giác dược,PDF/OCR,Khác},
+  xtick=data,
+  x tick label style={rotate=20,anchor=east},
+  nodes near coords,
+  nodes near coords style={font=\scriptsize,/pgf/number format/fixed,/pgf/number format/precision=2},
+  bar width=18pt,
+  grid=major,
+  major grid style={draw=black!10},
+  enlarge x limits=0.12
+]
+\addplot[fill=phenikaaBlue!75,draw=phenikaaBlue] coordinates {
+  (DDInter,76.64)
+  (Dược thư,16.59)
+  (DAV registry,5.74)
+  (Cảnh giác dược,0.57)
+  (PDF/OCR,0.42)
+  (Khác,0.04)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Phân bố chunk theo nguồn dữ liệu trong corpus ưu tiên}
+\end{figure}
+
+Hình trên cho thấy corpus ưu tiên bị chi phối bởi nhóm DDInter vì bài toán an toàn thuốc cần nhiều cạnh tương tác thuốc--thuốc. Tuy nhiên, hệ thống vẫn giữ các nguồn chính thức như DAV registry, cảnh giác dược và recall để cân bằng giữa khả năng trả lời thông tin thuốc và khả năng chặn rủi ro.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  ybar,
+  width=\linewidth,
+  height=6.6cm,
+  ymin=0,
+  ylabel={Tỷ lệ chunk (\%)},
+  symbolic x coords={interaction,drug\_info,safety,dosage,safety\_article,khác},
+  xtick=data,
+  x tick label style={rotate=25,anchor=east},
+  nodes near coords,
+  nodes near coords style={font=\scriptsize,/pgf/number format/fixed,/pgf/number format/precision=2},
+  bar width=18pt,
+  grid=major,
+  major grid style={draw=black!10},
+  enlarge x limits=0.12
+]
+\addplot[fill=chartOrange!70,draw=chartOrange!90!black] coordinates {
+  (interaction,77.36)
+  (drug\_info,17.65)
+  (safety,2.99)
+  (dosage,1.38)
+  (safety\_article,0.57)
+  (khác,0.05)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Phân bố chunk theo loại nội dung dược học}
+\end{figure}
+
+Phân bố theo loại nội dung phản ánh rõ định hướng safety-first: nhóm tương tác thuốc chiếm tỷ lệ lớn nhất, tiếp theo là nhóm thông tin thuốc. Điều này phù hợp với mục tiêu của hệ thống: không chỉ trả lời thuốc là gì, mà còn phải phát hiện tương tác, chống chỉ định và tình huống cần chuyển tuyến.
+
+\subsection{Chuẩn hóa chuỗi tiếng Việt}
+
+Văn bản dược phẩm tiếng Việt trong thực tế có nhiều lỗi: khác biệt Unicode dựng sẵn/tổ hợp, lẫn ký tự HTML/Markdown, sai mã hóa khi đọc log cũ, cách viết thuốc không thống nhất và lỗi OCR. Pipeline chuẩn hóa cần xử lý các tầng sau:
+
+\begin{itemize}
+  \item chuẩn hóa Unicode để so khớp tiếng Việt ổn định;
+  \item chuyển về chữ thường khi tính điểm lexical;
+  \item bỏ dấu tiếng Việt trong một số bước tìm kiếm để bắt lỗi nhập không dấu;
+  \item loại ký tự dư, markdown hoặc HTML tag nếu có;
+  \item sửa mojibake trong pipeline truy xuất khi chuỗi bị đọc sai encoding;
+  \item gắn mức độ tin cậy để phân biệt nguồn chính thức, nguồn tham khảo và OCR chưa kiểm chứng.
+\end{itemize}
+
+\begin{formulabox}[Chuẩn hóa không dấu cho so khớp tiếng Việt]
+\[
+\mathrm{normalize}(x)=
+\mathrm{lowercase}(
+\mathrm{removeDiacritics}(
+\mathrm{UnicodeNormalize}(x)))
+\]
+\end{formulabox}
+
+Ví dụ, ``Kẽm'', ``kem'', ``KEM'' và ``kẽm bổ sung'' được đưa về dạng gần nhau để phục vụ semantic rule mapping và alignment. Tuy nhiên, hệ thống không dùng bản bỏ dấu làm câu trả lời cuối; nó chỉ dùng cho tính toán truy xuất và so khớp.
+
+\section{Chiến lược phân mảnh ngữ nghĩa}
+
+\subsection{Lý do không cắt đều văn bản}
+
+Cắt đều 500 từ/chunk có thể phù hợp với văn bản phổ thông, nhưng không tối ưu cho tài liệu thuốc. Một monograph y khoa thường có cấu trúc rõ ràng: tên thuốc, thành phần, chỉ định, chống chỉ định, liều dùng, tác dụng không mong muốn, tương tác, quá liều. Nếu cắt theo kích thước cố định, một chunk có thể chứa nửa cuối của mục chống chỉ định và nửa đầu của mục liều dùng, làm retrieval và LLM khó xác định ngữ cảnh.
+
+Trong miền dược, ranh giới mục có ý nghĩa lâm sàng. Vì vậy, hệ thống ưu tiên phân mảnh theo section thay vì cắt đều theo số từ. Mỗi chunk không chỉ có phần văn bản, mà còn có metadata về nguồn, loại tài liệu và section. Cách làm này giúp truy xuất đúng mục cần thiết, ví dụ ưu tiên phần tương tác khi người dùng hỏi phối hợp thuốc, hoặc ưu tiên phần cảnh báo khi câu hỏi liên quan bệnh nền.
+
+\subsection{Phân tách theo cấu trúc văn bản y khoa}
+
+Các section được mô hình hóa thành nhóm chức năng. Ví dụ:
+
+\begin{itemize}
+  \item thông tin định danh/đăng ký: tên thuốc, số đăng ký, nhà sản xuất;
+  \item công dụng/chỉ định;
+  \item liều dùng và cách dùng;
+  \item chống chỉ định và cảnh báo;
+  \item tương tác thuốc;
+  \item thu hồi, cảnh báo từ nguồn quản lý.
+\end{itemize}
+
+Khi người dùng hỏi ``thuốc X dùng để làm gì'', chính sách truy xuất sẽ ưu tiên các chunk thuộc mục chỉ định. Khi người dùng hỏi tương tác, hệ thống ưu tiên nhóm tương tác thuốc và DDInter. Đây là lợi ích trực tiếp của chunking theo ngữ nghĩa.
+
+\subsection{Bảo toàn metadata}
+
+Mỗi chunk cần giữ metadata để truy xuất có điều kiện và để câu trả lời có trích dẫn. Metadata quan trọng gồm nguồn dữ liệu, loại nội dung, mức tin cậy, tên thuốc, hoạt chất, mục y khoa và nhóm OTC.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Metadata cốt lõi của một chunk dược phẩm}
+\begin{tabularx}{\linewidth}{p{0.25\linewidth} Y Y}
+\toprule
+\textbf{Trường} & \textbf{Ý nghĩa} & \textbf{Vai trò trong truy xuất/an toàn} \\
+\midrule
+Nguồn dữ liệu & Xuất xứ của chunk & Ưu tiên nguồn chính thức, cảnh báo, DDInter \\
+Loại nội dung & Nhóm thông tin trong chunk & Điều hướng theo ý định: liều dùng, tương tác, thông tin thuốc \\
+Mức tin cậy & Độ tin cậy của nguồn & Hạn chế OCR chưa kiểm chứng trong câu hỏi rủi ro cao \\
+Tên thuốc/hoạt chất & Thực thể thuốc chính & So khớp entity và tạo citation \\
+Mục y khoa & Phần chỉ định, liều dùng, cảnh báo... & Boost/loại bỏ theo chính sách truy xuất \\
+Nhóm OTC & Nhóm thuốc không kê đơn & Lọc theo semantic rule matrix \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Nhận diện và chuẩn hóa thực thể tên thuốc}
+
+\subsection{Bài toán thực thể thuốc trong câu hỏi tiếng Việt}
+
+Người dùng không luôn nhập đúng tên hoạt chất. Họ có thể nhập biệt dược, tên viết tắt, tên không dấu, lỗi chính tả hoặc mô tả bệnh. Ví dụ: ``Panadol'' cần ánh xạ về paracetamol; ``Decolgen'' là thuốc phối hợp chứa paracetamol, phenylephrine và chlorpheniramine; ``Lipitor'' cần ánh xạ atorvastatin.
+
+Bộ chuẩn hóa tên thuốc xây dựng lexicon từ dữ liệu DAV, Dược thư và alias thủ công. Quy trình alignment gồm ba lớp:
+
+\begin{enumerate}
+  \item \textbf{Manual alias}: bắt các biệt dược và cách gọi phổ biến có rủi ro cao.
+  \item \textbf{Exact/compact matching}: so khớp chính xác sau chuẩn hóa và bỏ khoảng trắng.
+  \item \textbf{Fuzzy lexicon matching}: dùng độ tương tự chuỗi để sửa lỗi gõ tên thuốc.
+\end{enumerate}
+
+\subsection{Đối sánh chính xác bằng từ điển đồng nghĩa}
+
+Từ điển alias giúp hệ thống xử lý những tên thuốc phổ biến mà người dùng thường hỏi. Một số ánh xạ tiêu biểu:
+
+\begin{table}[H]
+\centering
+\small
+\caption{Ví dụ ánh xạ tên thuốc/biệt dược sang hoạt chất}
+\begin{tabularx}{\linewidth}{p{0.25\linewidth} p{0.30\linewidth} Y}
+\toprule
+\textbf{Mention} & \textbf{Tên chuẩn} & \textbf{Hoạt chất/canonical term} \\
+\midrule
+Panadol, Hapacol, Efferalgan & Paracetamol & paracetamol \\
+Acetaminophen & Acetaminophen & paracetamol \\
+Lipitor & Lipitor & atorvastatin \\
+Aspirin, ASA & Aspirin & acetylsalicylic acid \\
+Decolgen & Decolgen & paracetamol, phenylephrine, chlorpheniramine \\
+Thuốc loãng xương & Acid alendronic & alendronic \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Khi phát hiện được tên hoạt chất hoặc tên chuẩn, hệ thống bổ sung thông tin này vào truy vấn nội bộ. Điều này làm tăng xác suất graph safety và retrieval tìm đúng tài liệu liên quan đến hoạt chất thay vì chỉ tìm theo tên thương mại.
+
+\subsection{Đối sánh mờ}
+
+Đối sánh mờ cần thiết vì người dùng có thể viết sai: ``paracetamon'', ``lipito'', ``alendronat''. Trong phiên bản hiện tại, hệ thống dùng độ tương tự chuỗi với ngưỡng 0.88 để nhận diện các lỗi gõ gần đúng. Về mặt lý thuyết, cách này tương đương nhóm thuật toán so sánh khoảng cách chỉnh sửa, gần với Levenshtein/Jaro-Winkler ở mục tiêu: đo mức độ phải sửa chuỗi nguồn để thành chuỗi đích.
+
+\begin{formulabox}[Khoảng cách Levenshtein]
+\[
+D_{i,j}=
+\min
+\begin{cases}
+D_{i-1,j}+1 & \text{xóa ký tự}\\
+D_{i,j-1}+1 & \text{chèn ký tự}\\
+D_{i-1,j-1}+\mathbb{I}(x_i\ne y_j) & \text{thay thế}
+\end{cases}
+\]
+\end{formulabox}
+
+\subsection{Tác động đến truy xuất và an toàn}
+
+Drug name alignment nằm trước graph safety và RAG. Vì vậy, một lỗi entity có thể làm hỏng toàn bộ pipeline. Ví dụ, nếu hệ thống không biết ``Panadol'' là paracetamol, nó có thể bỏ lỡ luật quá liều paracetamol. Nếu không biết ``Decolgen'' chứa phenylephrine, hệ thống khó cảnh báo người tăng huyết áp khi hỏi thuốc cảm.
+
+\section{Semantic Rule Matrix cho truy vấn OTC}
+
+Ngoài entity thuốc, hệ thống còn cần hiểu các nhóm triệu chứng và bối cảnh OTC như tiêu chảy, cảm cúm ở người tiểu đường/tăng huyết áp, bổ sung kẽm. Thay vì thêm nhiều nhánh điều kiện rời rạc, SafeRAG Pharma dùng ma trận luật an toàn. Mỗi luật mô tả ý định chính, nhóm từ khóa đồng nghĩa, truy vấn mở rộng, nhóm hoạt chất nên ưu tiên, nhóm hoạt chất cần tránh, trọng tâm câu trả lời và nguồn tham chiếu an toàn.
+
+\begin{formulabox}[Điểm lexical overlap cho rule mapping]
+\[
+\mathrm{score}_{lex}(q,r)=
+\max_{t\in T_r}
+\frac{|tokens(q)\cap tokens(t)|}{|tokens(t)|}
+\]
+\end{formulabox}
+
+Nếu điểm lexical đủ cao, luật được chọn trực tiếp. Nếu không, hệ thống có thể dùng embedding để so sánh query với văn bản đại diện của luật. Cách kết hợp này giúp vừa nhanh, vừa có khả năng bắt các diễn đạt tương đương.
+
+\section{Tóm tắt chương}
+
+Chương này trình bày nền tảng dữ liệu của SafeRAG Pharma. Điểm quan trọng là dữ liệu không chỉ được đưa vào cơ sở dữ liệu vector, mà được xử lý theo cấu trúc dược học: chunk theo mục y khoa, giữ metadata, chuẩn hóa tên thuốc, xử lý alias/fuzzy matching và ánh xạ luật OTC bằng semantic rule matrix. Đây là nền để kiến trúc RAG ở Chương 4 truy xuất đúng và ra quyết định an toàn.

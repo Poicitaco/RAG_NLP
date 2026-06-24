@@ -72,6 +72,8 @@ data/raw/dav/all_raw.jsonl
 data/chunks/rag_corpus.jsonl
 data/chunks/dav_all_drugs_chunks.jsonl
 data/chunks/ddinter_interaction_chunks.jsonl
+*.jsonl
+data/chunks/**/*.jsonl
 *.pkl
 *.pickle
 

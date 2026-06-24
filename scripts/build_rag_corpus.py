@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, List
 DEFAULT_INPUTS = [
     "data/chunks/dav_all_drugs_chunks.jsonl",
     "data/chunks/dav_otc_pdf_chunks.jsonl",
-    "data/chunks/dav_otc_pdf_ocr_chunks.jsonl",
+    "data/chunks/dav_otc_pdf_ocr_chunks_corrected.jsonl",
     "data/chunks/dav_recalls_chunks.jsonl",
     "data/chunks/canhgiacduoc_safety_chunks.jsonl",
     "data/chunks/trungtamthuoc_duocthu_chunks.jsonl",

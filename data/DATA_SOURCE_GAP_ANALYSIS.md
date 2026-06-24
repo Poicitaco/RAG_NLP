@@ -1,4 +1,4 @@
-# Data Source Gap Analysis
+﻿# Data Source Gap Analysis
 
 This project is moving from a plain RAG chatbot toward a drug-safety agent with
 Hybrid RAG, LangGraph orchestration, and a Neo4j knowledge graph. The data
@@ -17,7 +17,7 @@ relations.
 
 ## New TrungTamThuoc Dược Thư Snapshot
 
-Collected with `scripts/collect_trungtamthuoc_duocthu.py` from the public
+Collected with `scripts/legacy/collect_trungtamthuoc_duocthu.py` from the public
 `sitemap_hoatchat.xml` and Dược thư landing page.
 
 - Monograph rows: 1,800.

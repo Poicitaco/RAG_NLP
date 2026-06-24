@@ -1,0 +1,738 @@
+[
+  {
+    "id": 1,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Bé nhà tui 3 tuổi bị ho khụ khụ suốt, có loại siro nào nhạy không bạn?",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "pediatric_symptom",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đan"
+  },
+  {
+    "id": 2,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Bán cho tui vỉ thuốc nhức đầu loại nào mạnh nhất ấy, đau chịu không nổi.",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "otc_recommendation",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Bạn/người dùng thuốc bao nhiêu tuổi?",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Bạn/người dùng thuốc bao nhiêu tuổi?",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùn"
+  },
+  {
+    "id": 3,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Sáng giờ tui cứ hắt xì với sổ mũi liên tục, uống cái gì cho nó tịt luôn không?",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "otc_recommendation",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về cảm cúm / nghẹt mũi. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Bạn/người dùng thuốc bao nhiêu tuổi?",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về cảm cúm / nghẹt mũi. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Bạn/người dùng thuốc bao nhiêu tuổi?",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về cảm cúm / nghẹt mũi. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về cảm cúm / nghẹt mũi. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọ"
+  },
+  {
+    "id": 4,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Có thuốc bổ nào uống vô cho tỉnh táo làm việc mà không bị buồn ngủ không chị?",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "drug_info",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Bạn/người dùng thuốc bao nhiêu tuổi?",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Bạn/người dùng thuốc bao nhiêu tuổi?",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùn"
+  },
+  {
+    "id": 5,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Tui hay bị ngứa khi trời lạnh, mua thuốc gì uống mà đừng có gây buồn ngủ nha.",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "otc_recommendation",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về việc tự mua thuốc OTC. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Bạn/người dùng thuốc bao nhiêu tuổi?",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về việc tự mua thuốc OTC. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Bạn/người dùng thuốc bao nhiêu tuổi?",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về việc tự mua thuốc OTC. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về việc tự mua thuốc OTC. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa c"
+  },
+  {
+    "id": 6,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Cái chai xịt mũi Rhinocort có xịt cho con nít 6 tuổi được không vậy?",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "high_risk_context",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đan"
+  },
+  {
+    "id": 7,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Nhà hết thuốc hạ sốt, con tui đang sốt 38 độ rưỡi, nặng 15kg thì uống bao nhiêu Panadol là vừa?",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "pediatric_symptom",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về Panadol/paracetamol. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Người dùng thuốc bao nhiêu tuổi? Nếu là trẻ nhỏ, cho mình biết tuổi theo tháng/năm.",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về Panadol/paracetamol. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Người dùng thuốc bao nhiêu tuổi? Nếu là trẻ nhỏ, cho mình biết tuổi theo tháng/năm.",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về Panadol/paracetamol. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Người dùng thuốc bao nhiêu tuổi? Nếu là trẻ nhỏ, cho mình biết tuổi theo tháng/năm.\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về Panadol/paracetamol. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Người dùng thuốc bao nhiêu tuổi? Nếu là trẻ nhỏ, cho mình biết tuổi theo tháng/năm.\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng"
+  },
+  {
+    "id": 8,
+    "group": "nhom_1_mua_thuoc_va_tu_van_le_lang",
+    "question": "Mắt tui đỏ lừ từ hôm qua tới giờ, có thuốc nhỏ nào tốt không?",
+    "agent_type": "safety_monitor",
+    "confidence": 0.86,
+    "rag_action": "needs_clarification",
+    "intent": "drug_info",
+    "graph_should_warn": null,
+    "graph_highest_risk": null,
+    "graph_findings_count": 0,
+    "llm_answer_enabled": false,
+    "llm_answer_used": false,
+    "alignment_used": null,
+    "alignment_terms": [],
+    "graph_overrode_rag": false,
+    "pipeline_nodes": [
+      "safety_router",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "clarification_bypass"
+    ],
+    "selected_agents": [
+      "triage_risk_agent",
+      "semantic_rule_mapper_agent",
+      "patient_context_collector",
+      "safety_monitor_agent",
+      "final_response_builder"
+    ],
+    "response_blocks": {
+      "schema_version": "agent_response_v1",
+      "render_order": [
+        "safety_guardrail",
+        "core_action",
+        "clinical_reason",
+        "citations"
+      ],
+      "selected_agents": [
+        "triage_risk_agent",
+        "semantic_rule_mapper_agent",
+        "patient_context_collector",
+        "safety_monitor_agent",
+        "final_response_builder"
+      ],
+      "blocks": {
+        "safety_guardrail": {
+          "title": "**Lưu ý an toàn**",
+          "level": "caution",
+          "items": [
+            "Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể."
+          ]
+        },
+        "core_action": {
+          "title": "**Hướng dẫn nhanh**",
+          "items": [
+            "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+            "Bạn/người dùng thuốc bao nhiêu tuổi?",
+            "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+            "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+          ]
+        },
+        "clinical_reason": {
+          "title": "**Giải thích thêm**",
+          "items": [
+            "Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.",
+            "Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn."
+          ]
+        },
+        "citations": {
+          "title": "**Nguồn tham khảo**",
+          "items": [
+            "Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước."
+          ],
+          "sources": []
+        }
+      }
+    },
+    "source_count": 0,
+    "sources": [],
+    "warnings": [
+      "Patient context is required before giving medication advice.",
+      "**Lưu ý quan trọng**: Thông tin chỉ mang tính tham khảo, không thay thế bác sĩ hoặc dược sĩ. Không tự ý dùng thuốc kê đơn, đổi liều, ngưng thuốc hoặc phối hợp nhiều thuốc khi chưa được chuyên gia y tế xác nhận."
+    ],
+    "suggestions": [
+      "Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?",
+      "Bạn/người dùng thuốc bao nhiêu tuổi?",
+      "Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?",
+      "Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?"
+    ],
+    "answer": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùng hoặc nguy cơ tương tác.\n- Mình hỏi lại để tránh tư vấn sai thuốc nếu thiếu thông tin y tế của bạn.\n\n**Nguồn tham khảo**:\n- Chưa truy xuất nguồn vì cần bạn xác nhận thông tin an toàn trước.",
+    "answer_preview": "**Lưu ý an toàn**:\n- Mình cần xác nhận thêm thông tin an toàn trước khi gợi ý thuốc hoặc cách dùng cụ thể.\n\n**Hướng dẫn nhanh**:\n- Dạ, em thấy mình đang muốn tìm hiểu về ho. Để em tư vấn loại phù hợp và an toàn nhất, Cô/Chú/Bạn vui lòng cho biết thêm: mình mua thuốc này cho người lớn hay trẻ em uống, và mình có đang bị bệnh nền hoặc đang dùng thuốc nào khác không ạ?\n- Bạn/người dùng thuốc bao nhiêu tuổi?\n- Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?\n- Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?\n\n**Giải thích thêm**:\n- Tuổi, cân nặng, bệnh nền, dị ứng và thuốc đang dùng có thể làm thay đổi lựa chọn thuốc, liều dùn"
+  }
+]

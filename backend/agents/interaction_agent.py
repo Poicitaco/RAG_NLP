@@ -1,5 +1,5 @@
 """
-Interaction Check Agent - Kiểm tra tương tác thuốc
+Agent kiem tra tuong tac giua cac loai thuoc.
 """
 from typing import List
 import re

@@ -1,0 +1,78 @@
+{
+  "total_runs": 8,
+  "mean_ms": 10319.45,
+  "median_ms": 4043.79,
+  "p95_ms": 40169.99,
+  "min_ms": 88.86,
+  "max_ms": 57701.37,
+  "stdev_ms": 19315.94,
+  "no_source_count": 0,
+  "rag_action_counts": {
+    "allow": 1,
+    "needs_clarification": 5,
+    "allow_with_caution": 1,
+    "emergency": 1
+  },
+  "group_latency": {
+    "condition_guardrail": {
+      "count": 1,
+      "mean_ms": 459.37,
+      "median_ms": 459.37,
+      "p95_ms": 459.37
+    },
+    "dosage": {
+      "count": 1,
+      "mean_ms": 4034.93,
+      "median_ms": 4034.93,
+      "p95_ms": 4034.93
+    },
+    "drug_lookup": {
+      "count": 1,
+      "mean_ms": 57701.37,
+      "median_ms": 57701.37,
+      "p95_ms": 57701.37
+    },
+    "emergency": {
+      "count": 1,
+      "mean_ms": 88.86,
+      "median_ms": 88.86,
+      "p95_ms": 88.86
+    },
+    "interaction": {
+      "count": 1,
+      "mean_ms": 2525.87,
+      "median_ms": 2525.87,
+      "p95_ms": 2525.87
+    },
+    "misspelling": {
+      "count": 1,
+      "mean_ms": 7611.71,
+      "median_ms": 7611.71,
+      "p95_ms": 7611.71
+    },
+    "otc_advice": {
+      "count": 1,
+      "mean_ms": 6080.81,
+      "median_ms": 6080.81,
+      "p95_ms": 6080.81
+    },
+    "pediatric": {
+      "count": 1,
+      "mean_ms": 4052.65,
+      "median_ms": 4052.65,
+      "p95_ms": 4052.65
+    }
+  },
+  "pipeline_node_mean_ms": {
+    "hybrid_rag_retrieval_agent": 35485.6,
+    "drug_name_alignment_agent": 6289.93,
+    "patient_context_collector": 3111.4,
+    "graph_safety_agent": 2778.4,
+    "reranker_agent": 2282.11,
+    "semantic_rule_mapper_agent": 1872.68,
+    "ambiguity_checker": 4.35,
+    "safety_router": 2.57,
+    "evidence_guardrail_agent": 0.93,
+    "llm_intent_planner": 0.24
+  }
+}

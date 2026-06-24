@@ -1,0 +1,10 @@
+\chapter*{TÓM TẮT}
+\addcontentsline{toc}{chapter}{TÓM TẮT}
+
+Đồ án xây dựng hệ thống \textbf{SafeRAG Pharma}, một trợ lý hỏi đáp thuốc tiếng Việt theo hướng an toàn, có trích dẫn và có khả năng kiểm soát rủi ro trước khi sinh câu trả lời. Báo cáo này không chỉ mô tả ý tưởng RAG, mà trình bày các phần nhóm đã thực sự triển khai: pipeline xử lý dữ liệu dược phẩm, corpus truy xuất, bộ chuẩn hóa tên thuốc, semantic rule mapping, truy xuất lai BM25--Chroma, graph safety guardrails, evidence validation, response builder có cấu trúc và bộ đánh giá end-to-end.
+
+Điểm nhấn NLP của đồ án nằm ở hai lớp. Thứ nhất là xử lý dữ liệu dược phẩm tiếng Việt: chuẩn hóa văn bản, phân mảnh theo cấu trúc y khoa, gắn metadata cho từng chunk, xây dựng từ điển đồng nghĩa tên thuốc và dùng đối sánh mờ để xử lý lỗi nhập liệu. Thứ hai là kiến trúc Multi-Agent RAG an toàn: hệ thống không để LLM tự suy diễn kiến thức y tế, mà buộc mọi câu trả lời đi qua lớp truy xuất bằng chứng, guardrail đồ thị và chính sách an toàn.
+
+Kết quả xử lý dữ liệu ghi nhận corpus đầy đủ có 382.559 chunk, trong đó tập ưu tiên cho truy xuất vector có 209.080 chunk. Kết quả đánh giá mới nhất cho thấy hybrid retrieval đạt Hit@5 và Strict Hit@5 bằng 1.0000 trên 15 ca benchmark ưu tiên nội bộ; các benchmark trước đó cũng cho thấy hybrid cải thiện MRR so với BM25 baseline. Kiểm thử SafeRAG trên 100 câu hỏi ghi nhận 0 phản hồi không có nguồn, 12 ca được định tuyến khẩn cấp, 55 ca yêu cầu làm rõ thông tin trước khi tư vấn thuốc và 26 ca được phép trả lời trực tiếp. Các kết quả này cần được hiểu trong phạm vi benchmark kỹ thuật của đồ án, chưa thay thế blind test hoặc đánh giá bởi dược sĩ/bác sĩ. Báo cáo vì vậy trình bày thêm phân tích lỗi, giới hạn đánh giá và hướng bổ sung human evaluation để tránh diễn giải kết quả theo hướng quá lý tưởng.
+
+\textbf{Từ khóa:} Vietnamese NLP, Retrieval-Augmented Generation, Multi-Agent RAG, BM25, ChromaDB, drug name alignment, safety guardrails, pharmaceutical question answering.

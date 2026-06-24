@@ -1,5 +1,5 @@
 """
-Logging utility for the application - Tiện ích logging cho ứng dụng
+Tiện ích ghi log cho ứng dụng
 """
 import sys
 import logging
@@ -37,10 +37,10 @@ class LoggerSetup:
     
     def _setup_logger(self) -> None:
         """Cấu hình logger với file và console handlers"""
-        # Remove default handler
+        # Xoa handler mac dinh
         logger.remove()
         
-        # Console handler with color
+        # Handler console co mau sac
         logger.add(
             sys.stdout,
             format=(
@@ -79,7 +79,7 @@ class LoggerSetup:
             compression="zip",
         )
         
-        # File handler cho API requests
+        # Handler file chi ghi log API request
         logger.add(
             self.log_dir / "api.log",
             format="{time:YYYY-MM-DD HH:mm:ss} | {message}",
@@ -97,7 +97,7 @@ class LoggerSetup:
         return logger
 
 
-# Initialize logger
+# Khoi tao logger toan cuc
 log_setup = LoggerSetup()
 app_logger = log_setup.get_logger("PharmaAI")
 
@@ -116,15 +116,25 @@ def log_api_request(
     )
 
 
-def log_agent_action(agent_name: str, action: str, details: str = "") -> None:
-    """Log agent actions"""
+def log_hanh_dong_agent(ten_agent: str, hanh_dong: str, chi_tiet: str = "") -> None:
+    """Ghi log hanh dong cua agent."""
     logger.bind(type="AGENT").info(
-        f"Agent: {agent_name} | Action: {action} | {details}"
+        f"Agent: {ten_agent} | Hanh dong: {hanh_dong} | {chi_tiet}"
     )
 
 
-def log_rag_query(query: str, num_results: int, duration: float) -> None:
-    """Log RAG query details"""
+def log_truy_van_rag(truy_van: str, so_ket_qua: int, thoi_gian: float) -> None:
+    """Ghi log chi tiet truy van RAG."""
     logger.bind(type="RAG").info(
-        f"Query: {query[:100]}... | Results: {num_results} | Duration: {duration:.3f}s"
+        f"Truy van: {truy_van[:100]}... | Ket qua: {so_ket_qua} | Thoi gian: {thoi_gian:.3f}s"
     )
+
+
+def log_agent_action(agent_name: str, action: str, details: str = "") -> None:
+    """Backward-compatible alias for older imports."""
+    log_hanh_dong_agent(agent_name, action, details)
+
+
+def log_rag_query(query: str, result_count: int, duration: float) -> None:
+    """Backward-compatible alias for older imports."""
+    log_truy_van_rag(query, result_count, duration)

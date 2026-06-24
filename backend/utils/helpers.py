@@ -1,5 +1,5 @@
 """
-Helper utility functions - Hàm tiện ích giúp đỡ
+Cac ham tien ich chung cho ung dung.
 """
 import uuid
 import hashlib
@@ -193,40 +193,40 @@ def extract_keywords(text: str, max_keywords: int = 10) -> List[str]:
     Returns:
         Danh sách keywords
     """
-    # Remove punctuation and convert to lowercase
+    # Loai bo dau cau va chuyen thanh chu thuong
     text = re.sub(r'[^\w\s]', '', text.lower())
     
-    # Split into words
+    # Tach thanh danh sach tu
     words = text.split()
     
-    # Remove common stop words (Vietnamese)
+    # Loai bo stop words tieng Viet
     stop_words = {
         'và', 'của', 'có', 'cho', 'với', 'được', 'trong', 'là', 'các',
         'một', 'này', 'để', 'như', 'khi', 'đã', 'sẽ', 'không', 'thì'
     }
     
-    # Filter and count
+    # Loc va dem tan suat
     word_freq = {}
     for word in words:
         if word not in stop_words and len(word) > 2:
             word_freq[word] = word_freq.get(word, 0) + 1
     
-    # Sort by frequency and return top keywords
+    # Sap xep theo tan suat va tra ve cac tu khoa hang dau
     sorted_words = sorted(word_freq.items(), key=lambda x: x[1], reverse=True)
     return [word for word, _ in sorted_words[:max_keywords]]
 
 
 def truncate_text(text: str, max_length: int = 100, suffix: str = "...") -> str:
     """
-    Truncate text to maximum length
+    Cat ngan van ban den do dai toi da cho phep.
     
     Args:
-        text: Text to truncate
-        max_length: Maximum length
-        suffix: Suffix to add if truncated
+        text: Van ban can cat ngan
+        max_length: Do dai toi da
+        suffix: Hau to them vao khi bi cat ngan
         
     Returns:
-        Truncated text
+        Van ban da cat ngan
     """
     if len(text) <= max_length:
         return text

@@ -1,5 +1,5 @@
 """
-Pydantic schemas used by the pharmaceutical RAG API.
+Cac schema Pydantic dung cho API duoc pham RAG.
 """
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union

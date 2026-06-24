@@ -1,11 +1,11 @@
-# Neo4j Knowledge Graph Export
+﻿# Neo4j Knowledge Graph Export
 
 This folder contains the first graph-ready export for the medicine safety agent.
 
 ## Generate CSV files
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\export_neo4j_graph.py
+.\.venv\Scripts\python.exe scripts\legacy\export_neo4j_graph.py
 ```
 
 Generated CSV files are written to:
@@ -37,8 +37,8 @@ Latest local export:
 This mirrors the planned Neo4j safety query without requiring a running Neo4j server:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\graph_safety_check.py "Tui bị tiểu đường, giờ muốn mua thuốc cảm thì nên tránh loại nào?"
-.\.venv\Scripts\python.exe scripts\graph_safety_check.py "Tôi đang dùng warfarin có uống aspirin được không?"
+.\.venv\Scripts\python.exe scripts\legacy\graph_safety_check.py "Tui bị tiểu đường, giờ muốn mua thuốc cảm thì nên tránh loại nào?"
+.\.venv\Scripts\python.exe scripts\legacy\graph_safety_check.py "Tôi đang dùng warfarin có uống aspirin được không?"
 ```
 
 Expected behavior:

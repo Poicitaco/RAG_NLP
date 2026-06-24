@@ -1,0 +1,68 @@
+\chapter{Tổng quan đề tài}
+
+\section{Đặt vấn đề}
+
+\subsection{Hạn chế của mô hình ngôn ngữ lớn trong lĩnh vực y tế}
+
+Mô hình ngôn ngữ lớn có khả năng sinh văn bản tự nhiên, tổng hợp thông tin và duy trì hội thoại đa lượt. Tuy nhiên, trong lĩnh vực y tế, năng lực sinh văn bản trôi chảy không đồng nghĩa với độ tin cậy lâm sàng. Ba rủi ro chính cần được kiểm soát gồm:
+
+\begin{itemize}
+  \item \textbf{Hallucination}: mô hình có thể sinh ra thông tin nghe hợp lý nhưng không có trong nguồn dữ liệu.
+  \item \textbf{Thiếu cập nhật}: kiến thức nội tại của mô hình không phản ánh kịp các thông báo thu hồi, cảnh báo an toàn hoặc thay đổi nhãn thuốc.
+  \item \textbf{Thiếu cá nhân hóa an toàn}: cùng một thuốc có thể phù hợp với người này nhưng rủi ro với trẻ em, phụ nữ mang thai, người suy gan, suy thận hoặc đang dùng thuốc khác.
+\end{itemize}
+
+Trong bối cảnh hỏi đáp thuốc, những rủi ro trên đặc biệt nghiêm trọng. Một câu trả lời sai về paracetamol quá liều, NSAID ở người đau dạ dày, thuốc cảm chứa chất co mạch ở người tăng huyết áp hoặc phối hợp aspirin với thuốc chống đông có thể dẫn đến quyết định dùng thuốc không an toàn.
+
+\subsection{Nhu cầu tra cứu dược phẩm tiếng Việt có kiểm soát}
+
+Người dùng phổ thông thường hỏi bằng tiếng Việt tự nhiên, chứa tên biệt dược, cách gọi dân gian, lỗi chính tả hoặc thông tin bệnh nền chưa đầy đủ. Ví dụ: ``Panadol uống được không'', ``bị cao huyết áp uống Decolgen có sao không'', ``mệt quá uống kẽm được không''. Vì vậy, hệ thống không thể chỉ tìm kiếm từ khóa đơn giản. Nó cần:
+
+\begin{itemize}
+  \item hiểu ý định câu hỏi: liều dùng, tác dụng phụ, tương tác, thông tin đăng ký, cảnh báo;
+  \item chuẩn hóa tên thuốc và hoạt chất;
+  \item hỏi lại ngữ cảnh bệnh nhân khi thông tin còn thiếu;
+  \item truy xuất bằng chứng từ nguồn đáng tin cậy;
+  \item chặn hoặc chuyển hướng các tình huống nguy hiểm trước khi LLM sinh câu trả lời.
+\end{itemize}
+
+\section{Mục tiêu nghiên cứu}
+
+\subsection{Xây dựng hệ thống High-Fidelity RAG cho dược phẩm}
+
+Mục tiêu đầu tiên là xây dựng pipeline RAG có khả năng truy xuất chính xác tài liệu dược phẩm tiếng Việt. Hệ thống sử dụng BM25 để bắt các truy vấn có tên thuốc, số đăng ký, hoạt chất và ChromaDB/vector search để xử lý câu hỏi diễn đạt theo ngữ nghĩa. Kết quả hai kênh được hợp nhất và sắp xếp lại nhằm ưu tiên nguồn có độ tin cậy cao.
+
+\subsection{Tích hợp Safety Guardrails bằng luật cứng}
+
+Mục tiêu thứ hai là bảo đảm hệ thống không chỉ ``trả lời hay'', mà còn biết khi nào không nên trả lời trực tiếp. SafeRAG Pharma đặt guardrail trước và sau truy xuất:
+
+\begin{itemize}
+  \item trước truy xuất: phát hiện cấp cứu, bệnh nền, thiếu ngữ cảnh, tương tác thuốc rõ ràng;
+  \item trong truy xuất: lọc nguồn không phù hợp, ưu tiên nguồn an toàn;
+  \item sau truy xuất: đánh giá bằng chứng và quyết định cho phép trả lời, cảnh báo, chuyển tuyến, cấp cứu hoặc không đủ bằng chứng.
+\end{itemize}
+
+\section{Phạm vi đồ án}
+
+Đồ án tập trung vào xử lý tiếng Việt và bài toán hỏi đáp thuốc trong phạm vi tham khảo. Hệ thống không thay thế chẩn đoán hoặc kê đơn. Các trường hợp có nguy cơ cao phải được định tuyến đến bác sĩ/dược sĩ hoặc cấp cứu.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Phạm vi chức năng của SafeRAG Pharma}
+\begin{tabularx}{\linewidth}{p{0.23\linewidth} Y Y}
+\toprule
+\textbf{Nhóm chức năng} & \textbf{Có hỗ trợ} & \textbf{Giới hạn an toàn} \\
+\midrule
+Tra cứu thuốc & Tên thuốc, hoạt chất, số đăng ký, dạng bào chế, thông tin nguồn & Không coi kết quả truy xuất là chỉ định cá nhân hóa nếu thiếu ngữ cảnh \\
+Cách dùng/liều dùng & Chỉ trả lời khi có đủ bằng chứng và ngữ cảnh cơ bản & Với trẻ em, thai kỳ, bệnh nền, liều cụ thể phải hỏi thêm hoặc chuyển tuyến \\
+Tương tác thuốc & Kiểm tra DDInter/file-backed graph safety & Không tự khuyến nghị phối hợp thuốc nguy cơ cao \\
+OTC và bệnh nền & Luật cảnh báo theo bệnh nền và nhóm OTC & Ưu tiên cảnh báo, hỏi dược sĩ/bác sĩ khi rủi ro \\
+Cấp cứu & Nhận diện dấu hiệu đỏ và quá liều & Bypass RAG, khuyến nghị đi cấp cứu/gọi 115 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Đóng góp chính}
+
+Đồ án có ba đóng góp chính. Thứ nhất, xây dựng corpus dược phẩm tiếng Việt được phân mảnh và gắn metadata phục vụ truy xuất. Thứ hai, thiết kế kiến trúc Multi-Agent RAG có khả năng truy vết từng quyết định qua lịch sử xử lý của các agent. Thứ ba, bổ sung lớp an toàn dựa trên chính sách, graph guardrail và semantic rule mapping để giảm rủi ro hallucination trong miền dược.

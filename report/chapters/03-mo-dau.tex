@@ -1,0 +1,49 @@
+\chapter*{MỞ ĐẦU}
+\addcontentsline{toc}{chapter}{MỞ ĐẦU}
+
+Sự phát triển của các mô hình ngôn ngữ lớn đã mở ra khả năng xây dựng các trợ lý hỏi đáp tự nhiên cho nhiều lĩnh vực. Tuy nhiên, trong miền y tế và dược phẩm, việc một hệ thống trả lời lưu loát nhưng thiếu căn cứ có thể gây hậu quả nghiêm trọng. Một câu trả lời sai về liều dùng, tương tác thuốc hoặc chống chỉ định không chỉ là lỗi thông tin, mà có thể ảnh hưởng trực tiếp đến quyết định dùng thuốc của người dùng.
+
+Đồ án này lựa chọn hướng tiếp cận Retrieval-Augmented Generation kết hợp guardrail an toàn để giải quyết hai yêu cầu đồng thời: truy xuất được nguồn dược phẩm đáng tin cậy và kiểm soát hành vi sinh câu trả lời. Hệ thống SafeRAG Pharma được thiết kế theo kiến trúc nhiều agent, trong đó mỗi agent phụ trách một bước có thể kiểm tra được. Cách thiết kế này giúp báo cáo không chỉ mô tả một ứng dụng chatbot, mà còn trình bày một pipeline NLP có dữ liệu, thuật toán, mô hình đánh giá và cơ chế an toàn rõ ràng.
+
+\section*{Mục tiêu của báo cáo}
+\addcontentsline{toc}{section}{Mục tiêu của báo cáo}
+
+Báo cáo tập trung làm rõ bốn vấn đề chính:
+
+\begin{itemize}
+  \item Phân tích bài toán hỏi đáp thuốc tiếng Việt dưới góc nhìn NLP và an toàn dược lâm sàng.
+  \item Trình bày pipeline xử lý dữ liệu gồm làm sạch, phân mảnh ngữ nghĩa, metadata tagging và chuẩn hóa thực thể tên thuốc.
+  \item Thiết kế kiến trúc Multi-Agent RAG kết hợp truy xuất lai, heuristic re-ranking/custom boost logic, guardrail đồ thị và dựng phản hồi có trích dẫn.
+  \item Đánh giá hệ thống bằng các chỉ số truy xuất, tỉ lệ kích hoạt an toàn và kiểm thử end-to-end/API.
+\end{itemize}
+
+\section*{Phạm vi thực hiện}
+\addcontentsline{toc}{section}{Phạm vi thực hiện}
+
+Phạm vi đồ án tập trung vào hệ thống hỏi đáp thuốc bằng tiếng Việt, ưu tiên các ca thường gặp như tra cứu thông tin thuốc, hỏi cách dùng, nhận diện tương tác thuốc, cảnh báo bệnh nền và định tuyến tình huống khẩn cấp. Hệ thống sử dụng nhiều nguồn dữ liệu đã được chuẩn hóa, trong đó có dữ liệu đăng ký thuốc, tài liệu Dược thư/nguồn dược tham khảo, dữ liệu cảnh báo/thu hồi, DDInter và tập luật OTC theo bệnh nền.
+
+Các khuyến nghị trong hệ thống chỉ mang tính tham khảo và không thay thế bác sĩ hoặc dược sĩ. Đây là nguyên tắc xuyên suốt khi thiết kế guardrail, đánh giá bằng chứng và sinh phản hồi cuối.
+
+\section*{Tóm tắt kết quả đã thực hiện}
+\addcontentsline{toc}{section}{Tóm tắt kết quả đã thực hiện}
+
+Để người đọc có thể đánh giá đồ án ngay trong báo cáo, bảng dưới đây tổng hợp trực tiếp các hạng mục đã hoàn thành và kết quả kiểm chứng tương ứng. Từ bảng này có thể thấy sản phẩm cuối của đồ án không phải một chatbot demo đơn giản, mà là một hệ thống có pipeline dữ liệu, pipeline truy xuất, pipeline an toàn, kết quả đo lường và cơ chế audit.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Tổng hợp các hạng mục đã hoàn thành trong đồ án}
+\begin{tabularx}{\linewidth}{p{0.22\linewidth} p{0.27\linewidth} Y}
+\toprule
+\textbf{Hạng mục} & \textbf{Kết quả đạt được} & \textbf{Minh chứng trong báo cáo} \\
+\midrule
+Xử lý dữ liệu & 382.559 chunk trong corpus đầy đủ; 209.080 chunk trong priority corpus & Bảng thống kê corpus ở Chương 3 \\
+Nguồn dược phẩm & DAV registry, Dược thư/monograph, DDInter, cảnh giác dược, recall, OCR/PDF, OTC guardrail & Bảng nguồn dữ liệu ở Chương 3 \\
+Chuẩn hóa tên thuốc & Xử lý biệt dược, hoạt chất, tên không dấu, tên sai chính tả & Service alignment tên thuốc trong backend \\
+Multi-Agent RAG & Safety router, intent planner, semantic mapper, patient context, graph safety, retrieval, heuristic reranker/custom boost, evidence guardrail, response builder & Dấu vết xử lý trong kết quả SafeRAG full \\
+Đánh giá truy xuất & Hit@5 = 1.0000, Strict Hit@5 = 1.0000 trên benchmark hybrid priority 15 ca nội bộ & Báo cáo hybrid priority retrieval; chưa phải blind test tổng quát \\
+Đánh giá SafeRAG & 100 câu hỏi, 0 phản hồi thiếu nguồn, 12 ca cấp cứu, 55 ca cần hỏi lại & Tổng hợp kết quả SafeRAG full \\
+Smoke API & HTTP 200, định tuyến cấp cứu, subtype paracetamol overdose, 2 nguồn & Kết quả API smoke ở Chương 6 \\
+\bottomrule
+\end{tabularx}
+\end{table}

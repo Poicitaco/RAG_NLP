@@ -1,5 +1,5 @@
 """
-Dosage Advisor Agent - Tư vấn liều lượng thuốc
+Agent tu van lieu luong thuoc cho nguoi dung.
 """
 from typing import List, Dict, Any
 import re

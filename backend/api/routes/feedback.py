@@ -1,4 +1,4 @@
-"""Feedback endpoints for evaluation and future supervised datasets."""
+"""Cac endpoint API cho feedback danh gia va dataset sau nay."""
 from datetime import datetime
 import json
 from pathlib import Path
@@ -49,7 +49,7 @@ class FeedbackStorage:
         self.storage_path = Path(storage_path)
         self.storage_path.mkdir(parents=True, exist_ok=True)
         self.feedback_file = self.storage_path / "feedback.jsonl"
-        app_logger.info(f"Feedback storage initialized: {self.feedback_file}")
+        app_logger.info(f"Da khoi tao luu tru feedback: {self.feedback_file}")
 
     def save_feedback(self, feedback: FeedbackCreate) -> FeedbackResponse:
         feedback_response = FeedbackResponse(
@@ -137,7 +137,7 @@ async def submit_feedback(feedback: FeedbackCreate):
     try:
         return feedback_storage.save_feedback(feedback)
     except Exception as exc:
-        app_logger.error(f"Failed to save feedback: {exc}")
+        app_logger.error(f"Loi khi luu feedback: {exc}")
         raise HTTPException(status_code=500, detail=str(exc))
 
 

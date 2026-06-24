@@ -1,5 +1,5 @@
 """
-Drug Information Agent - Cung cấp thông tin chi tiết về thuốc
+Agent cung cap thong tin chi tiet ve thuoc.
 """
 from typing import List
 import re

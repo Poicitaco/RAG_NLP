@@ -33,7 +33,6 @@ class Settings(BaseSettings):
         default="text-embedding-3-small", 
         env="OPENAI_EMBEDDING_MODEL"
     )
-    
     # Anthropic (Alternative)
     ANTHROPIC_API_KEY: Optional[str] = Field(default=None, env="ANTHROPIC_API_KEY")
     ANTHROPIC_MODEL: str = Field(
@@ -53,6 +52,24 @@ class Settings(BaseSettings):
         default="https://generativelanguage.googleapis.com",
         env="GEMINI_BASE_URL",
     )
+    GROQ_API_KEY: str = Field(default="", env="GROQ_API_KEY")
+    USE_LLM_PLANNER: bool = Field(default=False, env="USE_LLM_PLANNER")
+    LLM_PLANNER_MODEL: str = Field(default="gemini-2.5-flash", env="LLM_PLANNER_MODEL")
+    LOCAL_EMBEDDING_MODEL: str = Field(default="BAAI/bge-m3", env="LOCAL_EMBEDDING_MODEL")
+    LOCAL_EMBEDDING_DIMENSION: int = Field(default=1024, env="LOCAL_EMBEDDING_DIMENSION")
+    LOCAL_CHROMA_COLLECTION: str = Field(
+        default="pharmaceutical_local_bge_1024",
+        env="LOCAL_CHROMA_COLLECTION",
+    )
+    KAGGLE_API_URL: str = Field(default="", env="KAGGLE_API_URL")
+    RULE_EMBEDDING_PROVIDER: str = Field(default="local", env="RULE_EMBEDDING_PROVIDER")
+    RULE_LOCAL_EMBEDDING_MODEL: str = Field(default="BAAI/bge-m3", env="RULE_LOCAL_EMBEDDING_MODEL")
+    RULE_MATCH_THRESHOLD: float = Field(default=0.48, env="RULE_MATCH_THRESHOLD")
+
+    # Hybrid Search RAG
+    # Nguong diem toi thieu de giu lai ket qua retrieval (BM25 + Chroma combined score)
+    # Giam xuc nay neu bot hay bao "khong du bang chung" voi cau hoi hop le
+    MIN_HYBRID_SCORE: float = Field(default=0.5, env="MIN_HYBRID_SCORE")
     
     # Cơ sở dữ liệu
     POSTGRES_HOST: str = Field(default="localhost", env="POSTGRES_HOST")
@@ -119,7 +136,7 @@ class Settings(BaseSettings):
     CORS_ORIGINS: str = Field(
         default=(
             "http://localhost:3000,http://localhost:5173,http://localhost:8501,"
-            "http://127.0.0.1:5173,http://127.0.0.1:8001"
+            "http://127.0.0.1:5173,http://127.0.0.1:8000"
         ),
         env="CORS_ORIGINS"
     )

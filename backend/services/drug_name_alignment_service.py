@@ -29,6 +29,7 @@ MANUAL_ALIASES = {
     "tylenol": ("Tylenol", "paracetamol", "manual_alias"),
     "para": ("Paracetamol", "paracetamol", "manual_alias"),
     "paracetamol": ("Paracetamol", "paracetamol", "manual_alias"),
+    "paracetamon": ("Paracetamol", "paracetamol", "manual_alias"),
     "acetaminophen": ("Acetaminophen", "paracetamol", "manual_alias"),
     "li pi to": ("Lipitor", "atorvastatin", "manual_alias"),
     "lipito": ("Lipitor", "atorvastatin", "manual_alias"),
@@ -38,6 +39,13 @@ MANUAL_ALIASES = {
     "asa": ("Aspirin", "acetylsalicylic acid", "manual_alias"),
     "warfarin": ("Warfarin", "warfarin", "manual_alias"),
     "clarithromycin": ("Clarithromycin", "clarithromycin", "manual_alias"),
+    "loang xuong": ("Acid alendronic", "alendronic", "manual_alias"),
+    "thuoc loang xuong": ("Acid alendronic", "alendronic", "manual_alias"),
+    "alendronic": ("Acid alendronic", "alendronic", "manual_alias"),
+    "alendronate": ("Alendronate", "alendronic", "manual_alias"),
+    "alendronat": ("Alendronate", "alendronic", "manual_alias"),
+    "bisphosphonate": ("Bisphosphonate", "alendronic", "manual_alias"),
+    "decolgen": ("Decolgen", "paracetamol, phenylephrine, chlorpheniramine", "manual_alias"),
 }
 
 
@@ -93,7 +101,8 @@ def compact_name(value: str) -> str:
 
 def _clean_active_ingredient(value: str) -> str:
     text = re.sub(r"\([^)]*\)", "", value or "")
-    text = re.split(r"[;,/+]", text)[0]
+    # XÓA DÒNG NÀY ĐỂ GIỮ NGUYÊN TẤT CẢ HOẠT CHẤT CỦA THUỐC PHỐI HỢP
+    # text = re.split(r"[;,/+]", text)[0]
     text = re.sub(r"\b(bp|usp|ep|jp)\b", "", text, flags=re.IGNORECASE)
     text = re.sub(r"\s+", " ", text).strip()
     normalized = normalize_name(text)
@@ -163,7 +172,8 @@ class DrugNameAlignmentService:
                 key = compact_index[term_compact]
                 self._append_match(matches, seen_keys, term, lexicon[key], 0.95, "compact_exact")
 
-        if len(matches) < max_matches:
+        has_manual_match = any(row.get("match_type") == "manual_alias" for row in matches)
+        if len(matches) < max_matches and not has_manual_match:
             matched_mentions = {normalize_name(row["mention"]) for row in matches}
             fuzzy = self._fuzzy_candidates(tokens, lexicon)
             for term, key, score in fuzzy:

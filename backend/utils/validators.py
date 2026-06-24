@@ -1,5 +1,5 @@
 """
-Validation utilities for input data - Tiện ích xác thực dữ liệu đầu vào
+Cac ham kiem tra va xac thuc du lieu dau vao.
 """
 import re
 from typing import Optional, List
@@ -96,9 +96,9 @@ def validate_email(email: str) -> bool:
     return bool(re.match(pattern, email))
 
 
-def validate_phone_number(phone: str) -> bool:
-    """Xác thực số điện thoại (định dạng linh hoạt)"""
-    # Remove common separators
-    phone = re.sub(r'[\s\-\(\)\+]', '', phone)
-    # Check if it's a valid number (8-15 digits)
-    return bool(re.match(r'^\d{8,15}$', phone))
+def kiem_tra_so_dien_thoai(so_dien_thoai: str) -> bool:
+    """Xac thuc so dien thoai (dinh dang linh hoat)."""
+    # Loai bo cac ky tu phan cach pho bien
+    so_dien_thoai = re.sub(r'[\s\-\(\)\+]', '', so_dien_thoai)
+    # Kiem tra co phai la so hop le khong (8-15 chu so)
+    return bool(re.match(r'^\d{8,15}$', so_dien_thoai))

@@ -25,7 +25,7 @@
         "action": "allow",
         "intent": "drug_info",
         "should_answer": true,
-        "message": "Co bang chung phu hop de tra loi thong tin dinh danh thuoc kem citation.",
+        "message": "Có bằng chứng phù hợp để trả lời thông tin định danh thuốc kèm citation.",
         "warnings": [],
         "usable_sources": [
           "dav_all"
@@ -54,7 +54,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": false,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -67,7 +68,7 @@
         "action": "allow",
         "intent": "drug_info",
         "should_answer": true,
-        "message": "Co bang chung phu hop de tra loi thong tin dinh danh thuoc kem citation.",
+        "message": "Có bằng chứng phù hợp để trả lời thông tin định danh thuốc kèm citation.",
         "warnings": [],
         "usable_sources": [
           "dav_all"
@@ -96,7 +97,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": false,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -109,7 +111,7 @@
         "action": "allow",
         "intent": "drug_info",
         "should_answer": true,
-        "message": "Co bang chung phu hop de tra loi thong tin dinh danh thuoc kem citation.",
+        "message": "Có bằng chứng phù hợp để trả lời thông tin định danh thuốc kèm citation.",
         "warnings": [],
         "usable_sources": [
           "dav_all"
@@ -138,7 +140,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": false,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -151,7 +154,7 @@
         "action": "allow",
         "intent": "drug_info",
         "should_answer": true,
-        "message": "Co bang chung phu hop de tra loi thong tin dinh danh thuoc kem citation.",
+        "message": "Có bằng chứng phù hợp để trả lời thông tin định danh thuốc kèm citation.",
         "warnings": [],
         "usable_sources": [
           "dav_all"
@@ -180,7 +183,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": false,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -193,7 +197,7 @@
         "action": "allow",
         "intent": "recall",
         "should_answer": true,
-        "message": "Co bang chung safety/recall phu hop de tra loi kem citation.",
+        "message": "Có bằng chứng safety/recall phù hợp để trả lời kèm citation.",
         "warnings": [],
         "usable_sources": [
           "canhgiacduoc",
@@ -223,7 +227,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -236,7 +241,7 @@
         "action": "allow",
         "intent": "counterfeit",
         "should_answer": true,
-        "message": "Co bang chung safety/recall phu hop de tra loi kem citation.",
+        "message": "Có bằng chứng safety/recall phù hợp để trả lời kèm citation.",
         "warnings": [],
         "usable_sources": [
           "canhgiacduoc",
@@ -266,7 +271,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -279,7 +285,7 @@
         "action": "allow",
         "intent": "recall",
         "should_answer": true,
-        "message": "Co bang chung safety/recall phu hop de tra loi kem citation.",
+        "message": "Có bằng chứng safety/recall phù hợp để trả lời kèm citation.",
         "warnings": [],
         "usable_sources": [
           "dav_recall",
@@ -309,7 +315,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -322,7 +329,7 @@
         "action": "allow",
         "intent": "recall",
         "should_answer": true,
-        "message": "Co bang chung safety/recall phu hop de tra loi kem citation.",
+        "message": "Có bằng chứng safety/recall phù hợp để trả lời kèm citation.",
         "warnings": [],
         "usable_sources": [
           "dav_recall",
@@ -352,7 +359,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -365,7 +373,7 @@
         "action": "allow",
         "intent": "recall",
         "should_answer": true,
-        "message": "Co bang chung safety/recall phu hop de tra loi kem citation.",
+        "message": "Có bằng chứng safety/recall phù hợp để trả lời kèm citation.",
         "warnings": [],
         "usable_sources": [
           "dav_recall",
@@ -395,7 +403,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -408,9 +417,9 @@
         "action": "allow_with_caution",
         "intent": "drug_info",
         "should_answer": true,
-        "message": "Co bang chung phu hop de tra loi thong tin dinh danh thuoc kem citation.",
+        "message": "Có bằng chứng phù hợp để trả lời thông tin định danh thuốc kèm citation.",
         "warnings": [
-          "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac."
+          "Có bằng chứng OCR chưa xác minh; không được dùng để kết luận chắc chắn về liều, số liệu hoặc tương tác."
         ],
         "usable_sources": [
           "dav_pdf_ocr",
@@ -440,7 +449,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": false,
-          "ocr_count": 3
+          "ocr_count": 3,
+          "subtype": ""
         }
       }
     },
@@ -453,9 +463,9 @@
         "action": "handoff",
         "intent": "dosage",
         "should_answer": false,
-        "message": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.",
+        "message": "Câu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.",
         "warnings": [
-          "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac.",
+          "Có bằng chứng OCR chưa xác minh; không được dùng để kết luận chắc chắn về liều, số liệu hoặc tương tác.",
           "High-risk question lacks verified relevant evidence."
         ],
         "usable_sources": [
@@ -488,7 +498,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": false,
-          "ocr_count": 1
+          "ocr_count": 1,
+          "subtype": ""
         }
       }
     },
@@ -501,9 +512,9 @@
         "action": "handoff",
         "intent": "high_risk_context",
         "should_answer": false,
-        "message": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.",
+        "message": "Câu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.",
         "warnings": [
-          "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac.",
+          "Có bằng chứng OCR chưa xác minh; không được dùng để kết luận chắc chắn về liều, số liệu hoặc tương tác.",
           "High-risk question lacks verified relevant evidence."
         ],
         "usable_sources": [
@@ -537,7 +548,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 2
+          "ocr_count": 2,
+          "subtype": ""
         }
       }
     },
@@ -550,9 +562,9 @@
         "action": "handoff",
         "intent": "interaction",
         "should_answer": false,
-        "message": "Cau hoi rui ro cao chua co bang chung dung loai nguon da xac minh. Nen chuyen nguoi dung gap bac si/duoc si.",
+        "message": "Câu hỏi rủi ro cao chưa có bằng chứng đúng loại nguồn đã xác minh. Nên chuyển người dùng gặp bác sĩ/dược sĩ.",
         "warnings": [
-          "Co bang chung OCR chua xac minh; khong duoc dung de ket luan chac chan ve lieu, so lieu hoac tuong tac.",
+          "Có bằng chứng OCR chưa xác minh; không được dùng để kết luận chắc chắn về liều, số liệu hoặc tương tác.",
           "High-risk question lacks verified relevant evidence."
         ],
         "usable_sources": [
@@ -584,7 +596,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": false,
-          "ocr_count": 5
+          "ocr_count": 5,
+          "subtype": ""
         }
       }
     },
@@ -597,7 +610,7 @@
         "action": "allow",
         "intent": "counterfeit",
         "should_answer": true,
-        "message": "Co bang chung safety/recall phu hop de tra loi kem citation.",
+        "message": "Có bằng chứng safety/recall phù hợp để trả lời kèm citation.",
         "warnings": [],
         "usable_sources": [
           "canhgiacduoc"
@@ -626,7 +639,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     },
@@ -639,7 +653,7 @@
         "action": "allow",
         "intent": "drug_info",
         "should_answer": true,
-        "message": "Co bang chung phu hop de tra loi thong tin dinh danh thuoc kem citation.",
+        "message": "Có bằng chứng phù hợp để trả lời thông tin định danh thuốc kèm citation.",
         "warnings": [],
         "usable_sources": [
           "canhgiacduoc",
@@ -669,7 +683,8 @@
           "has_verified_dosage": false,
           "has_verified_interaction": false,
           "has_verified_safety": true,
-          "ocr_count": 0
+          "ocr_count": 0,
+          "subtype": ""
         }
       }
     }

@@ -1,0 +1,42 @@
+{
+  "total": 1,
+  "rag_action_counts": {
+    "needs_clarification": 1
+  },
+  "intent_counts": {
+    "pediatric_symptom": 1
+  },
+  "graph_warning_count": 0,
+  "graph_override_count": 0,
+  "alignment_used_count": 0,
+  "llm_answer_used_count": 0,
+  "response_block_schema_count": 1,
+  "no_source_count": 0,
+  "first_source_counts": {
+    "system_safety_policy": 1
+  },
+  "selected_agent_counts": {
+    "triage_risk_agent": 1,
+    "llm_intent_planner": 1,
+    "semantic_rule_mapper_agent": 1,
+    "patient_context_collector": 1,
+    "safety_monitor_agent": 1,
+    "final_response_builder": 1
+  },
+  "pipeline_node_counts": {
+    "safety_router": 1,
+    "ambiguity_checker": 1,
+    "llm_intent_planner": 1,
+    "semantic_rule_mapper_agent": 1,
+    "graph_safety_agent": 1,
+    "patient_context_collector": 1,
+    "clarification_bypass": 1,
+    "final_response_builder": 1
+  },
+  "by_group_action_counts": {
+    "nhom_1_mua_thuoc_va_tu_van_le_lang": {
+      "needs_clarification": 1
+    }
+  },
+  "high_attention_cases": []
+}

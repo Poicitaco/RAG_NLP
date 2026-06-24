@@ -1,8 +1,8 @@
 """
-Lazy RAG exports.
+Xuat lazy cac module RAG.
 
-Importing backend modules should not require OpenAI, ChromaDB or LangChain until
-retrieval/generation is actually used.
+Cac module backend khong can OpenAI, ChromaDB hoac LangChain cho den khi
+truy xuat va sinh noi dung duoc su dung thuc su.
 """
 
 

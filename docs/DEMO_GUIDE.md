@@ -1,4 +1,4 @@
-# Demo Guide - Vietnamese Medication Safety Agent
+﻿# Demo Guide - Vietnamese Medication Safety Agent
 
 This demo shows the current backend direction:
 
@@ -15,7 +15,7 @@ Safety Router
 ## 1. Start API
 
 ```powershell
-.\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8001
+.\.venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
 Open another PowerShell window for the demo commands.
@@ -34,7 +34,7 @@ Open:
 http://127.0.0.1:5173
 ```
 
-The frontend uses `http://127.0.0.1:8001` by default. To point it at another API:
+The frontend uses `http://127.0.0.1:8000` by default. To point it at another API:
 
 ```powershell
 $env:VITE_API_BASE_URL='http://127.0.0.1:8000'
@@ -45,7 +45,7 @@ npm run dev
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'
-.\.venv\Scripts\python.exe scripts\demo_chat_flow.py --base-url http://127.0.0.1:8001
+.\.venv\Scripts\python.exe scripts\legacy\demo_chat_flow.py --base-url http://127.0.0.1:8000
 ```
 
 Expected scenarios:
@@ -63,7 +63,7 @@ Run this before showing the demo:
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'
-.\.venv\Scripts\python.exe scripts\system_check.py --api-base-url http://127.0.0.1:8001 --frontend-url http://127.0.0.1:5173
+.\.venv\Scripts\python.exe scripts\legacy\system_check.py --api-base-url http://127.0.0.1:8000 --frontend-url http://127.0.0.1:5173
 ```
 
 This checks:
@@ -80,7 +80,7 @@ This checks:
 
 ```powershell
 $env:PYTHONIOENCODING='utf-8'
-.\.venv\Scripts\python.exe scripts\smoke_api.py --base-url http://127.0.0.1:8001
+.\.venv\Scripts\python.exe scripts\legacy\smoke_api.py --base-url http://127.0.0.1:8000
 ```
 
 ## 6. Evaluation

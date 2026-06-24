@@ -1,0 +1,175 @@
+{
+  "schema_version": "otc_safety_matrix_v1",
+  "clinical_rules": [
+    {
+      "id": "di_ngoai_tieu_chay",
+      "primary_intent": "tieu_chay",
+      "target_otc_group": "diarrhea",
+      "keywords_synonyms": [
+        "buồn ỉa",
+        "ỉa chảy",
+        "tào tháo đuổi",
+        "đi ngoài",
+        "tiêu chảy",
+        "tướt",
+        "bụng quặn",
+        "đau bụng đi ngoài",
+        "đau bụng muốn đi vệ sinh",
+        "đau bụng tiêu chảy"
+      ],
+      "retrieval_query": "tiêu chảy đi ngoài đau bụng quặn bù nước oresol thuốc giảm co thắt drotaverin mebeverine men vi sinh probiotics diosmectite",
+      "must_avoid_sections_in_rag": [
+        "Tác dụng không mong muốn",
+        "ADR",
+        "Tác dụng phụ",
+        "quá liều vitamin C",
+        "gây tiêu chảy"
+      ],
+      "priority_otc_ingredients": [
+        "Oresol",
+        "oral rehydration solution",
+        "Drotaverin",
+        "Mebeverine",
+        "Diosmectite",
+        "Probiotics",
+        "Enterogermina",
+        "Lactamin"
+      ],
+      "must_avoid_ingredients": [
+        "Loperamide nếu sốt cao, phân máu, nôn liên tục, đau bụng dữ dội hoặc nghi nhiễm khuẩn",
+        "kháng sinh tự mua"
+      ],
+      "emergency_flags": [
+        "máu",
+        "phân đen",
+        "sốt cao",
+        "nôn liên tục",
+        "lả người",
+        "tiểu rất ít",
+        "đau bụng dữ dội"
+      ],
+      "response_focus": [
+        "Cảnh báo đi viện khi có dấu hiệu nguy hiểm",
+        "Bù nước Oresol là ưu tiên trước thuốc cầm tiêu chảy",
+        "Không vội dùng loperamide khi mới đi ngoài 1-2 lần",
+        "Giảm co thắt chỉ cân nhắc khi đau quặn từng cơn và không có dấu hiệu nguy hiểm"
+      ],
+      "citations": [
+        {
+          "title": "CDC: Treatment of Diarrhea",
+          "url": "https://www.cdc.gov/diarrhea/treatment/index.html"
+        },
+        {
+          "title": "NHS: Diarrhoea and vomiting",
+          "url": "https://www.nhs.uk/conditions/diarrhoea-and-vomiting/"
+        },
+        {
+          "title": "NHS: Common questions about mebeverine",
+          "url": "https://www.nhs.uk/medicines/mebeverine/common-questions-about-mebeverine/"
+        },
+        {
+          "title": "Drotaverin - Trung Tâm Thuốc",
+          "url": "https://trungtamthuoc.com/hoat-chat/drotaverine"
+        }
+      ]
+    },
+    {
+      "id": "tieu_duong_cam_cum",
+      "primary_intent": "cam_cum_co_benh_nen",
+      "target_otc_group": "cold_flu",
+      "keywords_synonyms": [
+        "tiểu đường bị cảm",
+        "đái tháo đường bị cảm",
+        "người tiểu đường mua thuốc cảm",
+        "bị đường huyết uống thuốc cảm",
+        "mỡ máu huyết áp mua thuốc cảm",
+        "cảm cúm có bệnh nền"
+      ],
+      "retrieval_query": "người tiểu đường cảm cúm thuốc cảm tránh pseudoephedrine phenylephrine paracetamol đơn thành phần xịt mũi nước muối",
+      "must_avoid_sections_in_rag": [
+        "Tác dụng không mong muốn",
+        "ADR",
+        "Tác dụng phụ"
+      ],
+      "priority_otc_ingredients": [
+        "Paracetamol đơn thành phần",
+        "nước muối sinh lý",
+        "xịt mũi nước muối"
+      ],
+      "must_avoid_ingredients": [
+        "pseudoephedrine",
+        "phenylephrine",
+        "ephedrine",
+        "thuốc cảm phối hợp nhiều thành phần không rõ hoạt chất"
+      ],
+      "emergency_flags": [
+        "khó thở",
+        "đau ngực",
+        "sốt cao kéo dài",
+        "lơ mơ",
+        "đường huyết rất cao"
+      ],
+      "response_focus": [
+        "Không tự chọn thuốc cảm phối hợp nhiều thành phần",
+        "Tránh nhóm co mạch nếu có tăng huyết áp, tim mạch hoặc tiểu đường",
+        "Ưu tiên xử trí triệu chứng đơn giản và đọc hoạt chất"
+      ],
+      "citations": [
+        {
+          "title": "NHS: Common cold",
+          "url": "https://www.nhs.uk/conditions/common-cold/"
+        },
+        {
+          "title": "CDC: Manage Common Cold",
+          "url": "https://www.cdc.gov/common-cold/treatment/index.html"
+        }
+      ]
+    },
+    {
+      "id": "kem_bo_sung",
+      "primary_intent": "bo_sung_kem",
+      "target_otc_group": "zinc_supplement",
+      "keywords_synonyms": [
+        "uống kẽm loại nào",
+        "yếu quá uống kẽm",
+        "mua kẽm",
+        "bổ sung kẽm",
+        "viên kẽm",
+        "kẽm tăng đề kháng"
+      ],
+      "retrieval_query": "bổ sung kẽm zinc liều an toàn người lớn tương tác kháng sinh quinolone tetracycline penicillamine",
+      "must_avoid_sections_in_rag": [
+        "Tác dụng không mong muốn",
+        "ADR",
+        "Tác dụng phụ"
+      ],
+      "priority_otc_ingredients": [
+        "Zinc",
+        "kẽm"
+      ],
+      "must_avoid_ingredients": [
+        "kẽm liều cao kéo dài",
+        "uống cùng tetracycline hoặc quinolone không giãn cách",
+        "uống cùng penicillamine không hỏi chuyên môn"
+      ],
+      "emergency_flags": [
+        "mệt lả kéo dài",
+        "sụt cân",
+        "khó thở",
+        "đau ngực",
+        "sốt kéo dài"
+      ],
+      "response_focus": [
+        "Không coi kẽm là thuốc chữa mệt",
+        "Kiểm tra liều nguyên tố kẽm và thời gian dùng",
+        "Cần giãn cách với một số kháng sinh"
+      ],
+      "citations": [
+        {
+          "title": "NIH Office of Dietary Supplements: Zinc Fact Sheet",
+          "url": "https://ods.od.nih.gov/factsheets/Zinc-Consumer/"
+        }
+      ]
+    }
+  ]
+}
