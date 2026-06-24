@@ -20,22 +20,60 @@ from backend.models import Citation
 
 
 def _citation_dict(citation: Citation) -> Dict[str, Any]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        citation: mô tả
+    Returns:
+        mô tả
+    '''
     return citation.model_dump()
 
 
 def _highest_graph_risk(graph_result: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        graph_result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return str((graph_result or {}).get("highest_risk") or "none")
 
 
 def _has_graph_warning(graph_result: Dict[str, Any]) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        graph_result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return bool((graph_result or {}).get("should_warn"))
 
 
 def _graph_findings(graph_result: Dict[str, Any]) -> List[Dict[str, Any]]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        graph_result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return list((graph_result or {}).get("findings") or [])
 
 
 def _normalize_text(text: str) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        text: mô tả
+    Returns:
+        mô tả
+    '''
     value = (text or "").replace("\u0110", "D").replace("\u0111", "d").lower()
     decomposed = unicodedata.normalize("NFD", value)
     stripped = "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
@@ -43,6 +81,15 @@ def _normalize_text(text: str) -> str:
 
 
 def _has_aspirin_diclofenac_interaction(graph_result: Dict[str, Any], citations: List[Citation]) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        graph_result: mô tả
+        Any]: mô tả
+        citations: mô tả
+    Returns:
+        mô tả
+    '''
     for finding in _graph_findings(graph_result):
         if finding.get("type") != "drug_drug_interaction":
             continue
@@ -60,6 +107,16 @@ def _specialized_response_items(
     graph_result: Dict[str, Any],
     citations: List[Citation],
 ) -> Dict[str, Any] | None:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        subtype: mô tả
+        graph_result: mô tả
+        Any]: mô tả
+        citations: mô tả
+    Returns:
+        mô tả
+    '''
     if subtype == "paracetamol_overdose":
         return {
             "level": "emergency",
@@ -103,6 +160,16 @@ def _specialized_response_items(
 
 
 def _safety_level(action: str, intent: str, graph_result: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        action: mô tả
+        intent: mô tả
+        graph_result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     highest = _highest_graph_risk(graph_result).lower()
     if action == "emergency":
         return "emergency"
@@ -118,6 +185,13 @@ def _safety_level(action: str, intent: str, graph_result: Dict[str, Any]) -> str
 
 
 def _sentence(text: str) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        text: mô tả
+    Returns:
+        mô tả
+    '''
     value = re.sub(r"\s+", " ", str(text or "")).strip(" -;\n\t")
     if not value:
         return ""
@@ -128,6 +202,13 @@ def _sentence(text: str) -> str:
 
 
 def _format_avoid_ingredients(ingredients: List[str]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        ingredients: mô tả
+    Returns:
+        mô tả
+    '''
     lowered = {str(item).strip().lower() for item in ingredients if str(item).strip()}
     decongestants = {"pseudoephedrine", "phenylephrine", "ephedrine"}
     if decongestants <= lowered:
@@ -136,6 +217,13 @@ def _format_avoid_ingredients(ingredients: List[str]) -> str:
 
 
 def _condition_label(condition: str) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        condition: mô tả
+    Returns:
+        mô tả
+    '''
     labels = {
         "diabetes": "tiểu đường",
         "hypertension": "tăng huyết áp",
@@ -150,6 +238,14 @@ def _condition_label(condition: str) -> str:
 
 
 def _source_short_name(source: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        source: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     title = str(source.get("title") or source.get("source") or "").strip()
     if title.lower() in {
         "cold_flu",
@@ -178,6 +274,13 @@ def _source_short_name(source: Dict[str, Any]) -> str:
 
 
 def _public_avoid_line(text: str) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        text: mô tả
+    Returns:
+        mô tả
+    '''
     value = _sentence(text)
     normalized = _normalize_text(value)
     prefixes = (
@@ -195,6 +298,16 @@ def _public_avoid_line(text: str) -> str:
 
 
 def _safety_items(action: str, intent: str, graph_result: Dict[str, Any]) -> List[str]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        action: mô tả
+        intent: mô tả
+        graph_result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     findings = _graph_findings(graph_result)
     if action == "emergency":
         return [
@@ -262,6 +375,17 @@ def _core_action_items(
     citations: List[Citation],
     graph_result: Dict[str, Any] | None = None,
 ) -> List[str]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        action: mô tả
+        intent: mô tả
+        citations: mô tả
+        graph_result: mô tả
+        Any] | None: mô tả
+    Returns:
+        mô tả
+    '''
     if action == "emergency":
         return [
             "Không tự uống thêm thuốc để che triệu chứng.",
@@ -312,6 +436,16 @@ def _core_action_items(
 
 
 def _clinical_reason_items(action: str, intent: str, graph_result: Dict[str, Any]) -> List[str]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        action: mô tả
+        intent: mô tả
+        graph_result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     findings = _graph_findings(graph_result)
     reasons: List[str] = []
     for finding in findings:
@@ -333,6 +467,13 @@ def _clinical_reason_items(action: str, intent: str, graph_result: Dict[str, Any
 
 
 def _citation_items(citations: List[Citation]) -> List[str]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        citations: mô tả
+    Returns:
+        mô tả
+    '''
     if not citations:
         return ["Chưa có nguồn đủ chuẩn để trích dẫn cho hướng dẫn dùng thuốc cụ thể."]
     items = []
@@ -344,12 +485,28 @@ def _citation_items(citations: List[Citation]) -> List[str]:
 
 
 def _is_bisphosphonate_context(citations: List[Citation]) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        citations: mô tả
+    Returns:
+        mô tả
+    '''
     haystack = " ".join((citation.title or "") + " " + citation.source for citation in citations).lower()
     terms = ("alendronic", "alendronate", "alendron", "bisphosphonate")
     return any(term in haystack for term in terms)
 
 
 def _filtered_citations(intent: str, action: str, citations: List[Citation]) -> List[Citation]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        intent: mô tả
+        action: mô tả
+        citations: mô tả
+    Returns:
+        mô tả
+    '''
     if _is_bisphosphonate_context(citations):
         matching = [
             citation
@@ -363,6 +520,13 @@ def _filtered_citations(intent: str, action: str, citations: List[Citation]) -> 
 
 
 def _low_information_preview(preview: str) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        preview: mô tả
+    Returns:
+        mô tả
+    '''
     normalized = preview.strip().lower()
     if not normalized:
         return True
@@ -370,6 +534,14 @@ def _low_information_preview(preview: str) -> bool:
 
 
 def _metadata_preview(row: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        row: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     metadata = row.get("metadata") or {}
     parts = []
     drug_name = metadata.get("drug_name") or row.get("title_or_drug")
@@ -389,6 +561,14 @@ def _metadata_preview(row: Dict[str, Any]) -> str:
 
 
 def _is_indication_snippet(row: Dict[str, Any]) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        row: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     metadata = row.get("metadata") or {}
     section = str(metadata.get("section") or "").lower()
     text = f"{row.get('document_preview') or row.get('document') or ''} {section}".lower()
@@ -409,6 +589,13 @@ def _is_indication_snippet(row: Dict[str, Any]) -> bool:
 
 
 def _clean_indication_preview(preview: str) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        preview: mô tả
+    Returns:
+        mô tả
+    '''
     text = re.sub(r"\s+", " ", preview or "").strip()
     text = re.sub(r"^(chỉ định|chi dinh)\s*[:\-]?\s*", "", text, flags=re.IGNORECASE)
     text = re.split(
@@ -430,6 +617,21 @@ def build_response_blocks(
     subtype: str = "",
     snippets: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        action: mô tả
+        intent: mô tả
+        graph_result: mô tả
+        Any]: mô tả
+        citations: mô tả
+        selected_agents: mô tả
+        subtype: mô tả
+        snippets: mô tả
+        Any]]]: mô tả
+    Returns:
+        mô tả
+    '''
     citations = _filtered_citations(intent, action, citations)
     specialized = _specialized_response_items(subtype, graph_result, citations)
     if specialized:
@@ -543,6 +745,14 @@ def build_response_blocks(
 
 
 def format_response_blocks(response_blocks: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        response_blocks: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     public_answer = _format_public_otc_answer(response_blocks)
     if public_answer:
         return public_answer
@@ -566,6 +776,14 @@ def format_response_blocks(response_blocks: Dict[str, Any]) -> str:
 
 
 def _format_public_otc_answer(response_blocks: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        response_blocks: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     if response_blocks.get("intent") != "otc_recommendation":
         return ""
 
