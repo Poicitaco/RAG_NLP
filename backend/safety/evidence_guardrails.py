@@ -48,6 +48,11 @@ class EvidenceDecision:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
+        '''Mô tả ngắn một dòng.
+        
+        Returns:
+            mô tả
+        '''
         if not self.subtype and isinstance(self.metadata, dict):
             self.subtype = str(self.metadata.get("subtype") or "")
         if self.subtype:
@@ -258,6 +263,13 @@ HIGH_RISK_INTENTS = {
 
 
 def normalize_text(text: str) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        text: mô tả
+    Returns:
+        mô tả
+    '''
     value = (text or "").replace("Đ", "D").replace("đ", "d").lower()
     decomposed = unicodedata.normalize("NFD", value)
     return " ".join(
@@ -266,6 +278,14 @@ def normalize_text(text: str) -> str:
 
 
 def contains_any(text: str, terms: Iterable[str]) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        text: mô tả
+        terms: mô tả
+    Returns:
+        mô tả
+    '''
     normalized = normalize_text(text)
     tokens = set(re.findall(r"[a-z0-9]+", normalized))
     for term in terms:
@@ -314,6 +334,13 @@ OVERDOSE_PATTERNS = [
 
 
 def detect_clinical_subtype(question: str) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        question: mô tả
+    Returns:
+        mô tả
+    '''
     normalized = normalize_text(question)
     has_paracetamol = contains_any(normalized, PARACETAMOL_TERMS)
     if has_paracetamol and any(re.search(pattern, normalized) for pattern in OVERDOSE_PATTERNS):
@@ -333,6 +360,13 @@ def detect_clinical_subtype(question: str) -> str:
 
 
 def classify_question_intent(question: str) -> QuestionIntent:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        question: mô tả
+    Returns:
+        mô tả
+    '''
     normalized = normalize_text(question)
     subtype = detect_clinical_subtype(question)
     if subtype in {SUBTYPE_PARACETAMOL_OVERDOSE, SUBTYPE_HYPERTENSIVE_CRISIS}:
@@ -364,22 +398,62 @@ def classify_question_intent(question: str) -> QuestionIntent:
 
 
 def metadata_source(metadata: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        metadata: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return str(metadata.get("source") or metadata.get("source_dataset") or "")
 
 
 def result_metadata(result: Dict[str, Any]) -> Dict[str, Any]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return result.get("metadata") or {}
 
 
 def result_source(result: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return metadata_source(result_metadata(result))
 
 
 def result_type(result: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return str(result_metadata(result).get("type") or "")
 
 
 def result_text(result: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     metadata = result_metadata(result)
     fields = [
         result.get("document_preview"),
@@ -393,11 +467,25 @@ def result_text(result: Dict[str, Any]) -> str:
 
 
 def mentioned_common_drugs(question: str) -> List[str]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        question: mô tả
+    Returns:
+        mô tả
+    '''
     normalized = normalize_text(question)
     return [term for term in COMMON_DRUG_TERMS if term in normalized]
 
 
 def is_public_otc_request_without_drug(question: str) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        question: mô tả
+    Returns:
+        mô tả
+    '''
     normalized = normalize_text(question)
     if mentioned_common_drugs(question):
         return False
@@ -405,6 +493,15 @@ def is_public_otc_request_without_drug(question: str) -> bool:
 
 
 def is_relevant_to_question_drugs(result: Dict[str, Any], question_drugs: List[str]) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        result: mô tả
+        Any]: mô tả
+        question_drugs: mô tả
+    Returns:
+        mô tả
+    '''
     if not question_drugs:
         return True
     text = result_text(result)
@@ -412,10 +509,26 @@ def is_relevant_to_question_drugs(result: Dict[str, Any], question_drugs: List[s
 
 
 def trust_level(result: Dict[str, Any]) -> str:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     return str(result_metadata(result).get("trust_level") or "official_registry")
 
 
 def is_unverified_ocr(result: Dict[str, Any]) -> bool:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        result: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     metadata = result_metadata(result)
     return (
         result_source(result) in OCR_SOURCES
@@ -425,6 +538,14 @@ def is_unverified_ocr(result: Dict[str, Any]) -> bool:
 
 
 def evidence_summary(results: List[Dict[str, Any]]) -> Dict[str, Any]:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        results: mô tả
+        Any]]: mô tả
+    Returns:
+        mô tả
+    '''
     sources = [result_source(row) for row in results]
     types = [result_type(row) for row in results]
     return {
@@ -451,6 +572,15 @@ def evidence_summary(results: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 def _early_handoff(intent: QuestionIntent, summary: Dict[str, Any]) -> EvidenceDecision | None:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        intent: mô tả
+        summary: mô tả
+        Any]: mô tả
+    Returns:
+        mô tả
+    '''
     if intent == QuestionIntent.EMERGENCY:
         subtype = str(summary.get("subtype") or "")
         return EvidenceDecision(
@@ -488,6 +618,16 @@ def _early_handoff(intent: QuestionIntent, summary: Dict[str, Any]) -> EvidenceD
 
 
 def evaluate_evidence(question: str, intent: QuestionIntent, results: List[Dict[str, Any]]) -> EvidenceDecision:
+    '''Mô tả ngắn một dòng.
+    
+    Args:
+        question: mô tả
+        intent: mô tả
+        results: mô tả
+        Any]]: mô tả
+    Returns:
+        mô tả
+    '''
     summary = evidence_summary(results)
     subtype = detect_clinical_subtype(question)
     summary["subtype"] = subtype
