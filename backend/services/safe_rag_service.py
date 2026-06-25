@@ -741,52 +741,6 @@ class SafeRagService:
                 started_at=started_at,
             )
             # Tạm tắt Ambiguity Checker cứng nhắc để nhường cho LLM xử lý thông minh hơn.
-            if False and ambiguity.is_ambiguous:
-                selected_agents = ["triage_risk_agent", "ambiguity_checker", "final_response_builder"]
-                bypass_citations = _baseline_safety_citations("needs_clarification", "ambiguous_query")
-                response_blocks = _clarification_response_blocks(
-                    intent=early_decision.intent.value,
-                    questions=ambiguity.questions,
-                    selected_agents=selected_agents,
-                    reason=ambiguity.ambiguity_type,
-                )
-                response_blocks = _with_citation_block_sources(response_blocks, bypass_citations)
-                deterministic_answer = format_response_blocks(response_blocks)
-                llm_answer_text = await self.llm_answer.rewrite(
-                    question=message,
-                    deterministic_answer=deterministic_answer,
-                    graph_safety={},
-                    snippets=[],
-                    citations=bypass_citations,
-                    patient_context=context_assessment.patient_context,
-                )
-                final_answer = llm_answer_text if llm_answer_text else deterministic_answer
-                confidence_score = compute_confidence(
-                    action="needs_clarification",
-                    intent=early_decision.intent.value,
-                    citations=_citation_dicts(bypass_citations),
-                    graph_result={},
-                )
-                return ChatResponse(
-                    message=final_answer,
-                    conversation_id=conversation,
-                    agent_type=AgentType.SAFETY_MONITOR,
-                    confidence=confidence_score,
-                    sources=bypass_citations,
-                    warnings=["Câu hỏi chưa đủ thông tin để tra cứu thuốc an toàn."],
-                    suggestions=ambiguity.questions,
-                    metadata={
-                        "confidence": confidence_score,
-                        "rag_action": "needs_clarification",
-                        "intent": early_decision.intent.value,
-                        "ambiguity_type": ambiguity.ambiguity_type,
-                        "retrieval_bypassed": True,
-                        "selected_agents": selected_agents,
-                        "agent_pipeline": _agent_pipeline(trace),
-                        "llm_answer_used": bool(llm_answer_text),
-                        "response_blocks": response_blocks,
-                    },
-                )
         if early_decision.action == EvidenceAction.EMERGENCY:
             return await self._handle_emergency(message, early_decision, early_subtype, conversation, trace)
 
