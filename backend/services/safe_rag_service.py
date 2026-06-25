@@ -373,6 +373,118 @@ class SafeRagService:
             },
         )
 
+    async def _handle_interaction_fast_path(
+        self,
+        message: str,
+        conversation: str,
+        graph_result: Dict[str, Any],
+        graph_intent: QuestionIntent,
+        graph_citations: List[Citation],
+        early_decision: Any,
+        early_subtype: str,
+        planner_context: Dict[str, Any],
+        trace: List[Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ChatResponse:
+        selected_agents = _selected_agents(
+            graph_intent.value,
+            graph_result,
+            {"used": False, "skipped": True, "reason": "graph_fast_path_before_alignment"},
+        )
+        selected_agents = list(dict.fromkeys(selected_agents))
+        final_action = EvidenceAction.ALLOW_WITH_CAUTION
+        response_blocks = build_response_blocks(
+            action=final_action.value,
+            intent=graph_intent.value,
+            graph_result=graph_result,
+            citations=graph_citations[:5],
+            selected_agents=selected_agents,
+            subtype=early_subtype,
+        )
+        answer = format_response_blocks(response_blocks)
+        confidence_score = compute_confidence(
+            action=final_action.value,
+            intent=graph_intent.value,
+            citations=_citation_dicts(graph_citations[:5]),
+            graph_result=graph_result,
+            reranker_top_score=_reranker_top_score_from_trace(trace),
+            planner_confidence=planner_context.get("confidence"),
+        )
+        _add_trace_step(
+            trace,
+            "graph_fast_path_bypass_retrieval",
+            details={
+                "retrieval_bypassed": True,
+                "preprocessing_bypassed": [
+                    "semantic_rule_mapper_agent",
+                    "patient_context_collector",
+                    "drug_name_alignment_agent",
+                ],
+                "reason": "interaction_intent_has_structured_graph_citations",
+                "citation_count": len(graph_citations),
+                "selected_agents": selected_agents,
+                "original_intent": early_decision.intent.value,
+                "effective_intent": graph_intent.value,
+                "confidence_score": confidence_score,
+            },
+        )
+        _add_trace_step(
+            trace,
+            "final_response_builder",
+            details={
+                "schema_version": response_blocks.get("schema_version"),
+                "selected_agents": selected_agents,
+                "llm_answer_used": False,
+                "confidence_score": confidence_score,
+            },
+        )
+        warnings = ["Graph safety check found structured medication safety warnings."]
+        warnings.extend(early_decision.warnings)
+        warnings.append(format_medical_disclaimer())
+        return ChatResponse(
+            message=answer,
+            conversation_id=conversation,
+            agent_type=AgentType.SAFETY_MONITOR,
+            confidence=confidence_score,
+            sources=graph_citations[:5],
+            suggestions=self._suggestions(final_action.value),
+            warnings=list(dict.fromkeys(warnings)),
+            metadata={
+                "confidence": confidence_score,
+                "rag_action": final_action.value,
+                "intent": graph_intent.value,
+                "subtype": early_subtype,
+                "should_answer": True,
+                "retrieval_bypassed": True,
+                "retriever": "graph_fast_path",
+                "original_query": message,
+                "context_augmented_query": message,
+                "effective_query": message,
+                "entity_alignment": {
+                    "used": False,
+                    "skipped": True,
+                    "reason": "graph_fast_path_before_alignment",
+                },
+                "patient_context": {},
+                "semantic_rule_context": {
+                    "matched": False,
+                    "skipped": True,
+                    "reason": "interaction_intent_graph_fast_path",
+                },
+                "llm_intent_planner": planner_context,
+                "missing_context": [],
+                "clarification_questions": [],
+                "graph_safety": graph_result,
+                "selected_agents": selected_agents,
+                "agent_pipeline": _agent_pipeline(trace),
+                "llm_answer_enabled": self.llm_answer.enabled,
+                "llm_answer_used": False,
+                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                "response_blocks": response_blocks,
+                "context_provided": bool(context),
+            },
+        )
+
     async def _handle_graph_fast_path(
         self,
         message: str,
@@ -794,104 +906,11 @@ class SafeRagService:
                 _citations_from_graph_findings(graph_result.get("findings") or [])
             )
             if graph_result.get("should_warn") and graph_citations:
-                selected_agents = _selected_agents(
-                    graph_intent.value,
-                    graph_result,
-                    {"used": False, "skipped": True, "reason": "graph_fast_path_before_alignment"},
-                )
-                selected_agents = list(dict.fromkeys(selected_agents))
-                final_action = EvidenceAction.ALLOW_WITH_CAUTION
-                response_blocks = build_response_blocks(
-                    action=final_action.value,
-                    intent=graph_intent.value,
-                    graph_result=graph_result,
-                    citations=graph_citations[:5],
-                    selected_agents=selected_agents,
-                    subtype=early_subtype,
-                )
-                answer = format_response_blocks(response_blocks)
-                confidence_score = compute_confidence(
-                    action=final_action.value,
-                    intent=graph_intent.value,
-                    citations=_citation_dicts(graph_citations[:5]),
-                    graph_result=graph_result,
-                    reranker_top_score=_reranker_top_score_from_trace(trace),
-                    planner_confidence=planner_context.get("confidence"),
-                )
-                _add_trace_step(
-                    trace,
-                    "graph_fast_path_bypass_retrieval",
-                    details={
-                        "retrieval_bypassed": True,
-                        "preprocessing_bypassed": [
-                            "semantic_rule_mapper_agent",
-                            "patient_context_collector",
-                            "drug_name_alignment_agent",
-                        ],
-                        "reason": "interaction_intent_has_structured_graph_citations",
-                        "citation_count": len(graph_citations),
-                        "selected_agents": selected_agents,
-                        "original_intent": early_decision.intent.value,
-                        "effective_intent": graph_intent.value,
-                        "confidence_score": confidence_score,
-                    },
-                )
-                _add_trace_step(
-                    trace,
-                    "final_response_builder",
-                    details={
-                        "schema_version": response_blocks.get("schema_version"),
-                        "selected_agents": selected_agents,
-                        "llm_answer_used": False,
-                        "confidence_score": confidence_score,
-                    },
-                )
-                warnings = ["Graph safety check found structured medication safety warnings."]
-                warnings.extend(early_decision.warnings)
-                warnings.append(format_medical_disclaimer())
-                return ChatResponse(
-                    message=answer,
-                    conversation_id=conversation,
-                    agent_type=AgentType.SAFETY_MONITOR,
-                    confidence=confidence_score,
-                    sources=graph_citations[:5],
-                    suggestions=self._suggestions(final_action.value),
-                    warnings=list(dict.fromkeys(warnings)),
-                    metadata={
-                        "confidence": confidence_score,
-                        "rag_action": final_action.value,
-                        "intent": graph_intent.value,
-                        "subtype": early_subtype,
-                        "should_answer": True,
-                        "retrieval_bypassed": True,
-                        "retriever": "graph_fast_path",
-                        "original_query": message,
-                        "context_augmented_query": message,
-                        "effective_query": message,
-                        "entity_alignment": {
-                            "used": False,
-                            "skipped": True,
-                            "reason": "graph_fast_path_before_alignment",
-                        },
-                        "patient_context": {},
-                        "semantic_rule_context": {
-                            "matched": False,
-                            "skipped": True,
-                            "reason": "interaction_intent_graph_fast_path",
-                        },
-                        "llm_intent_planner": planner_context,
-                        "missing_context": [],
-                        "clarification_questions": [],
-                        "graph_safety": graph_result,
-                        "selected_agents": selected_agents,
-                        "agent_pipeline": _agent_pipeline(trace),
-                        "llm_answer_enabled": self.llm_answer.enabled,
-                        "llm_answer_used": False,
-                        "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
-                        "response_blocks": response_blocks,
-                        "context_provided": bool(context),
-                    },
-                )
+                return await self._handle_interaction_fast_path(
+                    message, conversation, graph_result, 
+                    graph_intent, graph_citations,
+                    early_decision, early_subtype,
+                    planner_context, trace, context)
 
         started_at = time.perf_counter()
         rule_context = self.rule_mapper.map(message)
