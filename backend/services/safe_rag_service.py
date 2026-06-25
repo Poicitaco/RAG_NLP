@@ -521,7 +521,7 @@ class SafeRagService:
             started_at=started_at,
         )
 
-        fast_path_context_assessment = self.patient_context.assess(
+        fast_path_context_assessment = await self.patient_context.assess_hybrid(
             message=message,
             intent="otc_recommendation" if rule_context.get("matched") else planned_intent,
             context=context,
@@ -1306,6 +1306,7 @@ class SafeRagService:
         if intent in {"recall", "counterfeit", "general_safety", "high_risk_context", "otc_recommendation"}:
             return AgentType.SAFETY_MONITOR
         return AgentType.DRUG_INFO
+
 
 
 _safe_rag_service: Optional[SafeRagService] = None

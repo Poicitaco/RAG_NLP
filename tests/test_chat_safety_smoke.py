@@ -1,3 +1,5 @@
+import pytest
+from unittest.mock import patch, AsyncMock
 from fastapi.testclient import TestClient
 
 from backend.main import app
@@ -5,6 +7,23 @@ from backend.main import app
 
 client = TestClient(app)
 
+
+@pytest.fixture(autouse=True)
+def mock_llm_calls():
+    async def fake_plan(*args, **kwargs): return {"intent": "otc_recommendation"}
+    async def fake_assess(*args, **kwargs):
+        from backend.services.query_ambiguity_service import AmbiguityAssessment
+        return AmbiguityAssessment(False, "clear", [], "")
+    async def fake_extract(*args, **kwargs): return {}
+    async def fake_rewrite(*args, **kwargs):
+        print("FAKE REWRITE CALLED!!!!")
+        return "Mocked LLM answer"
+
+    with patch("backend.services.llm_intent_planner_service.LLMIntentPlanner.plan", new=fake_plan), \
+         patch("backend.services.query_ambiguity_service.QueryAmbiguityService.assess", new=fake_assess), \
+         patch("backend.services.llm_patient_context_extractor.LLMPatientContextExtractor.extract", new=fake_extract), \
+         patch("backend.services.llm_answer_service.LLMAnswerService.rewrite", new=fake_rewrite):
+        yield
 
 def post_chat(message: str, session_id: str = "pytest-chat-smoke") -> dict:
     response = client.post(
