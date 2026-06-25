@@ -1,6 +1,7 @@
-"""Gemini-backed extraction of patient context from a user message."""
+"""Groq-backed extraction of patient context from a user message."""
 from __future__ import annotations
 
+import asyncio
 import json
 from typing import Any, Dict, Optional
 
@@ -38,40 +39,41 @@ class LLMPatientContextExtractor:
     }
 
     def __init__(self, api_key: Optional[str] = None, model_name: Optional[str] = None) -> None:
-        self.api_key = api_key if api_key is not None else settings.GEMINI_API_KEY
-        self.model_name = model_name or settings.GEMINI_MODEL
-        self.base_url = settings.GEMINI_BASE_URL.rstrip("/")
+        self.api_key = api_key if api_key is not None else settings.GROQ_API_KEY
+        self.model_name = model_name or "llama-3.1-8b-instant"
+        self.base_url = "https://api.groq.com/openai/v1"
         self.timeout = settings.LLM_TIMEOUT_SECONDS
 
     async def extract(self, message: str) -> Dict[str, Any]:
         if not self.api_key:
-            raise RuntimeError("GEMINI_API_KEY is not configured")
+            raise RuntimeError("GROQ_API_KEY is not configured")
 
         payload = {
-            "contents": [
+            "model": self.model_name,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": (
+                        "You extract patient context for a Vietnamese medication-safety assistant. "
+                        "Return only valid JSON matching the requested schema."
+                    ),
+                },
                 {
                     "role": "user",
-                    "parts": [{"text": self._build_prompt(message)}],
+                    "content": self._build_prompt(message),
                 }
             ],
-            "generationConfig": {
-                "temperature": 0,
-                "responseMimeType": "application/json",
-            },
+            "temperature": 0,
+            "response_format": {"type": "json_object"},
         }
-        url = f"{self.base_url}/v1beta/models/{self.model_name}:generateContent"
+        url = f"{self.base_url}/chat/completions"
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            response = await client.post(
-                url,
-                params={"key": self.api_key},
-                json=payload,
-            )
-            response.raise_for_status()
+            response = await self._post_with_retry(client, url, payload)
         data = response.json()
         text = self._extract_text(data)
         parsed = json.loads(text)
         if not isinstance(parsed, dict):
-            raise ValueError("Gemini patient context response must be a JSON object")
+            raise ValueError("Groq patient context response must be a JSON object")
         return self._normalize_result(parsed)
 
     def _build_prompt(self, message: str) -> str:
@@ -105,18 +107,43 @@ class LLMPatientContextExtractor:
 
     def _extract_text(self, data: Dict[str, Any]) -> str:
         try:
-            parts = data["candidates"][0]["content"]["parts"]
-            text = "".join(str(part.get("text", "")) for part in parts)
+            text = str(data["choices"][0]["message"]["content"])
         except (KeyError, IndexError, TypeError) as exc:
-            raise ValueError("Gemini response missing content text") from exc
+            raise ValueError("Groq response missing content text") from exc
         text = text.strip()
         if text.startswith("```"):
             text = text.strip("`").strip()
             if text.lower().startswith("json"):
                 text = text[4:].strip()
         if not text:
-            raise ValueError("Gemini response text is empty")
+            raise ValueError("Groq response text is empty")
         return text
+
+    async def _post_with_retry(
+        self,
+        client: httpx.AsyncClient,
+        url: str,
+        payload: Dict[str, Any],
+    ) -> httpx.Response:
+        last_response: Optional[httpx.Response] = None
+        for attempt in range(3):
+            response = await client.post(
+                url,
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+            )
+            if response.status_code != 429:
+                response.raise_for_status()
+                return response
+            last_response = response
+            if attempt < 2:
+                await asyncio.sleep(1)
+        assert last_response is not None
+        last_response.raise_for_status()
+        return last_response
 
     def _normalize_result(self, parsed: Dict[str, Any]) -> Dict[str, Any]:
         result = {key: parsed.get(key) for key in self.EXPECTED_KEYS}
