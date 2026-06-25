@@ -28,6 +28,18 @@ def __getattr__(name):
     if name == "ChatHistoryService":
         from .chat_history_service import ChatHistoryService
         return ChatHistoryService
+    if name == "llm_patient_context_extractor":
+        from . import llm_patient_context_extractor
+        return llm_patient_context_extractor
+    if name == "llm_answer_service":
+        from . import llm_answer_service
+        return llm_answer_service
+    if name == "llm_intent_planner_service":
+        from . import llm_intent_planner_service
+        return llm_intent_planner_service
+    if name == "query_ambiguity_service":
+        from . import query_ambiguity_service
+        return query_ambiguity_service
     raise AttributeError(name)
 
 

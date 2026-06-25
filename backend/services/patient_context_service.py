@@ -8,11 +8,14 @@ for the missing parts that matter for the current question.
 """
 from __future__ import annotations
 
+import asyncio
 import re
 import unicodedata
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
+from backend.services.llm_patient_context_extractor import LLMPatientContextExtractor
+from backend.services.patient_context_merger import merge_patient_context
 
 CONDITION_TERMS = {
     "diabetes": ["tieu duong", "dai thao duong", "duong huyet"],
@@ -72,6 +75,9 @@ ADVICE_TERMS = [
     "thuoc bo",
     "canxi",
     "sat",
+    "dau rang",
+    "nho rang",
+    "rang sau",
 ]
 SYMPTOM_TERMS = [
     "cam",
@@ -92,6 +98,9 @@ SYMPTOM_TERMS = [
     "ngua",
     "dau bung",
     "dau dau",
+    "dau rang",
+    "nho rang",
+    "rang sau",
 ]
 VAGUE_SYMPTOMS = [
     "yeu",
@@ -100,6 +109,16 @@ VAGUE_SYMPTOMS = [
     "suy nhuoc",
     "yeu qua",
     "met moi",
+]
+DENTAL_TERMS = [
+    "dau rang",
+    "nhuc rang",
+    "nho rang",
+    "moi nho rang",
+    "rang sau",
+    "viem loi",
+    "sung loi",
+    "chay mau rang",
 ]
 DOSAGE_TERMS = [
     "lieu",
@@ -191,11 +210,23 @@ def normalize_text(text: str) -> str:
 
 
 def contains_any(normalized: str, terms: List[str]) -> bool:
-    return any(term in normalized for term in terms)
+    padded = f" {normalized} "
+    for term in terms:
+        normalized_term = normalize_text(term)
+        if not normalized_term:
+            continue
+        if re.search(r"(?<![a-z0-9])" + re.escape(normalized_term) + r"(?![a-z0-9])", normalized):
+            return True
+        if len(normalized_term) >= 4 and f" {normalized_term} " in padded:
+            return True
+    return False
 
 
 class PatientContextService:
     """Ask for missing patient context when a medication answer is unsafe."""
+
+    def __init__(self, llm_extractor: Optional[Any] = None) -> None:
+        self.llm_extractor = llm_extractor or LLMPatientContextExtractor()
 
     def assess(
         self,
@@ -218,6 +249,58 @@ class PatientContextService:
         return ContextAssessment(
             should_ask=should_ask,
             patient_context=provided,
+            missing_context=missing,
+            questions=questions,
+            reason=reason,
+            risk_flags=risk_flags,
+        )
+
+    async def assess_hybrid(
+        self,
+        message: str,
+        intent: str,
+        context: Optional[Dict[str, Any]] = None,
+        llm_timeout_seconds: float = 2.0,
+    ) -> ContextAssessment:
+        keyword_task = asyncio.to_thread(self.assess, message, intent, context)
+        llm_task = asyncio.wait_for(self.llm_extractor.extract(message), timeout=llm_timeout_seconds)
+        keyword_result, llm_result = await asyncio.gather(
+            keyword_task,
+            llm_task,
+            return_exceptions=True,
+        )
+        if isinstance(keyword_result, Exception):
+            raise keyword_result
+        if isinstance(llm_result, Exception):
+            llm_result = None
+
+        merged = merge_patient_context(keyword_result, llm_result)
+        normalized = normalize_text(message)
+        merged_context = merged.get("patient_context") or {}
+        effective_intent = str(merged.get("intent") or intent)
+        risk_flags = self._risk_flags(normalized, effective_intent)
+        for flag in merged.get("risk_flags") or []:
+            if flag not in risk_flags:
+                risk_flags.append(flag)
+
+        required = self._required_fields(normalized, effective_intent, merged_context, risk_flags)
+        missing = [field for field in required if self._field_missing(field, merged_context)]
+        for field in merged.get("missing_context") or []:
+            if field and field not in missing:
+                missing.append(str(field))
+
+        questions = self._questions_for_missing(missing, merged_context, risk_flags, normalized)
+        should_ask = bool(questions)
+        reason = "missing_patient_context_for_safe_medication_advice" if should_ask else ""
+        if merged.get("uncertain"):
+            reason = "uncertain_patient_context_requires_confirmation"
+            should_ask = True
+            if not questions:
+                questions = ["Bạn xác nhận lại giúp mình các thông tin an toàn còn chưa rõ trước khi tư vấn thuốc nhé?"]
+
+        return ContextAssessment(
+            should_ask=should_ask,
+            patient_context=merged_context,
             missing_context=missing,
             questions=questions,
             reason=reason,
@@ -263,9 +346,17 @@ class PatientContextService:
         weight = self._extract_weight(normalized)
         if weight is not None:
             patient_context["weight_kg"] = weight
-        if contains_any(normalized, ["cho con bu"]):
+        not_pregnant = contains_any(normalized, ["khong mang thai", "khong co thai", "khong bau"])
+        not_breastfeeding = contains_any(normalized, ["khong cho con bu"])
+        if not_breastfeeding:
+            patient_context["breastfeeding"] = False
+            patient_context["pregnancy_breastfeeding_confirmed"] = True
+        elif contains_any(normalized, ["cho con bu"]):
             patient_context["breastfeeding"] = True
-        if contains_any(normalized, ["mang thai", "co thai", "bau"]):
+        if not_pregnant:
+            patient_context["pregnant"] = False
+            patient_context["pregnancy_breastfeeding_confirmed"] = True
+        elif contains_any(normalized, ["mang thai", "co thai", "bau"]):
             patient_context["pregnant"] = True
         pregnancy_month = self._extract_pregnancy_month(normalized)
         if pregnancy_month is not None:
@@ -281,12 +372,28 @@ class PatientContextService:
             or "khong co benh man tinh" in normalized
         ):
             patient_context["conditions_confirmed"] = True
-        if "khong di ung" in normalized or "khong co di ung" in normalized:
+        negative_none = any(
+            marker in normalized
+            for marker in [
+                "khong co gi",
+                "khong co van de gi",
+                "khong bi gi",
+                "khong dung gi",
+                "khong su dung gi",
+            ]
+        )
+        if negative_none:
+            patient_context["conditions_confirmed"] = True
+            patient_context["allergies_confirmed"] = True
+            patient_context["current_medications_confirmed"] = True
+        if "khong di ung" in normalized or "khong co di ung" in normalized or "khong di ung gi" in normalized:
             patient_context["allergies_confirmed"] = True
         if (
             "khong dang dung thuoc" in normalized
             or "khong dung thuoc" in normalized
             or "khong dung thuoc khac" in normalized
+            or "khong dung gi" in normalized
+            or "khong su dung gi" in normalized
         ):
             patient_context["current_medications_confirmed"] = True
 
@@ -311,7 +418,14 @@ class PatientContextService:
         if contains_any(normalized, ADVICE_TERMS) or intent == "otc_recommendation":
             flags.append("otc_recommendation")
 
-        vague_matched = [term for term in VAGUE_SYMPTOMS if re.search(r"\b" + term + r"\b", normalized)]
+        dental_context = contains_any(normalized, DENTAL_TERMS)
+        vague_matched = [
+            term
+            for term in VAGUE_SYMPTOMS
+            if re.search(r"\b" + term + r"\b", normalized)
+        ]
+        if dental_context:
+            vague_matched = [term for term in vague_matched if term != "dau"]
         if vague_matched:
             flags.append("vague_symptom")
 
@@ -390,12 +504,15 @@ class PatientContextService:
         questions = []
         subject_label = self._subject_label(normalized)
         pregnancy_month = patient_context.get("pregnancy_month")
+        only_missing_med_allergy = bool(missing) and set(missing).issubset(
+            {"current_medications_confirmed", "allergies_confirmed"}
+        )
         if patient_context.get("pregnant") is True and pregnancy_month is not None and missing:
             questions.append(
                 f"Dạ, em ghi nhận mình đang mang thai tháng {pregnancy_month}. "
                 "Bạn cho em biết rõ triệu chứng hiện tại là gì, đã kéo dài bao lâu, và hiện đang dùng thuốc/vitamin hay có dị ứng thuốc nào không ạ?"
             )
-        if missing and subject_label:
+        if missing and subject_label and not only_missing_med_allergy:
             questions.append(
                 "Dạ, em thấy mình đang muốn tìm hiểu về "
                 f"{subject_label}. Để em tư vấn loại phù hợp và an toàn nhất, "
@@ -411,7 +528,7 @@ class PatientContextService:
             questions.append("Cân nặng khoảng bao nhiêu kg? Thông tin này rất quan trọng nếu là trẻ em hoặc hỏi liều.")
 
         missing_safety = [field for field in missing if field in {"conditions_confirmed", "current_medications_confirmed", "allergies_confirmed"}]
-        if missing_safety:
+        if "conditions_confirmed" in missing_safety:
             known_conditions = patient_context.get("conditions") or []
             if known_conditions:
                 readable_conditions = [LABEL_MAPPING.get(item, CONDITION_LABELS.get(item, item)) for item in known_conditions]
@@ -422,7 +539,12 @@ class PatientContextService:
                 )
             else:
                 questions.append("Bạn có bệnh nền nào như gan, thận, tim mạch, huyết áp, tiểu đường, dạ dày hoặc hen/suyễn không?")
-            questions.append("Bạn đang dùng thuốc điều trị nào khác hoặc từng dị ứng thuốc nào không?")
+        if "current_medications_confirmed" in missing_safety and "allergies_confirmed" in missing_safety:
+            questions.append("Bạn có đang dùng thuốc điều trị, thực phẩm chức năng, thuốc nào khác hoặc từng dị ứng thuốc nào không?")
+        elif "current_medications_confirmed" in missing_safety:
+            questions.append("Bạn có đang dùng thuốc điều trị, thực phẩm chức năng hoặc thuốc nào khác không?")
+        elif "allergies_confirmed" in missing_safety:
+            questions.append("Bạn có từng dị ứng với thuốc nào không?")
 
         if "pregnancy_breastfeeding_confirmed" in missing:
             questions.append("Bạn có đang mang thai hoặc cho con bú không?")
@@ -461,6 +583,7 @@ class PatientContextService:
         symptom_labels = [
             (["tieu chay", "di ngoai", "ia", "buon ia", "tao thao", "dau bung di ngoai"], "đi ngoài / tiêu chảy"),
             (["cam", "cum", "nghet mui", "so mui"], "cảm cúm / nghẹt mũi"),
+            (["dau rang", "nhuc rang", "nho rang", "moi nho rang", "rang sau"], "đau răng / sau nhổ răng"),
             (["ho", "ho khan", "ho dom"], "ho"),
             (["sot", "ha sot"], "sốt / hạ sốt"),
             (["dau bung", "quan bung"], "đau bụng"),
@@ -500,14 +623,17 @@ class PatientContextService:
         patterns = [
             r"(?:mang thai|co thai|bau)\s*(?:thang\s*thu\s*)?(\d{1,2})\s*thang",
             r"thang\s*thu\s*(\d{1,2})",
+            r"(?:mang thai|co thai|bau)(?:\W+\w+){0,10}\W+(?:thang\s*(?:thu\s*)?(\d{1,2})|(\d{1,2})\s*thang)",
         ]
         for pattern in patterns:
             match = re.search(pattern, normalized)
             if not match:
                 continue
-            month = int(match.group(1))
-            if 1 <= month <= 10:
-                return month
+            val_str = next((g for g in match.groups() if g is not None), None)
+            if val_str:
+                month = int(val_str)
+                if 1 <= month <= 10:
+                    return month
         return None
 
     def _extract_weight(self, normalized: str) -> Optional[float]:
