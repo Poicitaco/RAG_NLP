@@ -483,6 +483,220 @@ class SafeRagService:
             },
     )
 
+    async def _handle_rag_full_pipeline(
+        self,
+        message: str,
+        conversation: str,
+        effective_message: str,
+        context_message: str,
+        context_assessment: Any,
+        rule_context: Dict[str, Any],
+        alignment: Any,
+        graph_result: Dict[str, Any],
+        planner_context: Dict[str, Any],
+        planned_intent: str,
+        early_decision: Any,
+        early_subtype: str,
+        trace: List[Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ChatResponse:
+        started_at = time.perf_counter()
+        retrieved_results = self.retrieve(effective_message, rule_context=rule_context)
+        results = retrieved_results
+        _add_trace_step(
+            trace,
+            "hybrid_rag_retrieval_agent",
+            details={
+                "retrieved_count": len(results),
+                "retriever": "hybrid_bm25_chroma_priority",
+                "matrix_rule_id": rule_context.get("rule_id"),
+                "matrix_retrieval_query": rule_context.get("retrieval_query"),
+                "chroma_dir": str(self.chroma_dir),
+            },
+            started_at=started_at,
+        )
+
+        started_at = time.perf_counter()
+        results = self.reranker.rerank(effective_message, results)
+        if _is_indication_question(effective_message):
+            merged_by_id = {str(row.get("id") or index): row for index, row in enumerate(results)}
+            for row in retrieved_results:
+                if _is_indication_row(row):
+                    merged_by_id.setdefault(str(row.get("id") or len(merged_by_id)), row)
+            results = _apply_indication_retrieval_policy(effective_message, list(merged_by_id.values()))[:20]
+        _add_trace_step(
+            trace,
+            "reranker_agent",
+            details={
+                "reranked_count": self.reranker.last_reranked_count,
+                "top_score": self.reranker.last_top_score,
+                "fallback_used": self.reranker.fallback_used,
+            },
+            started_at=started_at,
+        )
+
+        started_at = time.perf_counter()
+        try:
+            decision_intent = QuestionIntent(planned_intent)
+        except ValueError:
+            decision_intent = early_decision.intent
+        decision = evaluate_evidence(effective_message, decision_intent, results)
+        decision_subtype = _decision_subtype(decision)
+        if _is_indication_question(effective_message):
+            decision_subtype = "indication"
+        _add_trace_step(
+            trace,
+            "evidence_guardrail_agent",
+            details={
+                "action": decision.action.value,
+                "intent": decision.intent.value,
+                "subtype": decision_subtype,
+                "planned_intent": planned_intent,
+                "should_answer": decision.should_answer,
+                "usable_sources": decision.usable_sources,
+                "blocked_sources": decision.blocked_sources,
+            },
+            started_at=started_at,
+        )
+        ranked = _rank_for_answer(effective_message, results)
+        answer_rows = _select_answer_rows(graph_result, ranked)
+        citations = [_citation_from_row(index, row) for index, row in enumerate(answer_rows[:5], 1)]
+        public_answer_rows = answer_rows
+        public_citations = citations
+        if decision.action in {EvidenceAction.HANDOFF, EvidenceAction.INSUFFICIENT_EVIDENCE}:
+            public_answer_rows = []
+            public_citations = []
+        graph_overrode_rag = bool(graph_result.get("should_warn"))
+        if graph_result.get("should_warn"):
+            graph_citations = _citations_from_graph_findings(graph_result.get("findings") or [])
+            if graph_citations:
+                public_citations = graph_citations
+        if not public_citations:
+            public_citations = _baseline_safety_citations(decision.action.value, decision_subtype)
+        public_citations = _renumber_citations(public_citations)
+
+        if decision.action in {EvidenceAction.HANDOFF, EvidenceAction.INSUFFICIENT_EVIDENCE}:
+            answer = self._handoff_message(decision.message, public_citations)
+            agent_type = AgentType.SAFETY_MONITOR
+        else:
+            answer = self._allowed_answer(decision.action, answer_rows[:3], citations[:3])
+            agent_type = self._agent_type(decision.intent.value)
+
+        graph_warning = format_graph_warning(graph_result["findings"])
+        if graph_warning:
+            answer = graph_warning + "\n\n" + answer
+            agent_type = AgentType.SAFETY_MONITOR
+        final_action = decision.action
+        if graph_result["should_warn"] and final_action in {
+            EvidenceAction.ALLOW,
+            EvidenceAction.HANDOFF,
+            EvidenceAction.INSUFFICIENT_EVIDENCE,
+        }:
+            final_action = EvidenceAction.ALLOW_WITH_CAUTION
+        _add_trace_step(
+            trace,
+            "graph_rag_join_node",
+            details={
+                "graph_overrode_rag": graph_overrode_rag,
+                "answer_rows": len(public_answer_rows[:5]),
+                "citation_count": len(public_citations),
+            },
+        )
+
+        deterministic_answer = answer
+        response_subtype = "indication" if _is_indication_question(effective_message) else decision_subtype
+        selected_agents = _selected_agents(decision.intent.value, graph_result, alignment)
+        if rule_context.get("matched"):
+            selected_agents.insert(1, "semantic_rule_mapper_agent")
+        if context_assessment.risk_flags:
+            selected_agents.insert(1, "patient_context_collector")
+            selected_agents = list(dict.fromkeys(selected_agents))
+        response_blocks = build_response_blocks(
+            action=final_action.value,
+            intent=decision.intent.value,
+            graph_result=graph_result,
+            citations=public_citations[:5],
+            selected_agents=selected_agents,
+            subtype=response_subtype,
+            snippets=public_answer_rows[:5] if public_answer_rows else None,
+        )
+        answer = format_response_blocks(response_blocks)
+        llm_answer = await self.llm_answer.rewrite(
+            question=effective_message,
+            deterministic_answer=answer,
+            graph_safety=graph_result,
+            snippets=public_answer_rows[:5],
+            citations=public_citations[:5],
+            patient_context=context_assessment.patient_context,
+        )
+        if llm_answer:
+            answer = llm_answer
+
+        confidence_score = compute_confidence(
+            action=final_action.value,
+            intent=decision.intent.value,
+            citations=_citation_dicts(public_citations),
+            graph_result=graph_result,
+            reranker_top_score=_reranker_top_score_from_trace(trace),
+            planner_confidence=planner_context.get("confidence"),
+        )
+        _add_trace_step(
+            trace,
+            "final_response_builder",
+            details={
+                "schema_version": response_blocks.get("schema_version"),
+                "selected_agents": selected_agents,
+                "llm_answer_used": bool(llm_answer),
+                "confidence_score": confidence_score,
+            },
+        )
+
+        warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
+        if context_assessment.should_ask:
+            warnings.extend(context_assessment.questions)
+        if graph_result["should_warn"]:
+            warnings.insert(0, "Graph safety check found structured medication safety warnings.")
+        suggestions = self._suggestions(decision.action.value)
+
+        return ChatResponse(
+            message=answer,
+            conversation_id=conversation,
+            agent_type=agent_type,
+            confidence=confidence_score,
+            sources=public_citations,
+            suggestions=suggestions,
+            warnings=warnings,
+            metadata={
+                "confidence": confidence_score,
+                "rag_action": final_action.value,
+                "intent": decision.intent.value,
+                "subtype": decision_subtype,
+                "should_answer": decision.should_answer,
+                "usable_sources": decision.usable_sources,
+                "blocked_sources": decision.blocked_sources,
+                "retrieved_count": len(results),
+                "retriever": "hybrid_bm25_chroma_priority",
+                "original_query": message,
+                "context_augmented_query": context_message,
+                "effective_query": effective_message,
+                "entity_alignment": alignment,
+                    "patient_context": context_assessment.patient_context,
+                    "semantic_rule_context": rule_context,
+                    "llm_intent_planner": planner_context,
+                    "missing_context": context_assessment.missing_context,
+                "clarification_questions": context_assessment.questions,
+                "graph_safety": graph_result,
+                "selected_agents": selected_agents,
+                "agent_pipeline": _agent_pipeline(trace, graph_overrode_rag=graph_overrode_rag),
+                "llm_answer_enabled": self.llm_answer.enabled,
+                "llm_answer_used": bool(llm_answer),
+                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                "deterministic_answer": deterministic_answer,
+                "response_blocks": response_blocks,
+                "context_provided": bool(context),
+            },
+        )
+
     async def answer(
         self,
         message: str,
@@ -1076,201 +1290,9 @@ class SafeRagService:
         if graph_result.get("should_warn") and graph_citations:
             return await self._handle_graph_fast_path(message, conversation, effective_message, context_message, context_assessment, rule_context, alignment, graph_result, planner_context, planned_intent, early_decision, early_subtype, trace, context)
 
-        started_at = time.perf_counter()
-        retrieved_results = self.retrieve(effective_message, rule_context=rule_context)
-        results = retrieved_results
-        _add_trace_step(
-            trace,
-            "hybrid_rag_retrieval_agent",
-            details={
-                "retrieved_count": len(results),
-                "retriever": "hybrid_bm25_chroma_priority",
-                "matrix_rule_id": rule_context.get("rule_id"),
-                "matrix_retrieval_query": rule_context.get("retrieval_query"),
-                "chroma_dir": str(self.chroma_dir),
-            },
-            started_at=started_at,
-        )
-
-        started_at = time.perf_counter()
-        results = self.reranker.rerank(effective_message, results)
-        if _is_indication_question(effective_message):
-            merged_by_id = {str(row.get("id") or index): row for index, row in enumerate(results)}
-            for row in retrieved_results:
-                if _is_indication_row(row):
-                    merged_by_id.setdefault(str(row.get("id") or len(merged_by_id)), row)
-            results = _apply_indication_retrieval_policy(effective_message, list(merged_by_id.values()))[:20]
-        _add_trace_step(
-            trace,
-            "reranker_agent",
-            details={
-                "reranked_count": self.reranker.last_reranked_count,
-                "top_score": self.reranker.last_top_score,
-                "fallback_used": self.reranker.fallback_used,
-            },
-            started_at=started_at,
-        )
-
-        started_at = time.perf_counter()
-        try:
-            decision_intent = QuestionIntent(planned_intent)
-        except ValueError:
-            decision_intent = early_decision.intent
-        decision = evaluate_evidence(effective_message, decision_intent, results)
-        decision_subtype = _decision_subtype(decision)
-        if _is_indication_question(effective_message):
-            decision_subtype = "indication"
-        _add_trace_step(
-            trace,
-            "evidence_guardrail_agent",
-            details={
-                "action": decision.action.value,
-                "intent": decision.intent.value,
-                "subtype": decision_subtype,
-                "planned_intent": planned_intent,
-                "should_answer": decision.should_answer,
-                "usable_sources": decision.usable_sources,
-                "blocked_sources": decision.blocked_sources,
-            },
-            started_at=started_at,
-        )
-        ranked = _rank_for_answer(effective_message, results)
-        answer_rows = _select_answer_rows(graph_result, ranked)
-        citations = [_citation_from_row(index, row) for index, row in enumerate(answer_rows[:5], 1)]
-        public_answer_rows = answer_rows
-        public_citations = citations
-        if decision.action in {EvidenceAction.HANDOFF, EvidenceAction.INSUFFICIENT_EVIDENCE}:
-            public_answer_rows = []
-            public_citations = []
-        graph_overrode_rag = bool(graph_result.get("should_warn"))
-        if graph_result.get("should_warn"):
-            graph_citations = _citations_from_graph_findings(graph_result.get("findings") or [])
-            if graph_citations:
-                public_citations = graph_citations
-        if not public_citations:
-            public_citations = _baseline_safety_citations(decision.action.value, decision_subtype)
-        public_citations = _renumber_citations(public_citations)
-
-        if decision.action in {EvidenceAction.HANDOFF, EvidenceAction.INSUFFICIENT_EVIDENCE}:
-            answer = self._handoff_message(decision.message, public_citations)
-            agent_type = AgentType.SAFETY_MONITOR
-        else:
-            answer = self._allowed_answer(decision.action, answer_rows[:3], citations[:3])
-            agent_type = self._agent_type(decision.intent.value)
-
-        graph_warning = format_graph_warning(graph_result["findings"])
-        if graph_warning:
-            answer = graph_warning + "\n\n" + answer
-            agent_type = AgentType.SAFETY_MONITOR
-        final_action = decision.action
-        if graph_result["should_warn"] and final_action in {
-            EvidenceAction.ALLOW,
-            EvidenceAction.HANDOFF,
-            EvidenceAction.INSUFFICIENT_EVIDENCE,
-        }:
-            final_action = EvidenceAction.ALLOW_WITH_CAUTION
-        _add_trace_step(
-            trace,
-            "graph_rag_join_node",
-            details={
-                "graph_overrode_rag": graph_overrode_rag,
-                "answer_rows": len(public_answer_rows[:5]),
-                "citation_count": len(public_citations),
-            },
-        )
-
-        deterministic_answer = answer
-        response_subtype = "indication" if _is_indication_question(effective_message) else decision_subtype
-        selected_agents = _selected_agents(decision.intent.value, graph_result, alignment)
-        if rule_context.get("matched"):
-            selected_agents.insert(1, "semantic_rule_mapper_agent")
-        if context_assessment.risk_flags:
-            selected_agents.insert(1, "patient_context_collector")
-            selected_agents = list(dict.fromkeys(selected_agents))
-        response_blocks = build_response_blocks(
-            action=final_action.value,
-            intent=decision.intent.value,
-            graph_result=graph_result,
-            citations=public_citations[:5],
-            selected_agents=selected_agents,
-            subtype=response_subtype,
-            snippets=public_answer_rows[:5] if public_answer_rows else None,
-        )
-        answer = format_response_blocks(response_blocks)
-        llm_answer = await self.llm_answer.rewrite(
-            question=effective_message,
-            deterministic_answer=answer,
-            graph_safety=graph_result,
-            snippets=public_answer_rows[:5],
-            citations=public_citations[:5],
-            patient_context=context_assessment.patient_context,
-        )
-        if llm_answer:
-            answer = llm_answer
-
-        confidence_score = compute_confidence(
-            action=final_action.value,
-            intent=decision.intent.value,
-            citations=_citation_dicts(public_citations),
-            graph_result=graph_result,
-            reranker_top_score=_reranker_top_score_from_trace(trace),
-            planner_confidence=planner_context.get("confidence"),
-        )
-        _add_trace_step(
-            trace,
-            "final_response_builder",
-            details={
-                "schema_version": response_blocks.get("schema_version"),
-                "selected_agents": selected_agents,
-                "llm_answer_used": bool(llm_answer),
-                "confidence_score": confidence_score,
-            },
-        )
-
-        warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
-        if context_assessment.should_ask:
-            warnings.extend(context_assessment.questions)
-        if graph_result["should_warn"]:
-            warnings.insert(0, "Graph safety check found structured medication safety warnings.")
-        suggestions = self._suggestions(decision.action.value)
-
-        return ChatResponse(
-            message=answer,
-            conversation_id=conversation,
-            agent_type=agent_type,
-            confidence=confidence_score,
-            sources=public_citations,
-            suggestions=suggestions,
-            warnings=warnings,
-            metadata={
-                "confidence": confidence_score,
-                "rag_action": final_action.value,
-                "intent": decision.intent.value,
-                "subtype": decision_subtype,
-                "should_answer": decision.should_answer,
-                "usable_sources": decision.usable_sources,
-                "blocked_sources": decision.blocked_sources,
-                "retrieved_count": len(results),
-                "retriever": "hybrid_bm25_chroma_priority",
-                "original_query": message,
-                "context_augmented_query": context_message,
-                "effective_query": effective_message,
-                "entity_alignment": alignment,
-                    "patient_context": context_assessment.patient_context,
-                    "semantic_rule_context": rule_context,
-                    "llm_intent_planner": planner_context,
-                    "missing_context": context_assessment.missing_context,
-                "clarification_questions": context_assessment.questions,
-                "graph_safety": graph_result,
-                "selected_agents": selected_agents,
-                "agent_pipeline": _agent_pipeline(trace, graph_overrode_rag=graph_overrode_rag),
-                "llm_answer_enabled": self.llm_answer.enabled,
-                "llm_answer_used": bool(llm_answer),
-                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
-                "deterministic_answer": deterministic_answer,
-                "response_blocks": response_blocks,
-                "context_provided": bool(context),
-            },
+        return await self._handle_rag_full_pipeline(
+            message, conversation, effective_message, context_message, context_assessment,
+            rule_context, alignment, graph_result, planner_context, planned_intent, early_decision, early_subtype, trace, context
         )
 
     def _allowed_answer(
