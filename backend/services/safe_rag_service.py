@@ -273,6 +273,106 @@ class SafeRagService:
             },
         )
 
+    async def _handle_clarification(
+        self,
+        message: str,
+        conversation: str,
+        context_assessment: Any,
+        rule_context: Dict[str, Any],
+        planner_context: Dict[str, Any],
+        planned_intent: str,
+        early_decision: Any,
+        early_subtype: str,
+        trace: List[Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ChatResponse:
+        selected_agents = list(
+            dict.fromkeys(
+                [
+                    "triage_risk_agent",
+                    "llm_intent_planner",
+                    "semantic_rule_mapper_agent",
+                    "patient_context_collector",
+                    "safety_monitor_agent",
+                    "final_response_builder",
+                ]
+            )
+        )
+        bypass_citations = _baseline_safety_citations("needs_clarification", early_subtype)
+        response_blocks = _clarification_response_blocks(
+            intent=early_decision.intent.value,
+            questions=context_assessment.questions,
+            selected_agents=selected_agents,
+            reason=context_assessment.reason,
+        )
+        response_blocks = _with_citation_block_sources(response_blocks, bypass_citations)
+        confidence_score = compute_confidence(
+            action="needs_clarification",
+            intent=early_decision.intent.value,
+            citations=_citation_dicts(bypass_citations),
+            graph_result={},
+            reranker_top_score=_reranker_top_score_from_trace(trace),
+            planner_confidence=planner_context.get("confidence"),
+        )
+        _add_trace_step(
+            trace,
+            "clarification_bypass",
+            details={
+                "retrieval_bypassed": True,
+                "selected_agents": selected_agents,
+                "question_count": len(context_assessment.questions),
+                "confidence_score": confidence_score,
+            },
+        )
+        _add_trace_step(
+            trace,
+            "final_response_builder",
+            details={
+                "schema_version": response_blocks.get("schema_version"),
+                "selected_agents": selected_agents,
+                "llm_answer_used": False,
+                "confidence_score": confidence_score,
+            },
+        )
+        final_answer = format_response_blocks(response_blocks)
+
+        return ChatResponse(
+            message=final_answer,
+            conversation_id=conversation,
+            agent_type=AgentType.SAFETY_MONITOR,
+            confidence=confidence_score,
+            sources=bypass_citations,
+            warnings=[
+                "Patient context is required before giving medication advice.",
+                format_medical_disclaimer(),
+            ],
+            suggestions=context_assessment.questions,
+            metadata={
+                "confidence": confidence_score,
+                "rag_action": "needs_clarification",
+                "intent": early_decision.intent.value,
+                "planned_intent": planned_intent,
+                "subtype": early_subtype,
+                "original_query": message,
+                "retrieval_bypassed": True,
+                "should_answer": False,
+                "patient_context": context_assessment.patient_context,
+                "semantic_rule_context": rule_context,
+                "llm_intent_planner": planner_context,
+                "missing_context": context_assessment.missing_context,
+                "clarification_questions": context_assessment.questions,
+                "selected_agents": selected_agents,
+                "agent_pipeline": _agent_pipeline(trace),
+                "llm_answer_enabled": self.llm_answer.enabled,
+                "llm_answer_used": False,
+                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                "llm_planner_enabled": self.intent_planner.enabled,
+                "llm_planner_used": bool(planner_context.get("used")),
+                "response_blocks": response_blocks,
+                "context_provided": bool(context),
+            },
+        )
+
     async def answer(
         self,
         message: str,
@@ -668,92 +768,7 @@ class SafeRagService:
             started_at=started_at,
         )
         if context_assessment.should_ask:
-            selected_agents = list(
-                dict.fromkeys(
-                    [
-                        "triage_risk_agent",
-                        "llm_intent_planner",
-                        "semantic_rule_mapper_agent",
-                        "patient_context_collector",
-                        "safety_monitor_agent",
-                        "final_response_builder",
-                    ]
-                )
-            )
-            bypass_citations = _baseline_safety_citations("needs_clarification", early_subtype)
-            response_blocks = _clarification_response_blocks(
-                intent=early_decision.intent.value,
-                questions=context_assessment.questions,
-                selected_agents=selected_agents,
-                reason=context_assessment.reason,
-            )
-            response_blocks = _with_citation_block_sources(response_blocks, bypass_citations)
-            confidence_score = compute_confidence(
-                action="needs_clarification",
-                intent=early_decision.intent.value,
-                citations=_citation_dicts(bypass_citations),
-                graph_result={},
-                reranker_top_score=_reranker_top_score_from_trace(trace),
-                planner_confidence=planner_context.get("confidence"),
-            )
-            _add_trace_step(
-                trace,
-                "clarification_bypass",
-                details={
-                    "retrieval_bypassed": True,
-                    "selected_agents": selected_agents,
-                    "question_count": len(context_assessment.questions),
-                    "confidence_score": confidence_score,
-                },
-            )
-            _add_trace_step(
-                trace,
-                "final_response_builder",
-                details={
-                    "schema_version": response_blocks.get("schema_version"),
-                    "selected_agents": selected_agents,
-                    "llm_answer_used": False,
-                    "confidence_score": confidence_score,
-                },
-            )
-            final_answer = format_response_blocks(response_blocks)
-
-            return ChatResponse(
-                message=final_answer,
-                conversation_id=conversation,
-                agent_type=AgentType.SAFETY_MONITOR,
-                confidence=confidence_score,
-                sources=bypass_citations,
-                warnings=[
-                    "Patient context is required before giving medication advice.",
-                    format_medical_disclaimer(),
-                ],
-                suggestions=context_assessment.questions,
-                metadata={
-                    "confidence": confidence_score,
-                    "rag_action": "needs_clarification",
-                    "intent": early_decision.intent.value,
-                    "planned_intent": planned_intent,
-                    "subtype": early_subtype,
-                    "original_query": message,
-                    "retrieval_bypassed": True,
-                    "should_answer": False,
-                    "patient_context": context_assessment.patient_context,
-                    "semantic_rule_context": rule_context,
-                    "llm_intent_planner": planner_context,
-                    "missing_context": context_assessment.missing_context,
-                    "clarification_questions": context_assessment.questions,
-                    "selected_agents": selected_agents,
-                    "agent_pipeline": _agent_pipeline(trace),
-                    "llm_answer_enabled": self.llm_answer.enabled,
-                    "llm_answer_used": False,
-                    "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
-                    "llm_planner_enabled": self.intent_planner.enabled,
-                    "llm_planner_used": bool(planner_context.get("used")),
-                    "response_blocks": response_blocks,
-                    "context_provided": bool(context),
-                },
-            )
+            return await self._handle_clarification(message, conversation, context_assessment, rule_context, planner_context, planned_intent, early_decision, early_subtype, trace, context)
 #         if context_assessment.should_ask:
 #             selected_agents = list(
 #                 dict.fromkeys(
