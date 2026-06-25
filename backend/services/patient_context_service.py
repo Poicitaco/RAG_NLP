@@ -12,174 +12,43 @@ import asyncio
 import re
 import unicodedata
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+import yaml
 
 from backend.services.llm_patient_context_extractor import LLMPatientContextExtractor
 from backend.services.patient_context_merger import merge_patient_context
 
-CONDITION_TERMS = {
-    "diabetes": ["tieu duong", "dai thao duong", "duong huyet"],
-    "hypertension": ["huyet ap", "cao huyet ap", "tang huyet ap"],
-    "heart_disease": ["tim mach", "benh tim", "suy tim", "dau nguc"],
-    "liver_disease": ["suy gan", "benh gan", "vang da", "vang mat"],
-    "kidney_disease": ["suy than", "benh than", "hong than"],
-    "stomach_ulcer": ["dau bao tu", "viem loet da day", "loet da day"],
-    "asthma": ["hen", "suyen", "kho tho"],
-}
 
-CONDITION_LABELS = {
-    "diabetes": "tiểu đường",
-    "hypertension": "tăng huyết áp",
-    "heart_disease": "bệnh tim mạch",
-    "liver_disease": "bệnh gan",
-    "kidney_disease": "bệnh thận/suy thận",
-    "stomach_ulcer": "đau hoặc loét dạ dày",
-    "asthma": "hen/suyễn",
-}
+_PATIENT_CONTEXT_CONFIG_PATH = Path(__file__).resolve().parents[1] / "config" / "patient_context_config.yaml"
 
-LABEL_MAPPING = {
-    "stomach_ulcer": "đau/loét dạ dày",
-    "pregnancy": "mang thai",
-}
 
-PREGNANCY_TERMS = ["mang thai", "co thai", "bau", "cho con bu"]
-NSAID_GASTRIC_TERMS = ["dau bao tu", "dau da day", "viem loet da day", "loet da day", "xot ruot", "dau thuong vi"]
-NSAID_ANALGESIC_TERMS = ["thuoc giam dau", "thuoc khang viem", "nsaid", "aspirin", "diclofenac", "ibuprofen", "naproxen"]
-ADVICE_TERMS = [
-    "mua",
-    "mua thuoc",
-    "thuoc cam",
-    "thuoc ho",
-    "thuoc giam dau",
-    "thuoc ha sot",
-    "mua thuoc gi",
-    "co thuoc gi",
-    "nen mua",
-    "nen uong",
-    "uong thuoc gi",
-    "uong do",
-    "uong do dau bung",
-    "oke uong",
-    "thuoc gi",
-    "dung thuoc gi",
-    "loai nao",
-    "tu van",
-    "ban cho",
-    "chon thuoc",
-    "nhanh khoi",
-    "cho nhanh khoi",
-    "thuc pham chuc nang",
-    "bo sung",
-    "vitamin",
-    "kem",
-    "thuoc bo",
-    "canxi",
-    "sat",
-    "dau rang",
-    "nho rang",
-    "rang sau",
-]
-SYMPTOM_TERMS = [
-    "cam",
-    "ho",
-    "sot",
-    "dau",
-    "nghet mui",
-    "so mui",
-    "tieu chay",
-    "di ngoai",
-    "ia",
-    "buon ia",
-    "dau bung di ngoai",
-    "quan bung",
-    "tao thao",
-    "di toilet",
-    "non",
-    "ngua",
-    "dau bung",
-    "dau dau",
-    "dau rang",
-    "nho rang",
-    "rang sau",
-]
-VAGUE_SYMPTOMS = [
-    "yeu",
-    "met",
-    "dau",
-    "suy nhuoc",
-    "yeu qua",
-    "met moi",
-]
-DENTAL_TERMS = [
-    "dau rang",
-    "nhuc rang",
-    "nho rang",
-    "moi nho rang",
-    "rang sau",
-    "viem loi",
-    "sung loi",
-    "chay mau rang",
-]
-DOSAGE_TERMS = [
-    "lieu",
-    "uong bao nhieu",
-    "dung bao nhieu",
-    "may vien",
-    "ngay may lan",
-    "cach dung",
-    "dung the nao",
-    "uong the nao",
-]
-INTERACTION_TERMS = [
-    "tuong tac",
-    "dung chung",
-    "uong chung",
-    "uong cung",
-    "ket hop",
-    "them",
-    "chung voi",
-    "thuoc khac",
-]
-PEDIATRIC_TERMS = [
-    "be",
-    "tre",
-    "con toi",
-    "con trai toi",
-    "con gai toi",
-    "con tui",
-    "con trai tui",
-    "con gai tui",
-    "con nit",
-    "chau toi",
-    "chau tui",
-    "nhoc",
-    "so sinh",
-]
-COMMON_DRUG_TERMS = [
-    "aspirin",
-    "diclofenac",
-    "ibuprofen",
-    "paracetamol",
-    "acetaminophen",
-    "panadol",
-    "efferalgan",
-    "warfarin",
-    "atorvastatin",
-    "clarithromycin",
-    "amoxicillin",
-    "metronidazole",
-]
+def _load_patient_context_config() -> Dict[str, Any]:
+    with _PATIENT_CONTEXT_CONFIG_PATH.open("r", encoding="utf-8") as config_file:
+        loaded = yaml.safe_load(config_file) or {}
+    if not isinstance(loaded, dict):
+        raise ValueError("patient_context_config.yaml must contain a mapping")
+    return loaded
 
-DIARRHEA_SELF_CARE_TERMS = [
-    "tieu chay",
-    "di ngoai",
-    "ia",
-    "buon ia",
-    "dau bung di ngoai",
-    "quan bung",
-    "tao thao",
-    "di toilet",
-]
+
+_PATIENT_CONTEXT_CONFIG = _load_patient_context_config()
+
+CONDITION_TERMS: Dict[str, List[str]] = _PATIENT_CONTEXT_CONFIG["CONDITION_TERMS"]
+CONDITION_LABELS: Dict[str, str] = _PATIENT_CONTEXT_CONFIG["CONDITION_LABELS"]
+LABEL_MAPPING: Dict[str, str] = _PATIENT_CONTEXT_CONFIG["LABEL_MAPPING"]
+PREGNANCY_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["PREGNANCY_TERMS"]
+NSAID_GASTRIC_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["NSAID_GASTRIC_TERMS"]
+NSAID_ANALGESIC_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["NSAID_ANALGESIC_TERMS"]
+ADVICE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["ADVICE_TERMS"]
+SYMPTOM_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["SYMPTOM_TERMS"]
+VAGUE_SYMPTOMS: List[str] = _PATIENT_CONTEXT_CONFIG["VAGUE_SYMPTOMS"]
+DENTAL_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["DENTAL_TERMS"]
+DOSAGE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["DOSAGE_TERMS"]
+INTERACTION_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["INTERACTION_TERMS"]
+PEDIATRIC_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["PEDIATRIC_TERMS"]
+COMMON_DRUG_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["COMMON_DRUG_TERMS"]
+DIARRHEA_SELF_CARE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["DIARRHEA_SELF_CARE_TERMS"]
 
 
 @dataclass
@@ -431,6 +300,19 @@ class PatientContextService:
 
         return list(dict.fromkeys(flags))
 
+    def _is_simple_supplement(self, normalized: str) -> bool:
+        simple_terms = [
+            "vitamin", "canxi", "sat", "kem", "zinc",
+            "omega", "collagen", "bo sung", "thuc pham chuc nang"
+        ]
+        drug_terms = [
+            "thuoc", "giam dau", "ha sot", "khang sinh",
+            "khang viem", "tieu chay", "cam", "ho", "sot"
+        ]
+        has_simple = contains_any(normalized, simple_terms)
+        has_drug = contains_any(normalized, drug_terms)
+        return has_simple and not has_drug
+
     def _required_fields(
         self,
         normalized: str,
@@ -447,7 +329,8 @@ class PatientContextService:
         elif not pregnancy_month_known and (intent in {"dosage", "high_risk_context"} or "dosage_or_how_to_use" in risk_flags):
             required.append("age")
         elif not pregnancy_month_known and "otc_recommendation" in risk_flags and not diarrhea_self_care:
-            required.append("age")
+            if not self._is_simple_supplement(normalized):
+                required.append("age")
 
         if intent in {"dosage", "high_risk_context"} or "dosage_or_how_to_use" in risk_flags:
             required.extend(["conditions_confirmed", "current_medications_confirmed", "allergies_confirmed"])

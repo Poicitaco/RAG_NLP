@@ -1,0 +1,187 @@
+CONDITION_TERMS:
+  diabetes:
+  - tieu duong
+  - dai thao duong
+  - duong huyet
+  hypertension:
+  - huyet ap
+  - cao huyet ap
+  - tang huyet ap
+  heart_disease:
+  - tim mach
+  - benh tim
+  - suy tim
+  - dau nguc
+  liver_disease:
+  - suy gan
+  - benh gan
+  - vang da
+  - vang mat
+  kidney_disease:
+  - suy than
+  - benh than
+  - hong than
+  stomach_ulcer:
+  - dau bao tu
+  - viem loet da day
+  - loet da day
+  asthma:
+  - hen
+  - suyen
+  - kho tho
+CONDITION_LABELS:
+  diabetes: tiểu đường
+  hypertension: tăng huyết áp
+  heart_disease: bệnh tim mạch
+  liver_disease: bệnh gan
+  kidney_disease: bệnh thận/suy thận
+  stomach_ulcer: đau hoặc loét dạ dày
+  asthma: hen/suyễn
+LABEL_MAPPING:
+  stomach_ulcer: đau/loét dạ dày
+  pregnancy: mang thai
+PREGNANCY_TERMS:
+- mang thai
+- co thai
+- bau
+- cho con bu
+NSAID_GASTRIC_TERMS:
+- dau bao tu
+- dau da day
+- viem loet da day
+- loet da day
+- xot ruot
+- dau thuong vi
+NSAID_ANALGESIC_TERMS:
+- thuoc giam dau
+- thuoc khang viem
+- nsaid
+- aspirin
+- diclofenac
+- ibuprofen
+- naproxen
+ADVICE_TERMS:
+- mua
+- mua thuoc
+- thuoc cam
+- thuoc ho
+- thuoc giam dau
+- thuoc ha sot
+- mua thuoc gi
+- co thuoc gi
+- nen mua
+- nen uong
+- uong thuoc gi
+- uong do
+- uong do dau bung
+- oke uong
+- thuoc gi
+- dung thuoc gi
+- loai nao
+- tu van
+- ban cho
+- chon thuoc
+- nhanh khoi
+- cho nhanh khoi
+- thuc pham chuc nang
+- bo sung
+- vitamin
+- kem
+- thuoc bo
+- canxi
+- sat
+- dau rang
+- nho rang
+- rang sau
+SYMPTOM_TERMS:
+- cam
+- ho
+- sot
+- dau
+- nghet mui
+- so mui
+- tieu chay
+- di ngoai
+- ia
+- buon ia
+- dau bung di ngoai
+- quan bung
+- tao thao
+- di toilet
+- non
+- ngua
+- dau bung
+- dau dau
+- dau rang
+- nho rang
+- rang sau
+VAGUE_SYMPTOMS:
+- yeu
+- met
+- dau
+- suy nhuoc
+- yeu qua
+- met moi
+DENTAL_TERMS:
+- dau rang
+- nhuc rang
+- nho rang
+- moi nho rang
+- rang sau
+- viem loi
+- sung loi
+- chay mau rang
+DOSAGE_TERMS:
+- lieu
+- uong bao nhieu
+- dung bao nhieu
+- may vien
+- ngay may lan
+- cach dung
+- dung the nao
+- uong the nao
+INTERACTION_TERMS:
+- tuong tac
+- dung chung
+- uong chung
+- uong cung
+- ket hop
+- them
+- chung voi
+- thuoc khac
+PEDIATRIC_TERMS:
+- be
+- tre
+- con toi
+- con trai toi
+- con gai toi
+- con tui
+- con trai tui
+- con gai tui
+- con nit
+- chau toi
+- chau tui
+- nhoc
+- so sinh
+COMMON_DRUG_TERMS:
+- aspirin
+- diclofenac
+- ibuprofen
+- paracetamol
+- acetaminophen
+- panadol
+- efferalgan
+- warfarin
+- atorvastatin
+- clarithromycin
+- amoxicillin
+- metronidazole
+DIARRHEA_SELF_CARE_TERMS:
+- tieu chay
+- di ngoai
+- ia
+- buon ia
+- dau bung di ngoai
+- quan bung
+- tao thao
+- di toilet

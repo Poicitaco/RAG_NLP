@@ -81,18 +81,18 @@
 \contentsline {section}{\numberline {6.3}Kết quả evidence guardrail}{33}{section.6.3}%
 \contentsline {section}{\numberline {6.4}Kết quả SafeRAG end-to-end}{33}{section.6.4}%
 \contentsline {section}{\numberline {6.5}So sánh với baseline LLM thuần}{35}{section.6.5}%
-\contentsline {section}{\numberline {6.6}Phân tích agent pipeline}{36}{section.6.6}%
+\contentsline {section}{\numberline {6.6}Phân tích agent pipeline}{37}{section.6.6}%
 \contentsline {section}{\numberline {6.7}Pipeline smoke và API smoke}{38}{section.6.7}%
 \contentsline {section}{\numberline {6.8}Đánh giá hiệu năng và hạn chế}{38}{section.6.8}%
-\contentsline {section}{\numberline {6.9}Failure case analysis và các điểm cần cải thiện}{39}{section.6.9}%
-\contentsline {section}{\numberline {6.10}Ablation study}{41}{section.6.10}%
-\contentsline {section}{\numberline {6.11}Case study lâm sàng tiêu biểu}{42}{section.6.11}%
-\contentsline {section}{\numberline {6.12}Tóm tắt chương}{43}{section.6.12}%
-\contentsline {chapter}{\numberline {7}Kết luận và hướng phát triển}{44}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Kết luận}{44}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Đóng góp của đồ án}{44}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Hạn chế}{45}{section.7.3}%
-\contentsline {section}{\numberline {7.4}Nguồn dữ liệu nên mở rộng để hệ thống chuẩn hơn}{46}{section.7.4}%
-\contentsline {section}{\numberline {7.5}Hướng phát triển}{47}{section.7.5}%
-\contentsline {section}{\numberline {7.6}Kết luận cuối}{48}{section.7.6}%
-\contentsline {chapter}{TÀI LIỆU THAM KHẢO}{48}{section.7.6}%
+\contentsline {section}{\numberline {6.9}Failure case analysis và các điểm cần cải thiện}{40}{section.6.9}%
+\contentsline {section}{\numberline {6.10}Ablation study}{43}{section.6.10}%
+\contentsline {section}{\numberline {6.11}Case study lâm sàng tiêu biểu}{44}{section.6.11}%
+\contentsline {section}{\numberline {6.12}Tóm tắt chương}{45}{section.6.12}%
+\contentsline {chapter}{\numberline {7}Kết luận và hướng phát triển}{46}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Kết luận}{46}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Đóng góp của đồ án}{46}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Hạn chế}{47}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Nguồn dữ liệu nên mở rộng để hệ thống chuẩn hơn}{48}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Hướng phát triển}{49}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Kết luận cuối}{50}{section.7.6}%
+\contentsline {chapter}{TÀI LIỆU THAM KHẢO}{50}{section.7.6}%

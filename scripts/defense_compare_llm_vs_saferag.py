@@ -1,8 +1,9 @@
 """Compare plain LLM answers with SafeRAG answers for defense evidence.
 
 Default mode is intentionally conservative: it runs SafeRAG and prepares the
-plain-LLM prompts without claiming baseline scores. Use --baseline-mode openai
-only when an OPENAI_API_KEY is configured and you want to run the baseline.
+plain-LLM prompts without claiming baseline scores. Use --baseline-mode gemini
+or openai only when a provider API key is configured and you want to run the
+baseline.
 """
 from __future__ import annotations
 
@@ -18,10 +19,22 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from dotenv import load_dotenv
+
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+
+load_dotenv(ROOT_DIR / ".env")
+
+ALT_GEMINI_API_KEY = os.environ.get("GEM_API_KEY")
+BASELINE_GEMINI_MODEL = (os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip('"')
+
+# The backend Settings model does not declare these convenience baseline vars.
+# Keep their values for this script, then remove them before importing backend.
+os.environ.pop("GEM_API_KEY", None)
+os.environ.pop("GEMINI_MODEL", None)
 
 
 COMPARISON_CASES: List[Dict[str, Any]] = [
@@ -167,9 +180,78 @@ def openai_chat_completion(model: str, question: str, timeout: int) -> Dict[str,
     answer = (((body.get("choices") or [{}])[0].get("message") or {}).get("content") or "").strip()
     return {
         "status": "run",
+        "provider": "openai",
         "model": model,
         "answer": answer,
         "latency_ms": round(elapsed_ms, 2),
+        "has_textual_citation": has_citation_text(answer),
+        "safety_keyword_hit": safety_keyword_hit(answer),
+    }
+
+
+def gemini_generate(model: str, question: str, timeout: int) -> Dict[str, Any]:
+    api_key = os.environ.get("GEMINI_API_KEY") or ALT_GEMINI_API_KEY
+    if not api_key:
+        return {"status": "skipped", "reason": "GEMINI_API_KEY or GEM_API_KEY is not set"}
+    base_url = (os.environ.get("GEMINI_BASE_URL") or "https://generativelanguage.googleapis.com").rstrip("/")
+    url = f"{base_url}/v1beta/models/{model}:generateContent"
+    payload = {
+        "system_instruction": {"parts": [{"text": BASELINE_SYSTEM_PROMPT}]},
+        "contents": [{"role": "user", "parts": [{"text": question}]}],
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": 1200,
+        },
+        "safetySettings": [
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+        ],
+    }
+    data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    request = urllib.request.Request(
+        url,
+        data=data,
+        headers={
+            "x-goog-api-key": api_key,
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    started = time.perf_counter()
+    last_error: Dict[str, Any] = {}
+    for attempt in range(1, 5):
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                body = json.loads(response.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as exc:
+            detail = exc.read().decode("utf-8", errors="replace")[:500]
+            last_error = {"status": "error", "error": f"HTTP {exc.code}: {exc.reason}", "detail": detail}
+            if exc.code not in {429, 500, 502, 503, 504} or attempt == 4:
+                return last_error
+            time.sleep(2 * attempt)
+        except Exception as exc:
+            last_error = {"status": "error", "error": str(exc)}
+            if attempt == 4:
+                return last_error
+            time.sleep(2 * attempt)
+    else:
+        return last_error or {"status": "error", "error": "Gemini request failed"}
+    elapsed_ms = (time.perf_counter() - started) * 1000.0
+    candidates = body.get("candidates") or []
+    answer = ""
+    if candidates:
+        parts = ((candidates[0].get("content") or {}).get("parts") or [])
+        answer = "\n".join(str(part.get("text") or "") for part in parts).strip()
+    return {
+        "status": "run",
+        "provider": "gemini",
+        "model": model,
+        "answer": answer,
+        "latency_ms": round(elapsed_ms, 2),
+        "finish_reason": candidates[0].get("finishReason") if candidates else None,
         "has_textual_citation": has_citation_text(answer),
         "safety_keyword_hit": safety_keyword_hit(answer),
     }
@@ -231,7 +313,7 @@ def write_markdown(path: Path, rows: List[Dict[str, Any]], summary: Dict[str, An
             "## Baseline Note",
             "",
             "If baseline mode is `prompt_only`, this file intentionally does not claim an LLM baseline score. "
-            "Use the saved prompts for blind or human evaluation, or rerun with `--baseline-mode openai`.",
+            "Use the saved prompts for blind or human evaluation, or rerun with `--baseline-mode gemini` or `openai`.",
         ]
     )
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -253,6 +335,8 @@ async def main_async(args: argparse.Namespace) -> None:
         saferag = await run_saferag(service, case)
         if args.baseline_mode == "openai":
             plain_llm = openai_chat_completion(args.openai_model, case["question"], args.timeout)
+        elif args.baseline_mode == "gemini":
+            plain_llm = gemini_generate(args.gemini_model, case["question"], args.timeout)
         else:
             plain_llm = baseline_prompt_only(case)
         rows.append({**case, "saferag": saferag, "plain_llm": plain_llm})
@@ -274,8 +358,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--use-chroma", action="store_true")
     parser.add_argument("--use-llm", action="store_true", help="Allow SafeRAG final LLM rewrite if configured")
-    parser.add_argument("--baseline-mode", choices=["prompt_only", "openai"], default="prompt_only")
+    parser.add_argument("--baseline-mode", choices=["prompt_only", "openai", "gemini"], default="prompt_only")
     parser.add_argument("--openai-model", default=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"))
+    parser.add_argument("--gemini-model", default=BASELINE_GEMINI_MODEL)
     parser.add_argument("--timeout", type=int, default=60)
     return parser.parse_args()
 

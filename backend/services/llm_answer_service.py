@@ -198,6 +198,32 @@ class LLMAnswerService:
             warning_terms = ("cảnh báo", "canh bao", "thận trọng", "than trong", "tránh", "tranh", "lưu ý")
             if not any(term in lowered for term in warning_terms):
                 return False
+
+        # Kiem tra cau truc 5 section bat buoc: can it nhat 4/5 heading co mat.
+        # Cho phep LLM linh hoat (4/5) nhung khong duoc bo den 2 section tro len.
+        ten_section_can_kiem_tra = [
+            "lưu ý an toàn",
+            "hướng dẫn nhanh",
+            "giải thích",
+            "giải pháp",
+            "nguồn",
+        ]
+        lowered_stripped = stripped.lower()
+        so_section_co_mat = sum(
+            1 for ten_section in ten_section_can_kiem_tra
+            if ten_section in lowered_stripped
+        )
+        ngu_ong_toi_thieu_section = 4
+        if so_section_co_mat < ngu_ong_toi_thieu_section:
+            _logger.warning(
+                "LLM rewrite thieu section: chi tim thay %d/%d heading (%s). "
+                "Fallback ve deterministic_answer.",
+                so_section_co_mat,
+                len(ten_section_can_kiem_tra),
+                [s for s in ten_section_can_kiem_tra if s in lowered_stripped],
+            )
+            return False
+
         return True
 
     async def _gemini_generate(self, system_prompt: str, user_payload: str) -> Optional[str]:

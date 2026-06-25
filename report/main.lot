@@ -25,13 +25,16 @@
 \contentsline {table}{\numberline {6.3}{\ignorespaces Phân bố hành động trong evidence guardrail}}{33}{table.caption.35}%
 \contentsline {table}{\numberline {6.4}{\ignorespaces Phân bố hành động trên 100 câu hỏi SafeRAG}}{33}{table.caption.36}%
 \contentsline {table}{\numberline {6.5}{\ignorespaces So sánh thiết kế giữa LLM thuần và SafeRAG Pharma}}{36}{table.caption.40}%
-\contentsline {table}{\numberline {6.6}{\ignorespaces Một số node pipeline được kích hoạt trong 100 câu hỏi}}{37}{table.caption.41}%
-\contentsline {table}{\numberline {6.7}{\ignorespaces Một số kết quả kiểm thử kỹ thuật từ submission report}}{39}{table.caption.43}%
-\contentsline {table}{\numberline {6.8}{\ignorespaces Phân tích lỗi và giới hạn còn lại của SafeRAG}}{40}{table.caption.44}%
-\contentsline {table}{\numberline {6.9}{\ignorespaces Failure cases tiêu biểu cần kiểm thử thêm}}{41}{table.caption.45}%
-\contentsline {table}{\numberline {6.10}{\ignorespaces Ablation study theo các lớp xử lý chính}}{42}{table.caption.46}%
-\contentsline {table}{\numberline {6.11}{\ignorespaces Một số case study lâm sàng tiêu biểu}}{43}{table.caption.47}%
+\contentsline {table}{\numberline {6.6}{\ignorespaces So sánh thực nghiệm Gemini 2.5 Flash thuần và SafeRAG trên 5 ca đại diện}}{36}{table.caption.41}%
+\contentsline {table}{\numberline {6.7}{\ignorespaces Một số node pipeline được kích hoạt trong 100 câu hỏi}}{37}{table.caption.42}%
+\contentsline {table}{\numberline {6.8}{\ignorespaces Latency và trạng thái Kaggle Embedding API trong lần chạy defense}}{39}{table.caption.44}%
+\contentsline {table}{\numberline {6.9}{\ignorespaces Một số kết quả kiểm thử kỹ thuật từ submission report}}{40}{table.caption.45}%
+\contentsline {table}{\numberline {6.10}{\ignorespaces Phân tích lỗi và giới hạn còn lại của SafeRAG}}{41}{table.caption.46}%
+\contentsline {table}{\numberline {6.11}{\ignorespaces Ví dụ failure/limitation cụ thể rút ra từ log 100 câu hỏi}}{42}{table.caption.47}%
+\contentsline {table}{\numberline {6.12}{\ignorespaces Failure cases tiêu biểu cần kiểm thử thêm}}{43}{table.caption.48}%
+\contentsline {table}{\numberline {6.13}{\ignorespaces Ablation study theo các lớp xử lý chính}}{44}{table.caption.49}%
+\contentsline {table}{\numberline {6.14}{\ignorespaces Một số case study lâm sàng tiêu biểu}}{45}{table.caption.50}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {7.1}{\ignorespaces Đóng góp cụ thể của đồ án theo sản phẩm cuối}}{45}{table.caption.48}%
-\contentsline {table}{\numberline {7.2}{\ignorespaces Nguồn dữ liệu đề xuất để mở rộng SafeRAG Pharma}}{46}{table.caption.49}%
-\contentsline {table}{\numberline {7.3}{\ignorespaces Lộ trình phát triển tiếp theo của SafeRAG Pharma}}{48}{table.caption.50}%
+\contentsline {table}{\numberline {7.1}{\ignorespaces Đóng góp cụ thể của đồ án theo sản phẩm cuối}}{47}{table.caption.51}%
+\contentsline {table}{\numberline {7.2}{\ignorespaces Nguồn dữ liệu đề xuất để mở rộng SafeRAG Pharma}}{48}{table.caption.52}%
+\contentsline {table}{\numberline {7.3}{\ignorespaces Lộ trình phát triển tiếp theo của SafeRAG Pharma}}{50}{table.caption.53}%

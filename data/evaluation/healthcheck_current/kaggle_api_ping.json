@@ -1,0 +1,15 @@
+{
+  "ok": false,
+  "masked_url": "https://happen...dflare.com",
+  "embed": {
+    "endpoint": "/embed",
+    "ok": false,
+    "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  "health": {
+    "endpoint": "/health or /",
+    "ok": false,
+    "error": "<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  "checked_at_epoch": 1782330155.912
+}

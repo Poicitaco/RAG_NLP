@@ -4,7 +4,7 @@
   "embed": {
     "endpoint": "/embed",
     "ok": true,
-    "latency_ms": 887.89,
+    "latency_ms": 504.08,
     "http_status": 200,
     "embedding_count": 1,
     "embedding_dimension": 1024,
@@ -15,9 +15,9 @@
   "health": {
     "endpoint": "/health",
     "ok": true,
-    "latency_ms": 491.7,
+    "latency_ms": 490.96,
     "http_status": 200,
     "body_preview": "{'status': 'ok', 'model': 'BAAI/bge-m3', 'device': 'cuda:0'}"
   },
-  "checked_at_epoch": 1782318687.589
+  "checked_at_epoch": 1782318979.056
 }

@@ -472,3 +472,52 @@ def xay_metadata_filter_tu_rule(rule_context: Optional[Dict[str, Any]]) -> Optio
     if len(conditions) == 1:
         return conditions[0]
     return {"$and": conditions}
+
+
+def xay_metadata_filter_tu_patient_context(
+    patient_context: Optional[Dict[str, Any]],
+) -> Optional[Dict[str, Any]]:
+    """Xay dung Chroma metadata filter dua tren thong tin benh nhan.
+
+    Chi ap dung filter khi co du hieu ro rang ve nhom tuoi hoac thai ky.
+    Cac truong hop con lai khong filter age_group de tranh bo sot tai lieu.
+
+    Args:
+        patient_context: Dict chua cac truong nhu age, age_months, pregnant.
+
+    Returns:
+        Chroma filter dict hoac None neu khong can filter.
+    """
+    if not patient_context:
+        return None
+
+    tuoi = patient_context.get("age")
+    tuoi_thang = patient_context.get("age_months")
+    dang_mang_thai = patient_context.get("pregnant")
+
+    # Nhi khoa: co age_months hoac age < 16
+    la_nhi_khoa = (tuoi_thang is not None) or (tuoi is not None and isinstance(tuoi, (int, float)) and tuoi < 16)
+
+    if la_nhi_khoa:
+        # Cho phep ca "pediatric" lan "general" de khong bo sot tai lieu chung
+        return {"age_group": {"$in": ["pediatric", "general"]}}
+
+    if dang_mang_thai is True:
+        return {"age_group": {"$in": ["pregnancy", "general"]}}
+
+    # Cac truong hop khac (nguoi lon binh thuong) khong can filter age_group
+    return None
+
+
+def hop_nhat_metadata_filter(
+    filter_tu_rule: Optional[Dict[str, Any]],
+    filter_tu_benh_nhan: Optional[Dict[str, Any]],
+) -> Optional[Dict[str, Any]]:
+    """Hop nhat hai filter theo AND logic neu ca hai cung ton tai."""
+    if filter_tu_rule is None:
+        return filter_tu_benh_nhan
+    if filter_tu_benh_nhan is None:
+        return filter_tu_rule
+    # Ca hai deu co -> dung $and
+    return {"$and": [filter_tu_rule, filter_tu_benh_nhan]}
+

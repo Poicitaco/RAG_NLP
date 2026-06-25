@@ -1,7 +1,11 @@
 """Merge keyword and LLM patient-context extraction results."""
 from __future__ import annotations
 
+import re
+import unicodedata
 from typing import Any, Dict, Iterable, List, Optional
+
+from backend.services.patient_context_schema import CONDITION_CANONICAL, PATIENT_CONTEXT_FIELDS
 
 
 SAFETY_VALUE_FIELDS = {
@@ -15,8 +19,6 @@ SAFETY_VALUE_FIELDS = {
 }
 
 NORMAL_FIELDS = {
-    "subject",
-    "intent",
     "age",
     "age_months",
     "weight_kg",
@@ -24,7 +26,6 @@ NORMAL_FIELDS = {
     "current_medications_confirmed",
     "pregnancy_month",
 }
-
 
 def merge_patient_context(keyword_result: Any, llm_result: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     keyword_context = _context_from_keyword(keyword_result)
@@ -85,6 +86,9 @@ def merge_patient_context(keyword_result: Any, llm_result: Optional[Dict[str, An
         if label not in risk_flags:
             risk_flags.append(label)
 
+    merged["conditions"] = _canonicalize_conditions(merged.get("conditions") or [])
+    merged = {key: merged.get(key) for key in PATIENT_CONTEXT_FIELDS if key in merged}
+
     return {
         "patient_context": merged,
         "intent": llm.get("intent") or None,
@@ -129,3 +133,32 @@ def _merge_lists(*values: Iterable[Any]) -> List[Any]:
             if item not in merged:
                 merged.append(item)
     return merged
+
+
+def _canonicalize_conditions(conditions: Iterable[Any]) -> List[str]:
+    canonical: List[str] = []
+    for condition in _as_list(conditions):
+        if condition is None:
+            continue
+        value = str(condition).strip()
+        if not value:
+            continue
+        normalized = _normalize_text(value)
+        canonical_key = _condition_to_key(normalized) or value
+        if canonical_key not in canonical:
+            canonical.append(canonical_key)
+    return canonical
+
+
+def _condition_to_key(normalized_condition: str) -> Optional[str]:
+    for alias, canonical in CONDITION_CANONICAL.items():
+        if normalized_condition == _normalize_text(alias) or normalized_condition == _normalize_text(canonical):
+            return canonical
+    return None
+
+
+def _normalize_text(text: str) -> str:
+    value = (text or "").replace("\u0110", "D").replace("\u0111", "d").lower()
+    decomposed = unicodedata.normalize("NFD", value)
+    stripped = "".join(ch for ch in decomposed if unicodedata.category(ch) != "Mn")
+    return re.sub(r"\s+", " ", stripped).strip()

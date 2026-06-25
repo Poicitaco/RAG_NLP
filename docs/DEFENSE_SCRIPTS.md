@@ -4,6 +4,19 @@ Bo script nay dung de tao so lieu bao ve ma khong can sua them pipeline chinh.
 Mac dinh cac script tat final LLM rewrite de ket qua on dinh; them `--use-llm`
 neu muon do dung cau hinh co LLM.
 
+## 0. Ping Kaggle Embedding API
+
+```powershell
+.\.venv\Scripts\python.exe scripts\defense_ping_kaggle_api.py
+```
+
+Output:
+
+- `data/evaluation/defense/kaggle_api_ping.json`
+
+Dung khi bao ve: chung minh Kaggle/Cloudflare tunnel dang tra embedding that,
+co dimension 1024 va co health check GPU.
+
 ## A. Latency benchmark tu dong
 
 ```powershell

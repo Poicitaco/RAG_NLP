@@ -8,6 +8,7 @@ from typing import Any, Dict, Optional
 import httpx
 
 from backend.config.settings import settings
+from backend.services.patient_context_schema import PATIENT_CONTEXT_FIELDS
 
 
 class LLMPatientContextExtractor:
@@ -19,20 +20,7 @@ class LLMPatientContextExtractor:
     """
 
     EXPECTED_KEYS = {
-        "subject",
-        "intent",
-        "age",
-        "age_months",
-        "weight_kg",
-        "conditions",
-        "conditions_confirmed",
-        "current_medications",
-        "current_medications_confirmed",
-        "allergies",
-        "allergies_confirmed",
-        "pregnant",
-        "breastfeeding",
-        "pregnancy_breastfeeding_confirmed",
+        *PATIENT_CONTEXT_FIELDS,
         "red_flags",
         "missing_fields",
         "confidence",
@@ -55,7 +43,11 @@ class LLMPatientContextExtractor:
                     "role": "system",
                     "content": (
                         "You extract patient context for a Vietnamese medication-safety assistant. "
-                        "Return only valid JSON matching the requested schema."
+                        "Return only valid JSON matching the requested schema. "
+                        f"Only return these schema fields: {', '.join(sorted(PATIENT_CONTEXT_FIELDS))}, "
+                        "red_flags, missing_fields, confidence. "
+                        "Ch\u1ec9 tr\u1ea3 v\u1ec1 c\u00e1c field trong schema \u0111\u00e3 \u0111\u1ecbnh ngh\u0129a. "
+                        "Kh\u00f4ng th\u00eam field subject, intent hay field n\u00e0o kh\u00e1c."
                     ),
                 },
                 {
@@ -77,25 +69,17 @@ class LLMPatientContextExtractor:
         return self._normalize_result(parsed)
 
     def _build_prompt(self, message: str) -> str:
-        schema = {
-            "subject": None,
-            "intent": None,
-            "age": None,
-            "age_months": None,
-            "weight_kg": None,
-            "conditions": [],
-            "conditions_confirmed": None,
-            "current_medications": [],
-            "current_medications_confirmed": None,
-            "allergies": [],
-            "allergies_confirmed": None,
-            "pregnant": None,
-            "breastfeeding": None,
-            "pregnancy_breastfeeding_confirmed": None,
-            "red_flags": [],
-            "missing_fields": [],
-            "confidence": 0.0,
-        }
+        schema = {field: None for field in sorted(PATIENT_CONTEXT_FIELDS)}
+        schema.update(
+            {
+                "conditions": [],
+                "current_medications": [],
+                "allergies": [],
+                "red_flags": [],
+                "missing_fields": [],
+                "confidence": 0.0,
+            }
+        )
         return (
             "Extract patient context from the Vietnamese medication-safety message. "
             "Return only valid JSON, no markdown, no explanation. Use null when a field is unknown. "

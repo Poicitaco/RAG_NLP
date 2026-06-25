@@ -19,11 +19,11 @@ Trong bối cảnh hỏi đáp thuốc, những rủi ro trên đặc biệt ngh
 Người dùng phổ thông thường hỏi bằng tiếng Việt tự nhiên, chứa tên biệt dược, cách gọi dân gian, lỗi chính tả hoặc thông tin bệnh nền chưa đầy đủ. Ví dụ: ``Panadol uống được không'', ``bị cao huyết áp uống Decolgen có sao không'', ``mệt quá uống kẽm được không''. Vì vậy, hệ thống không thể chỉ tìm kiếm từ khóa đơn giản. Nó cần:
 
 \begin{itemize}
-  \item hiểu ý định câu hỏi: liều dùng, tác dụng phụ, tương tác, thông tin đăng ký, cảnh báo;
-  \item chuẩn hóa tên thuốc và hoạt chất;
-  \item hỏi lại ngữ cảnh bệnh nhân khi thông tin còn thiếu;
-  \item truy xuất bằng chứng từ nguồn đáng tin cậy;
-  \item chặn hoặc chuyển hướng các tình huống nguy hiểm trước khi LLM sinh câu trả lời.
+  \item Hiểu ý định câu hỏi: liều dùng, tác dụng phụ, tương tác, thông tin đăng ký, cảnh báo;
+  \item Chuẩn hóa tên thuốc và hoạt chất;
+  \item Hỏi lại ngữ cảnh bệnh nhân khi thông tin còn thiếu;
+  \item Truy xuất bằng chứng từ nguồn đáng tin cậy;
+  \item Chặn hoặc chuyển hướng các tình huống nguy hiểm trước khi LLM sinh câu trả lời.
 \end{itemize}
 
 \section{Mục tiêu nghiên cứu}
@@ -37,9 +37,9 @@ Mục tiêu đầu tiên là xây dựng pipeline RAG có khả năng truy xuấ
 Mục tiêu thứ hai là bảo đảm hệ thống không chỉ ``trả lời hay'', mà còn biết khi nào không nên trả lời trực tiếp. SafeRAG Pharma đặt guardrail trước và sau truy xuất:
 
 \begin{itemize}
-  \item trước truy xuất: phát hiện cấp cứu, bệnh nền, thiếu ngữ cảnh, tương tác thuốc rõ ràng;
-  \item trong truy xuất: lọc nguồn không phù hợp, ưu tiên nguồn an toàn;
-  \item sau truy xuất: đánh giá bằng chứng và quyết định cho phép trả lời, cảnh báo, chuyển tuyến, cấp cứu hoặc không đủ bằng chứng.
+  \item Trước truy xuất: phát hiện cấp cứu, bệnh nền, thiếu ngữ cảnh, tương tác thuốc rõ ràng;
+  \item Trong truy xuất: lọc nguồn không phù hợp, ưu tiên nguồn an toàn;
+  \item Sau truy xuất: đánh giá bằng chứng và quyết định cho phép trả lời, cảnh báo, chuyển tuyến, cấp cứu hoặc không đủ bằng chứng.
 \end{itemize}
 
 \section{Phạm vi đồ án}

@@ -46,10 +46,25 @@ class ConversationContextService:
             extracted = self._patient_context.assess(message, intent="high_risk_context").patient_context
             patient_context = self._merge_patient_context(patient_context, extracted)
             normalized = normalize_text(message)
+            negative_none = any(
+                marker in normalized
+                for marker in [
+                    "khong co",
+                    "khong co gi",
+                    "khong bi gi",
+                    "khong dung gi",
+                    "khong su dung gi",
+                ]
+            )
             patient_context["conditions_confirmed"] = True
-            if "di ung" in normalized or "khong di ung" in normalized:
+            if negative_none or "di ung" in normalized or "khong di ung" in normalized:
                 patient_context["allergies_confirmed"] = True
-            if "dang dung" in normalized or "khong dung thuoc" in normalized or "thuoc khac" in normalized:
+            if (
+                negative_none
+                or "dang dung" in normalized
+                or "khong dung thuoc" in normalized
+                or "thuoc khac" in normalized
+            ):
                 patient_context["current_medications_confirmed"] = True
             if patient_context.get("pregnant") is not None or patient_context.get("breastfeeding") is not None:
                 patient_context["pregnancy_breastfeeding_confirmed"] = True
@@ -107,7 +122,11 @@ class ConversationContextService:
             "hen",
             "di ung",
             "khong di ung",
+            "khong co",
+            "khong co gi",
+            "khong bi gi",
             "dang dung",
+            "khong dung gi",
             "khong dung thuoc",
             "khong co benh",
             "khong benh",

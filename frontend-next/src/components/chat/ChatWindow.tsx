@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble';
+import ElicitationWidget from './ElicitationWidget';
 import { sendMessage, Message } from '@/lib/api';
 import { Send, Loader2 } from 'lucide-react';
 
@@ -20,6 +21,8 @@ export default function ChatWindow({ sessionId, patientContext }: ChatWindowProp
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  // Tich luy patient_context qua cac turn de tranh mat thong tin giua cac luot hoi
+  const [accumulatedContext, setAccumulatedContext] = useState<Record<string, any>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -38,15 +41,17 @@ export default function ChatWindow({ sessionId, patientContext }: ChatWindowProp
         timestamp: new Date().toISOString()
       }
     ]);
+    // Reset context khi doi session
+    setAccumulatedContext({});
   }, [sessionId]);
 
-  const handleSend = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const submitMessage = async (content: string) => {
+    const cleaned = content.trim();
+    if (!cleaned || isLoading) return;
 
     const userMessage: Message = {
       role: 'user',
-      content: input,
+      content: cleaned,
       timestamp: new Date().toISOString()
     };
 
@@ -55,8 +60,19 @@ export default function ChatWindow({ sessionId, patientContext }: ChatWindowProp
     setIsLoading(true);
 
     try {
-      const response = await sendMessage(userMessage.content, sessionId, patientContext);
-      
+      // Merge patientContext prop (neu co) voi accumulated context tu cac turn truoc
+      const contextGui = {
+        ...accumulatedContext,
+        ...(patientContext || {}),
+      };
+      const response = await sendMessage(userMessage.content, sessionId, Object.keys(contextGui).length ? contextGui : undefined);
+
+      // Cap nhat accumulated context neu backend tra ve patient_context moi
+      const patientContextMoi = response.metadata?.patient_context;
+      if (patientContextMoi && typeof patientContextMoi === 'object') {
+        setAccumulatedContext((prev) => ({ ...prev, ...patientContextMoi }));
+      }
+
       const botMessage: Message = {
         role: 'assistant',
         content: response.message,
@@ -69,7 +85,7 @@ export default function ChatWindow({ sessionId, patientContext }: ChatWindowProp
           rawLog: response.metadata
         }
       };
-      
+
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       console.error('Lỗi khi gửi tin nhắn:', error);
@@ -82,6 +98,15 @@ export default function ChatWindow({ sessionId, patientContext }: ChatWindowProp
       setIsLoading(false);
     }
   };
+
+  const handleSend = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    await submitMessage(input);
+  };
+
+  const latestAssistantIndex = messages.reduce((latest, msg, index) => (
+    msg.role === 'assistant' ? index : latest
+  ), -1);
 
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)] max-h-[800px] bg-gray-50 rounded-3xl overflow-hidden border border-gray-200 shadow-xl">
@@ -102,18 +127,38 @@ export default function ChatWindow({ sessionId, patientContext }: ChatWindowProp
 
       {/* Message List */}
       <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-2">
-        {messages.map((msg, index) => (
-          <MessageBubble
-            key={index}
-            role={msg.role}
-            content={msg.content}
-            warnings={msg.metadata?.warnings}
-            suggestions={msg.metadata?.suggestions}
-            sources={msg.metadata?.sources}
-            agentType={msg.metadata?.agentType}
-            rawLog={msg.metadata?.rawLog}
-          />
-        ))}
+        {messages.map((msg, index) => {
+          const rawLog = msg.metadata?.rawLog;
+          const showElicitation =
+            msg.role === 'assistant' &&
+            index === latestAssistantIndex &&
+            rawLog?.rag_action === 'needs_clarification' &&
+            ((rawLog?.missing_context || []).length > 0 || (rawLog?.clarification_questions || []).length > 0);
+
+          return (
+            <div key={index}>
+              <MessageBubble
+                role={msg.role}
+                content={msg.content}
+                warnings={msg.metadata?.warnings}
+                suggestions={msg.metadata?.suggestions}
+                sources={msg.metadata?.sources}
+                agentType={msg.metadata?.agentType}
+                rawLog={rawLog}
+              />
+              {showElicitation && (
+                <div className="flex justify-start -mt-4 mb-6">
+                  <ElicitationWidget
+                    missingContext={rawLog?.missing_context || []}
+                    questions={rawLog?.clarification_questions || []}
+                    disabled={isLoading}
+                    onSubmit={submitMessage}
+                  />
+                </div>
+              )}
+            </div>
+          );
+        })}
         {isLoading && (
           <div className="flex justify-start mb-6">
             <div className="bg-white border border-gray-100 rounded-2xl rounded-bl-none p-4 shadow-sm flex items-center gap-3">

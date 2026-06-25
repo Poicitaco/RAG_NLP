@@ -48,6 +48,7 @@ class Settings(BaseSettings):
     LLM_MAX_OUTPUT_TOKENS: int = Field(default=700, env="LLM_MAX_OUTPUT_TOKENS")
     LLM_TIMEOUT_SECONDS: int = Field(default=30, env="LLM_TIMEOUT_SECONDS")
     GEMINI_API_KEY: str = Field(default="", env="GEMINI_API_KEY")
+    GEMINI_MODEL: str = Field(default="gemini-2.5-flash", env="GEMINI_MODEL")
     GEMINI_BASE_URL: str = Field(
         default="https://generativelanguage.googleapis.com",
         env="GEMINI_BASE_URL",
@@ -135,7 +136,8 @@ class Settings(BaseSettings):
     )
     CORS_ORIGINS: str = Field(
         default=(
-            "http://localhost:3000,http://localhost:5173,http://localhost:8501,"
+            "http://localhost:3000,http://127.0.0.1:3000,"
+            "http://localhost:5173,http://localhost:8501,"
             "http://127.0.0.1:5173,http://127.0.0.1:8000"
         ),
         env="CORS_ORIGINS"
@@ -197,6 +199,7 @@ class Settings(BaseSettings):
         env_file = ".env"
         env_file_encoding = "utf-8"
         case_sensitive = True
+        extra = "ignore"
 
 
 # Instance cài đặt toàn cục
