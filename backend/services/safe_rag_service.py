@@ -199,6 +199,80 @@ class SafeRagService:
         combined = _apply_indication_retrieval_policy(retrieval_query, combined)
         return _apply_rule_retrieval_policy(combined, rule_context)[:effective_top_k]
 
+    async def _handle_emergency(
+        self,
+        message: str,
+        early_decision: Any,
+        early_subtype: str,
+        conversation: str,
+        trace: List[Dict[str, Any]],
+    ) -> ChatResponse:
+        selected_agents = _selected_agents(early_decision.intent.value, {})
+        bypass_citations = _renumber_citations(
+            _baseline_safety_citations(early_decision.action.value, early_subtype)
+            + self._quick_supporting_citations(early_subtype, message)
+        )
+        response_blocks = build_response_blocks(
+            action=early_decision.action.value,
+            intent=early_decision.intent.value,
+            graph_result={},
+            citations=bypass_citations,
+            selected_agents=selected_agents,
+            subtype=early_subtype,
+        )
+        response_blocks = _with_citation_block_sources(response_blocks, bypass_citations)
+        confidence_score = compute_confidence(
+            action=early_decision.action.value,
+            intent=early_decision.intent.value,
+            citations=_citation_dicts(bypass_citations),
+            graph_result={},
+            reranker_top_score=_reranker_top_score_from_trace(trace),
+            planner_confidence=None,
+        )
+        _add_trace_step(
+            trace,
+            "emergency_bypass",
+            details={
+                "retrieval_bypassed": True,
+                "selected_agents": selected_agents,
+                "subtype": early_subtype,
+                "confidence_score": confidence_score,
+            },
+        )
+        deterministic_answer = format_response_blocks(response_blocks)
+        llm_answer_text = await self.llm_answer.rewrite(
+            question=message,
+            deterministic_answer=deterministic_answer,
+            graph_safety={},
+            snippets=[],
+            citations=bypass_citations
+        )
+        final_answer = llm_answer_text if llm_answer_text else deterministic_answer
+
+        return ChatResponse(
+            message=final_answer,
+            conversation_id=conversation,
+            agent_type=AgentType.SAFETY_MONITOR,
+            confidence=confidence_score,
+            sources=bypass_citations,
+            warnings=early_decision.warnings,
+            suggestions=["Gá»i 115 hoáº·c Ä‘áº¿n cÆ¡ sá»Ÿ y táº¿ gáº§n nháº¥t ngay."],
+            metadata={
+                "confidence": confidence_score,
+                "rag_action": early_decision.action.value,
+                "intent": early_decision.intent.value,
+                "subtype": early_subtype,
+                "original_query": message,
+                "retrieval_bypassed": True,
+                "selected_agents": selected_agents,
+                "agent_pipeline": _agent_pipeline(trace),
+                "response_blocks": response_blocks,
+                "llm_answer_enabled": self.llm_answer.enabled,
+                "llm_answer_used": bool(llm_answer_text),
+                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+            },
+        )
+
     async def answer(
         self,
         message: str,
@@ -290,71 +364,7 @@ class SafeRagService:
                     },
                 )
         if early_decision.action == EvidenceAction.EMERGENCY:
-            selected_agents = _selected_agents(early_decision.intent.value, {})
-            bypass_citations = _renumber_citations(
-                _baseline_safety_citations(early_decision.action.value, early_subtype)
-                + self._quick_supporting_citations(early_subtype, message)
-            )
-            response_blocks = build_response_blocks(
-                action=early_decision.action.value,
-                intent=early_decision.intent.value,
-                graph_result={},
-                citations=bypass_citations,
-                selected_agents=selected_agents,
-                subtype=early_subtype,
-            )
-            response_blocks = _with_citation_block_sources(response_blocks, bypass_citations)
-            confidence_score = compute_confidence(
-                action=early_decision.action.value,
-                intent=early_decision.intent.value,
-                citations=_citation_dicts(bypass_citations),
-                graph_result={},
-                reranker_top_score=_reranker_top_score_from_trace(trace),
-                planner_confidence=None,
-            )
-            _add_trace_step(
-                trace,
-                "emergency_bypass",
-                details={
-                    "retrieval_bypassed": True,
-                    "selected_agents": selected_agents,
-                    "subtype": early_subtype,
-                    "confidence_score": confidence_score,
-                },
-            )
-            deterministic_answer = format_response_blocks(response_blocks)
-            llm_answer_text = await self.llm_answer.rewrite(
-                question=message,
-                deterministic_answer=deterministic_answer,
-                graph_safety={},
-                snippets=[],
-                citations=bypass_citations
-            )
-            final_answer = llm_answer_text if llm_answer_text else deterministic_answer
-
-            return ChatResponse(
-                message=final_answer,
-                conversation_id=conversation,
-                agent_type=AgentType.SAFETY_MONITOR,
-                confidence=confidence_score,
-                sources=bypass_citations,
-                warnings=early_decision.warnings,
-                suggestions=["Gá»i 115 hoáº·c Ä‘áº¿n cÆ¡ sá»Ÿ y táº¿ gáº§n nháº¥t ngay."],
-                metadata={
-                    "confidence": confidence_score,
-                    "rag_action": early_decision.action.value,
-                    "intent": early_decision.intent.value,
-                    "subtype": early_subtype,
-                    "original_query": message,
-                    "retrieval_bypassed": True,
-                    "selected_agents": selected_agents,
-                    "agent_pipeline": _agent_pipeline(trace),
-                    "response_blocks": response_blocks,
-                    "llm_answer_enabled": self.llm_answer.enabled,
-                    "llm_answer_used": bool(llm_answer_text),
-                    "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
-                },
-            )
+            return await self._handle_emergency(message, early_decision, early_subtype, conversation, trace)
 
         started_at = time.perf_counter()
         planner_context = await self.intent_planner.plan(
