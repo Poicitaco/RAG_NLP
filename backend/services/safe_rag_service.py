@@ -485,6 +485,93 @@ class SafeRagService:
             },
         )
 
+    async def _handle_handoff(
+        self,
+        message: str,
+        conversation: str,
+        context_assessment: Any,
+        planner_context: Dict[str, Any],
+        early_decision: Any,
+        early_subtype: str,
+        trace: List[Dict[str, Any]],
+    ) -> ChatResponse:
+        planned_intent = str(planner_context.get("intent") or early_decision.intent.value)
+        if planned_intent not in {intent.value for intent in QuestionIntent}:
+            planned_intent = early_decision.intent.value
+        selected_agents = _selected_agents(early_decision.intent.value, {})
+        if context_assessment.risk_flags:
+            selected_agents.insert(1, "patient_context_collector")
+            selected_agents = list(dict.fromkeys(selected_agents))
+        bypass_citations = _baseline_safety_citations(
+            early_decision.action.value,
+            early_subtype,
+        )
+        response_blocks = build_response_blocks(
+            action=early_decision.action.value,
+            intent=early_decision.intent.value,
+            graph_result={},
+            citations=bypass_citations,
+            selected_agents=selected_agents,
+            subtype=early_subtype,
+        )
+        response_blocks = _with_citation_block_sources(response_blocks, bypass_citations)
+        confidence_score = compute_confidence(
+            action=early_decision.action.value,
+            intent=early_decision.intent.value,
+            citations=_citation_dicts(bypass_citations),
+            graph_result={},
+            reranker_top_score=_reranker_top_score_from_trace(trace),
+            planner_confidence=planner_context.get("confidence"),
+        )
+        _add_trace_step(
+            trace,
+            "safety_handoff_bypass",
+            details={
+                "retrieval_bypassed": True,
+                "selected_agents": selected_agents,
+                "subtype": early_subtype,
+                "confidence_score": confidence_score,
+            },
+        )
+        deterministic_answer = format_response_blocks(response_blocks)
+        llm_answer_text = await self.llm_answer.rewrite(
+            question=message,
+            deterministic_answer=deterministic_answer,
+            graph_safety={},
+            snippets=[],
+            citations=bypass_citations
+        )
+        final_answer = llm_answer_text if llm_answer_text else deterministic_answer
+
+        return ChatResponse(
+            message=final_answer,
+            conversation_id=conversation,
+            agent_type=AgentType.SAFETY_MONITOR,
+            confidence=confidence_score,
+            sources=bypass_citations,
+            warnings=early_decision.warnings + [format_medical_disclaimer()],
+            suggestions=self._suggestions(early_decision.action.value),
+            metadata={
+                "confidence": confidence_score,
+                "rag_action": early_decision.action.value,
+                "intent": early_decision.intent.value,
+                "subtype": early_subtype,
+                "planned_intent": planned_intent,
+                "retrieval_bypassed": True,
+                "should_answer": early_decision.should_answer,
+                "llm_answer_enabled": self.llm_answer.enabled,
+                "llm_answer_used": bool(llm_answer_text),
+                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                "patient_context": context_assessment.patient_context,
+                "llm_intent_planner": planner_context,
+                "missing_context": context_assessment.missing_context,
+                "clarification_questions": context_assessment.questions,
+                "selected_agents": selected_agents,
+                "agent_pipeline": _agent_pipeline(trace),
+                "response_blocks": response_blocks,
+            },
+        )
+
     async def _handle_graph_fast_path(
         self,
         message: str,
@@ -1067,79 +1154,10 @@ class SafeRagService:
         if context_assessment.should_ask:
             return await self._handle_clarification(message, conversation, context_assessment, rule_context, planner_context, planned_intent, early_decision, early_subtype, trace, context)
         if early_decision.action == EvidenceAction.HANDOFF:
-            selected_agents = _selected_agents(early_decision.intent.value, {})
-            if context_assessment.risk_flags:
-                selected_agents.insert(1, "patient_context_collector")
-                selected_agents = list(dict.fromkeys(selected_agents))
-            bypass_citations = _baseline_safety_citations(
-                early_decision.action.value,
-                early_subtype,
-            )
-            response_blocks = build_response_blocks(
-                action=early_decision.action.value,
-                intent=early_decision.intent.value,
-                graph_result={},
-                citations=bypass_citations,
-                selected_agents=selected_agents,
-                subtype=early_subtype,
-            )
-            response_blocks = _with_citation_block_sources(response_blocks, bypass_citations)
-            confidence_score = compute_confidence(
-                action=early_decision.action.value,
-                intent=early_decision.intent.value,
-                citations=_citation_dicts(bypass_citations),
-                graph_result={},
-                reranker_top_score=_reranker_top_score_from_trace(trace),
-                planner_confidence=planner_context.get("confidence"),
-            )
-            _add_trace_step(
-                trace,
-                "safety_handoff_bypass",
-                details={
-                    "retrieval_bypassed": True,
-                    "selected_agents": selected_agents,
-                    "subtype": early_subtype,
-                    "confidence_score": confidence_score,
-                },
-            )
-            deterministic_answer = format_response_blocks(response_blocks)
-            llm_answer_text = await self.llm_answer.rewrite(
-                question=message,
-                deterministic_answer=deterministic_answer,
-                graph_safety={},
-                snippets=[],
-                citations=bypass_citations
-            )
-            final_answer = llm_answer_text if llm_answer_text else deterministic_answer
-
-            return ChatResponse(
-                message=final_answer,
-                conversation_id=conversation,
-                agent_type=AgentType.SAFETY_MONITOR,
-                confidence=confidence_score,
-                sources=bypass_citations,
-                warnings=early_decision.warnings + [format_medical_disclaimer()],
-                suggestions=self._suggestions(early_decision.action.value),
-                metadata={
-                    "confidence": confidence_score,
-                    "rag_action": early_decision.action.value,
-                    "intent": early_decision.intent.value,
-                    "subtype": early_subtype,
-                    "planned_intent": planned_intent,
-                    "retrieval_bypassed": True,
-                    "should_answer": early_decision.should_answer,
-                    "llm_answer_enabled": self.llm_answer.enabled,
-                    "llm_answer_used": bool(llm_answer_text),
-                    "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
-                    "patient_context": context_assessment.patient_context,
-                    "llm_intent_planner": planner_context,
-                    "missing_context": context_assessment.missing_context,
-                    "clarification_questions": context_assessment.questions,
-                    "selected_agents": selected_agents,
-                    "agent_pipeline": _agent_pipeline(trace),
-                    "response_blocks": response_blocks,
-                },
-            )
+            return await self._handle_handoff(
+                message, conversation, context_assessment,
+                planner_context, early_decision, 
+                early_subtype, trace)
 
         started_at = time.perf_counter()
         context_message = _augment_with_patient_context(message, context_assessment.patient_context)
