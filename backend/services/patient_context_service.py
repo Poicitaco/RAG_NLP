@@ -49,6 +49,19 @@ INTERACTION_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["INTERACTION_TERMS"]
 PEDIATRIC_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["PEDIATRIC_TERMS"]
 COMMON_DRUG_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["COMMON_DRUG_TERMS"]
 DIARRHEA_SELF_CARE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["DIARRHEA_SELF_CARE_TERMS"]
+SUPPLEMENT_SIMPLE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["SUPPLEMENT_SIMPLE_TERMS"]
+SUPPLEMENT_DRUG_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["SUPPLEMENT_DRUG_TERMS"]
+PREGNANCY_CONTEXT_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["PREGNANCY_CONTEXT_TERMS"]
+PREGNANCY_NEGATION_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["PREGNANCY_NEGATION_TERMS"]
+BREASTFEEDING_NEGATION_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["BREASTFEEDING_NEGATION_TERMS"]
+BREASTFEEDING_POSITIVE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["BREASTFEEDING_POSITIVE_TERMS"]
+PREGNANCY_POSITIVE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["PREGNANCY_POSITIVE_TERMS"]
+CONDITION_NEGATION_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["CONDITION_NEGATION_TERMS"]
+NEGATIVE_NONE_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["NEGATIVE_NONE_TERMS"]
+ALLERGY_NEGATION_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["ALLERGY_NEGATION_TERMS"]
+CURRENT_MEDICATION_NEGATION_TERMS: List[str] = _PATIENT_CONTEXT_CONFIG["CURRENT_MEDICATION_NEGATION_TERMS"]
+SUBJECT_DRUG_LABELS: Dict[str, str] = _PATIENT_CONTEXT_CONFIG["SUBJECT_DRUG_LABELS"]
+SUBJECT_SYMPTOM_LABELS: List[Dict[str, Any]] = _PATIENT_CONTEXT_CONFIG["SUBJECT_SYMPTOM_LABELS"]
 
 
 @dataclass
@@ -215,17 +228,17 @@ class PatientContextService:
         weight = self._extract_weight(normalized)
         if weight is not None:
             patient_context["weight_kg"] = weight
-        not_pregnant = contains_any(normalized, ["khong mang thai", "khong co thai", "khong bau"])
-        not_breastfeeding = contains_any(normalized, ["khong cho con bu"])
+        not_pregnant = contains_any(normalized, PREGNANCY_NEGATION_TERMS)
+        not_breastfeeding = contains_any(normalized, BREASTFEEDING_NEGATION_TERMS)
         if not_breastfeeding:
             patient_context["breastfeeding"] = False
             patient_context["pregnancy_breastfeeding_confirmed"] = True
-        elif contains_any(normalized, ["cho con bu"]):
+        elif contains_any(normalized, BREASTFEEDING_POSITIVE_TERMS):
             patient_context["breastfeeding"] = True
         if not_pregnant:
             patient_context["pregnant"] = False
             patient_context["pregnancy_breastfeeding_confirmed"] = True
-        elif contains_any(normalized, ["mang thai", "co thai", "bau"]):
+        elif contains_any(normalized, PREGNANCY_POSITIVE_TERMS):
             patient_context["pregnant"] = True
         pregnancy_month = self._extract_pregnancy_month(normalized)
         if pregnancy_month is not None:
@@ -234,36 +247,16 @@ class PatientContextService:
             patient_context["pregnancy_breastfeeding_confirmed"] = True
         if conditions:
             patient_context["conditions_confirmed"] = True
-        if (
-            "khong co benh nen" in normalized
-            or "khong benh nen" in normalized
-            or "khong mac benh nen" in normalized
-            or "khong co benh man tinh" in normalized
-        ):
+        if any(term in normalized for term in CONDITION_NEGATION_TERMS):
             patient_context["conditions_confirmed"] = True
-        negative_none = any(
-            marker in normalized
-            for marker in [
-                "khong co gi",
-                "khong co van de gi",
-                "khong bi gi",
-                "khong dung gi",
-                "khong su dung gi",
-            ]
-        )
+        negative_none = any(marker in normalized for marker in NEGATIVE_NONE_TERMS)
         if negative_none:
             patient_context["conditions_confirmed"] = True
             patient_context["allergies_confirmed"] = True
             patient_context["current_medications_confirmed"] = True
-        if "khong di ung" in normalized or "khong co di ung" in normalized or "khong di ung gi" in normalized:
+        if any(term in normalized for term in ALLERGY_NEGATION_TERMS):
             patient_context["allergies_confirmed"] = True
-        if (
-            "khong dang dung thuoc" in normalized
-            or "khong dung thuoc" in normalized
-            or "khong dung thuoc khac" in normalized
-            or "khong dung gi" in normalized
-            or "khong su dung gi" in normalized
-        ):
+        if any(term in normalized for term in CURRENT_MEDICATION_NEGATION_TERMS):
             patient_context["current_medications_confirmed"] = True
 
         return patient_context
@@ -301,16 +294,8 @@ class PatientContextService:
         return list(dict.fromkeys(flags))
 
     def _is_simple_supplement(self, normalized: str) -> bool:
-        simple_terms = [
-            "vitamin", "canxi", "sat", "kem", "zinc",
-            "omega", "collagen", "bo sung", "thuc pham chuc nang"
-        ]
-        drug_terms = [
-            "thuoc", "giam dau", "ha sot", "khang sinh",
-            "khang viem", "tieu chay", "cam", "ho", "sot"
-        ]
-        has_simple = contains_any(normalized, simple_terms)
-        has_drug = contains_any(normalized, drug_terms)
+        has_simple = contains_any(normalized, SUPPLEMENT_SIMPLE_TERMS)
+        has_drug = contains_any(normalized, SUPPLEMENT_DRUG_TERMS)
         return has_simple and not has_drug
 
     def _required_fields(
@@ -323,28 +308,55 @@ class PatientContextService:
         required: List[str] = []
         diarrhea_self_care = contains_any(normalized, DIARRHEA_SELF_CARE_TERMS)
         pregnancy_month_known = patient_context.get("pregnant") is True and patient_context.get("pregnancy_month") is not None
+        # Câu hỏi đã đề cập tên thuốc cụ thể → ít mơ hồ hơn
+        has_named_drug = self._drug_mention_count(normalized) >= 1
+        # Câu hỏi về cách dùng thuốc cụ thể (có tên thuốc + thời điểm/cách dùng)
+        is_how_to_use_specific = has_named_drug and "dosage_or_how_to_use" in risk_flags
 
         if "pediatric_or_age_sensitive" in risk_flags:
             required.extend(["age_or_age_months", "weight_kg"])
         elif not pregnancy_month_known and (intent in {"dosage", "high_risk_context"} or "dosage_or_how_to_use" in risk_flags):
-            required.append("age")
+            # Không hỏi age nếu câu hỏi về thuốc cụ thể (cách dùng đã rõ)
+            if not is_how_to_use_specific:
+                required.append("age")
         elif not pregnancy_month_known and "otc_recommendation" in risk_flags and not diarrhea_self_care:
-            if not self._is_simple_supplement(normalized):
+            # Không hỏi age nếu đã có bệnh nền xác nhận (người lớn rõ ràng)
+            # Cũng không hỏi age nếu là câu hỏi cách dùng thuốc cụ thể
+            if not self._is_simple_supplement(normalized) and not patient_context.get("conditions_confirmed") and not is_how_to_use_specific:
                 required.append("age")
 
         if intent in {"dosage", "high_risk_context"} or "dosage_or_how_to_use" in risk_flags:
-            required.extend(["conditions_confirmed", "current_medications_confirmed", "allergies_confirmed"])
+            # Không yêu cầu nếu câu hỏi về cách dùng thuốc cụ thể đã biết tên
+            if not is_how_to_use_specific:
+                required.extend(["conditions_confirmed", "current_medications_confirmed", "allergies_confirmed"])
         elif "otc_recommendation" in risk_flags and not diarrhea_self_care:
-            required.extend(["conditions_confirmed", "current_medications_confirmed", "allergies_confirmed"])
+            # Không yêu cầu toàn bộ nếu là câu hỏi cách dùng thuốc cụ thể
+            if not is_how_to_use_specific:
+                required.extend(["conditions_confirmed", "current_medications_confirmed", "allergies_confirmed"])
 
-        if "vague_symptom" in risk_flags and not diarrhea_self_care and not patient_context.get("conditions_confirmed"):
+        # Bỏ allergies_confirmed nếu đã có tên thuốc cụ thể + không phải câu tư vấn mua mới
+        # (người dùng đang hỏi về 1 thuốc đã biết tên, dị ứng ít liên quan)
+        if has_named_drug and "allergies_confirmed" in required and intent not in {"otc_recommendation"}:
+            required.remove("allergies_confirmed")
+        # Bỏ current_medications_confirmed nếu câu hỏi là drug_info về 1 thuốc cụ thể
+        # (không phải tư vấn kết hợp thuốc)
+        if has_named_drug and "current_medications_confirmed" in required and intent == "drug_info" and "possible_interaction" not in risk_flags:
+            required.remove("current_medications_confirmed")
+
+        # Không hỏi clarify_vague_symptom nếu đã có tên thuốc cụ thể trong câu
+        if "vague_symptom" in risk_flags and not diarrhea_self_care and not patient_context.get("conditions_confirmed") and not has_named_drug:
             required.append("clarify_vague_symptom")
 
         drug_count = self._drug_mention_count(normalized)
+        # Chỉ hỏi current_medications nếu THỰC SỰ chưa có thông tin về thuốc đang dùng
+        # Nếu câu đã đề cập >= 2 thứ (thuốc + thứ kia) thì đủ context
         if "possible_interaction" in risk_flags and drug_count < 2 and not patient_context.get("current_medications"):
-            required.append("current_medications_confirmed")
+            # Kiểm tra thêm: câu có đủ 2 vế không (vd "X uống chung với Y")
+            has_second_item = any(w in normalized for w in ["voi", "cung", "va", "ket hop", "phoi hop"])
+            if not has_second_item:
+                required.append("current_medications_confirmed")
 
-        if contains_any(normalized, ["phu nu", "chi em", "mang thai", "cho con bu"]):
+        if contains_any(normalized, PREGNANCY_CONTEXT_TERMS):
             required.append("pregnancy_breastfeeding_confirmed")
 
         return list(dict.fromkeys(required))
@@ -447,32 +459,13 @@ class PatientContextService:
     def _subject_label(self, normalized: str) -> str:
         if contains_any(normalized, NSAID_GASTRIC_TERMS) and contains_any(normalized, NSAID_ANALGESIC_TERMS):
             return "đau dạ dày sau khi dùng thuốc giảm đau/kháng viêm"
-        drug_labels = {
-            "kem": "thuốc kẽm / sản phẩm bổ sung kẽm",
-            "zinc": "thuốc kẽm / sản phẩm bổ sung kẽm",
-            "vitamin c": "vitamin C",
-            "paracetamol": "paracetamol",
-            "acetaminophen": "paracetamol/acetaminophen",
-            "panadol": "Panadol/paracetamol",
-            "efferalgan": "Efferalgan/paracetamol",
-            "ibuprofen": "ibuprofen",
-            "aspirin": "aspirin",
-            "oresol": "Oresol/bù nước điện giải",
-        }
-        for term, label in drug_labels.items():
+        for term, label in SUBJECT_DRUG_LABELS.items():
             if re.search(r"\b" + re.escape(term) + r"\b", normalized):
                 return label
 
-        symptom_labels = [
-            (["tieu chay", "di ngoai", "ia", "buon ia", "tao thao", "dau bung di ngoai"], "đi ngoài / tiêu chảy"),
-            (["cam", "cum", "nghet mui", "so mui"], "cảm cúm / nghẹt mũi"),
-            (["dau rang", "nhuc rang", "nho rang", "moi nho rang", "rang sau"], "đau răng / sau nhổ răng"),
-            (["ho", "ho khan", "ho dom"], "ho"),
-            (["sot", "ha sot"], "sốt / hạ sốt"),
-            (["dau bung", "quan bung"], "đau bụng"),
-            (["dau dau"], "đau đầu"),
-        ]
-        for terms, label in symptom_labels:
+        for row in SUBJECT_SYMPTOM_LABELS:
+            terms = row.get("terms") or []
+            label = str(row.get("label") or "")
             if contains_any(normalized, terms):
                 return label
 
@@ -490,7 +483,7 @@ class PatientContextService:
         return None
 
     def _extract_age_months(self, normalized: str) -> Optional[int]:
-        if contains_any(normalized, ["mang thai", "co thai", "bau"]):
+        if contains_any(normalized, PREGNANCY_POSITIVE_TERMS):
             return None
         match = re.search(r"\b(\d{1,2})\s*thang\b", normalized)
         if not match:
@@ -501,7 +494,7 @@ class PatientContextService:
         return None
 
     def _extract_pregnancy_month(self, normalized: str) -> Optional[int]:
-        if not contains_any(normalized, ["mang thai", "co thai", "bau"]):
+        if not contains_any(normalized, PREGNANCY_POSITIVE_TERMS):
             return None
         patterns = [
             r"(?:mang thai|co thai|bau)\s*(?:thang\s*thu\s*)?(\d{1,2})\s*thang",

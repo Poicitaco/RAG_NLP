@@ -40,6 +40,7 @@ def search(index: Dict[str, Any], query: str, top_k: int = 5, k1: float = 1.5, b
             {
                 "rank": rank,
                 "score": round(score, 4),
+                "similarity": round(score, 4),
                 "id": doc["id"],
                 "metadata": doc["metadata"],
                 "document_preview": doc["document"][:700],

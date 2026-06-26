@@ -1,33 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
-  title: "SafeRAG Pharma — Tra cuu An toan Thuoc",
-  description: "He thong tu van thuoc OTC an toan dua tren Duoc thu Quoc gia va Cuc Quan ly Duoc Viet Nam.",
+  title: "SafeRAG Pharma — Tra cứu An toàn Thuốc",
+  description: "Hệ thống tư vấn thuốc OTC an toàn dựa trên Dược thư Quốc gia Việt Nam.",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="vi"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="vi" className={`${geist.variable} h-full`}>
+      <body className="h-full bg-[#212121] text-white antialiased">{children}</body>
     </html>
   );
 }

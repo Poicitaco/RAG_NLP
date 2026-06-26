@@ -68,6 +68,8 @@ def test_public_otc_free_text_requires_patient_context_before_advice():
 
 
 def test_child_fever_from_parent_requires_weight_after_age():
+    # Reset session để tránh state cũ từ persist file
+    client.delete("/api/v1/chat/session/pytest-child-fever-context")
     session_id = "pytest-child-fever-context"
     first = post_chat(
         "Con trai toi dang bi sot mua thuoc ha sot nao",

@@ -60,6 +60,12 @@ HIGH_RISK_TERMS = {
     "di ung": "Tiền sử dị ứng thuốc cần được kiểm tra kỹ.",
     "kháng sinh": "Kháng sinh là thuốc kê đơn, không nên tự dùng.",
     "khang sinh": "Kháng sinh là thuốc kê đơn, không nên tự dùng.",
+    "amoxicillin": "Kháng sinh kê đơn, không tự dùng.",
+    "azithromycin": "Kháng sinh kê đơn, không tự dùng.",
+    "ciprofloxacin": "Kháng sinh kê đơn, không tự dùng.",
+    "metronidazole": "Kháng sinh kê đơn, không tự dùng.",
+    "doxycycline": "Kháng sinh kê đơn, không tự dùng.",
+    "cephalexin": "Kháng sinh kê đơn, không tự dùng.",
 }
 
 MEDICAL_TERMS = {
@@ -124,7 +130,25 @@ def evaluate_query_safety(message: str, context: Dict[str, Any] | None = None) -
             tags=["red_flag", "urgent_handoff"],
         )
 
+    # Phát hiện câu hỏi tra cứu thông tin (general) TRƯỚC khi check high_risk
+    # Nhưng KHÔNG bypass nếu có high_risk terms (vd: "kháng sinh cho phụ nữ mang thai hoạt động thế nào?")
+    GENERAL_QUERY_PATTERNS = [
+        'là gì', 'la gi', 'có tác dụng gì', 'dùng để làm gì', 'công dụng',
+        'thành phần', 'hoạt chất', 'cho biết về', 'giới thiệu',
+        'hoạt động như thế nào', 'co tac dung', 'nhu the nao', 'co nghia la',
+        'giải thích', 'giai thich', 'cơ chế', 'co che',
+    ]
     high_risk_hits = _unique_preserve_order(reason for term, reason in HIGH_RISK_TERMS.items() if _norm(term) in text)
+    is_general_query = _contains_any(text, GENERAL_QUERY_PATTERNS) and not high_risk_hits
+    if is_general_query:
+        return SafetyDecision(
+            level=SafetyLevel.LOW,
+            should_answer=True,
+            warnings=["Thông tin chỉ hỗ trợ tham khảo, không thay thế bác sĩ hoặc dược sĩ."],
+            tags=["rag_allowed", "general_query"],
+        )
+
+    # Câu hỏi cụ thể (tư vấn dùng thuốc) — áp dụng high_risk check
     if high_risk_hits:
         return SafetyDecision(
             level=SafetyLevel.HIGH,

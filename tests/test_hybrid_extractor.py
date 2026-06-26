@@ -134,7 +134,8 @@ CASES = [
         "intent": "otc_recommendation",
         "llm": {"conditions": ["hypertension"], "conditions_confirmed": True},
         "expect_list_contains": {"conditions": "hypertension"},
-        "missing_has": ["age"],
+        # age không còn required khi conditions_confirmed=True (người lớn rõ ràng)
+        "missing_has": [],
     },
     {
         "group": "chronic",

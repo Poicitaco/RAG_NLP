@@ -140,6 +140,17 @@ DOSAGE_TERMS:
 - cach dung
 - dung the nao
 - uong the nao
+- uong luc nao
+- uong khi nao
+- uong truoc
+- uong sau
+- truoc an
+- sau an
+- luc doi
+- luc no
+- buoi sang
+- buoi toi
+- co the uong
 INTERACTION_TERMS:
 - tuong tac
 - dung chung
@@ -176,6 +187,39 @@ COMMON_DRUG_TERMS:
 - clarithromycin
 - amoxicillin
 - metronidazole
+- omeprazole
+- esomeprazole
+- pantoprazole
+- metformin
+- amlodipine
+- atenolol
+- lisinopril
+- levothyroxine
+- vitamin
+- canxi
+- calcium
+- omega
+- siro
+- rhinocort
+- nystatin
+- fluconazole
+- cetirizine
+- loratadine
+- chlorpheniramine
+- salbutamol
+- ventolin
+- seretide
+- thuoc suyen
+- khang sinh
+- thuoc khang sinh
+- thuoc ha sot
+- thuoc giam dau
+- thuoc huyet ap
+- thuoc ap huyet
+- thuoc tieu duong
+- thuoc bao tu
+- thuoc ngu
+- thuoc tranh thai
 DIARRHEA_SELF_CARE_TERMS:
 - tieu chay
 - di ngoai
@@ -185,3 +229,110 @@ DIARRHEA_SELF_CARE_TERMS:
 - quan bung
 - tao thao
 - di toilet
+SUPPLEMENT_SIMPLE_TERMS:
+- vitamin
+- canxi
+- sat
+- kem
+- zinc
+- omega
+- collagen
+- bo sung
+- thuc pham chuc nang
+SUPPLEMENT_DRUG_TERMS:
+- thuoc
+- giam dau
+- ha sot
+- khang sinh
+- khang viem
+- tieu chay
+- cam
+- ho
+- sot
+PREGNANCY_CONTEXT_TERMS:
+- phu nu
+- chi em
+- mang thai
+- cho con bu
+PREGNANCY_NEGATION_TERMS:
+- khong mang thai
+- khong co thai
+- khong bau
+BREASTFEEDING_NEGATION_TERMS:
+- khong cho con bu
+BREASTFEEDING_POSITIVE_TERMS:
+- cho con bu
+PREGNANCY_POSITIVE_TERMS:
+- mang thai
+- co thai
+- bau
+CONDITION_NEGATION_TERMS:
+- khong co benh nen
+- khong benh nen
+- khong mac benh nen
+- khong co benh man tinh
+NEGATIVE_NONE_TERMS:
+- khong co gi
+- khong co van de gi
+- khong bi gi
+- khong dung gi
+- khong su dung gi
+ALLERGY_NEGATION_TERMS:
+- khong di ung
+- khong co di ung
+- khong di ung gi
+CURRENT_MEDICATION_NEGATION_TERMS:
+- khong dang dung thuoc
+- khong dung thuoc
+- khong dung thuoc khac
+- khong dung gi
+- khong su dung gi
+SUBJECT_DRUG_LABELS:
+  kem: thuốc kẽm / sản phẩm bổ sung kẽm
+  zinc: thuốc kẽm / sản phẩm bổ sung kẽm
+  vitamin c: vitamin C
+  paracetamol: paracetamol
+  acetaminophen: paracetamol/acetaminophen
+  panadol: Panadol/paracetamol
+  efferalgan: Efferalgan/paracetamol
+  ibuprofen: ibuprofen
+  aspirin: aspirin
+  oresol: Oresol/bù nước điện giải
+SUBJECT_SYMPTOM_LABELS:
+- terms:
+  - tieu chay
+  - di ngoai
+  - ia
+  - buon ia
+  - tao thao
+  - dau bung di ngoai
+  label: đi ngoài / tiêu chảy
+- terms:
+  - cam
+  - cum
+  - nghet mui
+  - so mui
+  label: cảm cúm / nghẹt mũi
+- terms:
+  - dau rang
+  - nhuc rang
+  - nho rang
+  - moi nho rang
+  - rang sau
+  label: đau răng / sau nhổ răng
+- terms:
+  - ho
+  - ho khan
+  - ho dom
+  label: ho
+- terms:
+  - sot
+  - ha sot
+  label: sốt / hạ sốt
+- terms:
+  - dau bung
+  - quan bung
+  label: đau bụng
+- terms:
+  - dau dau
+  label: đau đầu

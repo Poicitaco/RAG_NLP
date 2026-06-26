@@ -13,6 +13,14 @@ from backend.utils import app_logger
 import asyncio
 
 
+_AGENT_PRIORITY = {
+    'Safety Monitor Agent': 10,
+    'Interaction Agent': 8,
+    'Dosage Agent': 6,
+    'Drug Information Agent': 4,
+}
+
+
 class AgentOrchestrator:
     """Điều phối nhiều agent để xử lý yêu cầu người dùng"""
     
@@ -67,7 +75,11 @@ class AgentOrchestrator:
                 app_logger.info("Không tìm thấy agent cụ thể, sử dụng drug info agent làm fallback")
                 agent = self.agents[-1]  # DrugInfoAgent làm fallback
             else:
-                # Sử dụng agent đầu tiên (tự tin nhất)
+                # Ưu tiên theo priority score
+                capable_agents.sort(
+                    key=lambda a: _AGENT_PRIORITY.get(a.name, 0),
+                    reverse=True
+                )
                 agent = capable_agents[0]
                 app_logger.info(f"Chọn agent: {agent.name}")
             
@@ -84,7 +96,7 @@ class AgentOrchestrator:
             return response
             
         except Exception as e:
-            app_logger.error(f"Lỗi trong orchestrator: {e}")
+            app_logger.error(f"Lỗi trong orchestrator: {e}", exc_info=True)
             # Trả về phản hồi lỗi
             return ChatResponse(
                 message=(

@@ -24,7 +24,7 @@ from backend.safety.evidence_guardrails import (
     normalize_text,
 )
 from backend.services.confidence_scorer import compute_confidence
-from backend.services.final_response_builder import build_response_blocks, format_response_blocks
+from backend.services.final_response_builder import build_response_blocks, format_response_blocks, check_citation_coverage
 from backend.services.graph_safety_service import GraphSafetyService, format_graph_warning
 from backend.services.llm_answer_service import LLMAnswerService
 from backend.services.llm_intent_planner_service import LLMIntentPlanner
@@ -33,6 +33,7 @@ from backend.services.patient_context_service import PatientContextService
 from backend.services.query_ambiguity_service import AmbiguityAssessment, QueryAmbiguityService
 from backend.services.query_expander import QueryExpander
 from backend.services.reranker_service import RerankerService
+from backend.services.response_cache import get_response_cache
 from backend.services.semantic_rule_mapper import SemanticRuleMapper
 from backend.utils import format_medical_disclaimer
 
@@ -130,7 +131,7 @@ class SafeRagService:
         try:
             rows = bm25_search(
                 self._load_bm25(),
-                "Paracetamol quÃ¡ liá»u tá»•n thÆ°Æ¡ng gan overdose",
+                "Paracetamol qua lieu ton thuong gan overdose",
                 top_k=20,
             )
         except Exception:
@@ -175,8 +176,8 @@ class SafeRagService:
             vector_top_k = max(vector_top_k, 30)
         expanded_query = self.query_expander.expand_query(retrieval_query)
         if indication_query:
-            expanded_query = f"{expanded_query} chá»‰ Ä‘á»‹nh cÃ´ng dá»¥ng háº¡ sá»‘t giáº£m Ä‘au"
-        bm25_results = bm25_search(self._load_bm25(), expanded_query, top_k=500)
+            expanded_query = f"{expanded_query} chi dinh cong dung ha sot giam dau"
+        bm25_results = bm25_search(self._load_bm25(), expanded_query, top_k=200)
         chroma_results = chroma_search(
             expanded_query,
             str(self.chroma_dir),
@@ -188,16 +189,33 @@ class SafeRagService:
         )
         bm25_results = _hard_filter_results(bm25_results, rule_context, retrieval_query)
         chroma_results = _hard_filter_results(chroma_results, rule_context, retrieval_query)
+        from backend.services.retrieval_pipeline import INTERACTION_FAST_PATH_CUES
+        _norm_q = retrieval_query.lower()
+        is_interaction_query = any(cue in _norm_q for cue in INTERACTION_FAST_PATH_CUES)
+        # Cân bằng weights theo loại query: semantic queries cần vector nhiều hơn
+        if indication_query or is_interaction_query:
+            bm25_w, vec_w = 0.40, 0.60  # semantic/interaction → vector quan trọng hơn
+        elif len(retrieval_query.split()) <= 4:
+            bm25_w, vec_w = 0.70, 0.30  # query ngắn (tên thuốc) → BM25 tốt hơn
+        else:
+            bm25_w, vec_w = 0.55, 0.45  # balanced default
         combined = combine_results(
             retrieval_query,
             bm25_results,
             chroma_results,
-            bm25_weight=0.65,
-            vector_weight=0.35,
+            bm25_weight=bm25_w,
+            vector_weight=vec_w,
             top_k=max(effective_top_k, 20) if rule_context and rule_context.get("matched") else effective_top_k,
         )
         combined = _apply_indication_retrieval_policy(retrieval_query, combined)
-        return _apply_rule_retrieval_policy(combined, rule_context)[:effective_top_k]
+        combined = _apply_rule_retrieval_policy(combined, rule_context)
+        # Retry với query gốc nếu kết quả quá ít
+        if len(combined) < 2:
+            fallback = bm25_search(self._load_bm25(), question, top_k=20)
+            fallback = _hard_filter_results(fallback, rule_context, question)
+            if len(fallback) > len(combined):
+                combined = fallback
+        return combined[:effective_top_k]
 
     async def _handle_emergency(
         self,
@@ -245,7 +263,8 @@ class SafeRagService:
             deterministic_answer=deterministic_answer,
             graph_safety={},
             snippets=[],
-            citations=bypass_citations
+            citations=bypass_citations,
+            subtype=early_subtype,
         )
         final_answer = llm_answer_text if llm_answer_text else deterministic_answer
 
@@ -256,7 +275,7 @@ class SafeRagService:
             confidence=confidence_score,
             sources=bypass_citations,
             warnings=early_decision.warnings,
-            suggestions=["Gá»i 115 hoáº·c Ä‘áº¿n cÆ¡ sá»Ÿ y táº¿ gáº§n nháº¥t ngay."],
+            suggestions=["Goi 115 hoac den co so y te gan nhat ngay"],
             metadata={
                 "confidence": confidence_score,
                 "rag_action": early_decision.action.value,
@@ -286,6 +305,31 @@ class SafeRagService:
         trace: List[Dict[str, Any]],
         context: Optional[Dict[str, Any]] = None,
     ) -> ChatResponse:
+        # ── Triage LLM: Groq quyết định có cần hỏi thêm không ──
+        from backend.services.triage_llm_service import get_triage_service
+        _patient_ctx = context_assessment.patient_context or {}
+        _already_asked = list((context or {}).get("_asked_slots", []))
+        _triage = get_triage_service()
+        _triage_result = await _triage.should_clarify(
+            question=message,
+            patient_ctx=_patient_ctx,
+            already_asked=len(_already_asked),
+        )
+        if not _triage_result["ready"] and _triage_result.get("ask"):
+            _ask_question = _triage_result["ask"]
+            _asked_next = _already_asked + ["llm_triage"]
+            context_assessment.questions = [_ask_question]
+            _clarification_meta_extra = {
+                "triage_llm_used": True,
+                "triage_options": _triage_result.get("options", []),
+                "_asked_slots": _asked_next,
+            }
+        else:
+            # Groq nói đủ rồi hoặc fallback → không hỏi thêm, tiếp tục pipeline
+            _clarification_meta_extra = {}
+            # Nếu triage nói ready nhưng context_assessment vẫn should_ask → bỏ qua clarification
+            context_assessment.questions = []
+        # ────────────────────────────────────────────────────────────
         selected_agents = list(
             dict.fromkeys(
                 [
@@ -370,6 +414,7 @@ class SafeRagService:
                 "llm_planner_used": bool(planner_context.get("used")),
                 "response_blocks": response_blocks,
                 "context_provided": bool(context),
+                **_clarification_meta_extra,
             },
         )
 
@@ -539,7 +584,8 @@ class SafeRagService:
             deterministic_answer=deterministic_answer,
             graph_safety={},
             snippets=[],
-            citations=bypass_citations
+            citations=bypass_citations,
+            subtype=early_subtype,
         )
         final_answer = llm_answer_text if llm_answer_text else deterministic_answer
 
@@ -588,7 +634,9 @@ class SafeRagService:
         early_subtype: str,
         trace: List[Dict[str, Any]],
         context: Optional[Dict[str, Any]] = None,
+        graph_citations: Optional[List[Citation]] = None,
     ) -> ChatResponse:
+        graph_citations = graph_citations or []
         selected_agents = _selected_agents(early_decision.intent.value, graph_result, alignment)
         if rule_context.get("matched"):
             selected_agents.insert(1, "semantic_rule_mapper_agent")
@@ -611,7 +659,8 @@ class SafeRagService:
             graph_safety=graph_result,
             snippets=[],
             citations=graph_citations[:5],
-        )
+            subtype=early_subtype,
+        ) if self.llm_answer.is_available() and len(graph_citations) >= 2 else None
         if llm_answer:
             answer = llm_answer
         confidence_score = compute_confidence(
@@ -682,6 +731,112 @@ class SafeRagService:
             },
     )
 
+    async def _handle_otc_graph_fast_path(
+        self,
+        message: str,
+        conversation: str,
+        pre_context_message: str,
+        fast_path_patient_context: Dict[str, Any],
+        rule_context: Dict[str, Any],
+        otc_graph_result: Dict[str, Any],
+        planner_context: Dict[str, Any],
+        early_decision: Any,
+        early_subtype: str,
+        trace: List[Dict[str, Any]],
+        context: Optional[Dict[str, Any]] = None,
+    ) -> ChatResponse:
+        selected_agents = list(
+            dict.fromkeys(
+                [
+                    "triage_risk_agent",
+                    "semantic_rule_mapper_agent",
+                    "graph_safety_agent",
+                    "otc_recommendation_agent",
+                    "final_response_builder",
+                ]
+            )
+        )
+        graph_citations = _renumber_citations(
+            _citations_from_graph_findings(otc_graph_result.get("findings") or [])
+        )
+        final_action = EvidenceAction.ALLOW_WITH_CAUTION
+        response_blocks = build_response_blocks(
+            action=final_action.value,
+            intent=QuestionIntent.OTC_RECOMMENDATION.value,
+            graph_result=otc_graph_result,
+            citations=graph_citations[:5],
+            selected_agents=selected_agents,
+            subtype=early_subtype,
+        )
+        answer = format_response_blocks(response_blocks)
+        confidence_score = compute_confidence(
+            action=final_action.value,
+            intent=QuestionIntent.OTC_RECOMMENDATION.value,
+            citations=_citation_dicts(graph_citations[:5]),
+            graph_result=otc_graph_result,
+            reranker_top_score=_reranker_top_score_from_trace(trace),
+            planner_confidence=planner_context.get("confidence"),
+        )
+        _add_trace_step(
+            trace,
+            "otc_graph_fast_path_bypass_clarification",
+            details={
+                "retrieval_bypassed": True,
+                "reason": "condition_otc_structured_warning",
+                "citation_count": len(graph_citations),
+                "selected_agents": selected_agents,
+                "confidence_score": confidence_score,
+            },
+        )
+        _add_trace_step(
+            trace,
+            "final_response_builder",
+            details={
+                "schema_version": response_blocks.get("schema_version"),
+                "selected_agents": selected_agents,
+                "llm_answer_used": False,
+                "confidence_score": confidence_score,
+            },
+        )
+        warnings = ["CÃ³ bá»‡nh ná»n liÃªn quan Ä‘áº¿n lá»±a chá»n thuá»‘c OTC; nÃªn trÃ¡nh nhÃ³m thuá»‘c nguy cÆ¡ vÃ  há»i dÆ°á»£c sÄ© khi mua."]
+        warnings.extend(early_decision.warnings)
+        warnings.append(format_medical_disclaimer())
+        return ChatResponse(
+            message=answer,
+            conversation_id=conversation,
+            agent_type=AgentType.SAFETY_MONITOR,
+            confidence=confidence_score,
+            sources=graph_citations[:5],
+            suggestions=self._suggestions(final_action.value),
+            warnings=list(dict.fromkeys(warnings)),
+            metadata={
+                "confidence": confidence_score,
+                "rag_action": final_action.value,
+                "intent": QuestionIntent.OTC_RECOMMENDATION.value,
+                "subtype": early_subtype,
+                "should_answer": True,
+                "retrieval_bypassed": True,
+                "retriever": "otc_graph_fast_path",
+                "original_query": message,
+                "context_augmented_query": pre_context_message,
+                "effective_query": pre_context_message,
+                "entity_alignment": {"used": False, "skipped": True, "reason": "otc_graph_fast_path_before_alignment"},
+                "patient_context": fast_path_patient_context,
+                "semantic_rule_context": rule_context,
+                "llm_intent_planner": planner_context,
+                "missing_context": [],
+                "clarification_questions": [],
+                "graph_safety": otc_graph_result,
+                "selected_agents": selected_agents,
+                "agent_pipeline": _agent_pipeline(trace),
+                "llm_answer_enabled": self.llm_answer.enabled,
+                "llm_answer_used": False,
+                "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
+                "response_blocks": response_blocks,
+                "context_provided": bool(context),
+            },
+        )
+
     async def _handle_rag_full_pipeline(
         self,
         message: str,
@@ -698,9 +853,14 @@ class SafeRagService:
         early_subtype: str,
         trace: List[Dict[str, Any]],
         context: Optional[Dict[str, Any]] = None,
+        pre_retrieved: Optional[List[Dict[str, Any]]] = None,
     ) -> ChatResponse:
         started_at = time.perf_counter()
-        retrieved_results = self.retrieve(effective_message, rule_context=rule_context)
+        retrieved_results = (
+            pre_retrieved
+            if pre_retrieved is not None and effective_message == context_message
+            else self.retrieve(effective_message, rule_context=rule_context)
+        )
         results = retrieved_results
         _add_trace_step(
             trace,
@@ -740,9 +900,18 @@ class SafeRagService:
         except ValueError:
             decision_intent = early_decision.intent
         decision = evaluate_evidence(effective_message, decision_intent, results)
-        decision_subtype = _decision_subtype(decision)
+        decision_subtype = _decision_subtype(decision) or early_subtype  # giữ lại early_subtype nếu post-retrieval miss
         if _is_indication_question(effective_message):
             decision_subtype = "indication"
+        # Arbitration: nếu early_decision là HANDOFF nhưng evidence decision có citations
+        # và action tốt hơn (allow/allow_with_caution) → dùng evidence decision
+        if early_decision.action == EvidenceAction.HANDOFF:
+            if decision.action in (EvidenceAction.ALLOW, EvidenceAction.ALLOW_WITH_CAUTION) and len(results) >= 2:
+                pass  # tiếp tục với decision từ evidence
+            else:
+                return await self._handle_handoff(
+                    message, conversation, context_assessment,
+                    planner_context, early_decision, early_subtype, trace)
         _add_trace_step(
             trace,
             "evidence_guardrail_agent",
@@ -827,7 +996,12 @@ class SafeRagService:
             snippets=public_answer_rows[:5],
             citations=public_citations[:5],
             patient_context=context_assessment.patient_context,
-        )
+            subtype=decision_subtype,
+        ) if (
+            self.llm_answer.is_available()
+            and final_action.value in ("allow", "allow_with_caution")
+            and len(public_citations) >= 2
+        ) else None
         if llm_answer:
             answer = llm_answer
 
@@ -839,6 +1013,17 @@ class SafeRagService:
             reranker_top_score=_reranker_top_score_from_trace(trace),
             planner_confidence=planner_context.get("confidence"),
         )
+        # Confidence tier logic
+        if confidence_score < 0.25:
+            final_action_value_for_display = "insufficient_evidence"
+            confidence_tier = "low"
+            llm_answer = None  # không gọi LLM rewrite khi không đủ tin cậy
+        elif confidence_score < 0.45:
+            confidence_tier = "medium"
+            final_action_value_for_display = final_action.value
+        else:
+            confidence_tier = "high"
+            final_action_value_for_display = final_action.value
         _add_trace_step(
             trace,
             "final_response_builder",
@@ -851,6 +1036,8 @@ class SafeRagService:
         )
 
         warnings = list(dict.fromkeys(decision.warnings + [format_medical_disclaimer()]))
+        if confidence_tier == "medium":
+            warnings.insert(0, "Độ tin cậy thấp, nên kiểm tra lại với dược sĩ.")
         if context_assessment.should_ask:
             warnings.extend(context_assessment.questions)
         if graph_result["should_warn"]:
@@ -867,7 +1054,8 @@ class SafeRagService:
             warnings=warnings,
             metadata={
                 "confidence": confidence_score,
-                "rag_action": final_action.value,
+                "rag_action": final_action_value_for_display,
+                "confidence_tier": confidence_tier,
                 "intent": decision.intent.value,
                 "subtype": decision_subtype,
                 "should_answer": decision.should_answer,
@@ -893,6 +1081,7 @@ class SafeRagService:
                 "deterministic_answer": deterministic_answer,
                 "response_blocks": response_blocks,
                 "context_provided": bool(context),
+                "citation_coverage": check_citation_coverage(answer, public_citations),
             },
         )
 
@@ -904,6 +1093,11 @@ class SafeRagService:
         context: Optional[Dict[str, Any]] = None,
     ) -> ChatResponse:
         conversation = conversation_id or session_id
+        _response_cache = get_response_cache()
+        _patient_ctx = (context or {}).get("patient_context")
+        _cached = _response_cache.get(message, _patient_ctx)
+        if _cached is not None:
+            return _cached
         trace: List[Dict[str, Any]] = []
         started_at = time.perf_counter()
         intent_value = classify_question_intent(message)
@@ -940,6 +1134,18 @@ class SafeRagService:
                 started_at=started_at,
             )
             # Tạm tắt Ambiguity Checker cứng nhắc để nhường cho LLM xử lý thông minh hơn.
+            # Ngoại lệ: no_drug_found → hỏi tên thuốc trước, không hỏi patient context
+            if ambiguity.is_ambiguous and ambiguity.ambiguity_type == "no_drug_found":
+                from backend.models import ChatResponse as _CR
+                return _CR(
+                    message="Bạn có thể cho mình biết tên thuốc ghi trên hộp hoặc vỉ thuốc không? Tên thuốc thường in rõ trên nhãn.",
+                    conversation_id=conversation,
+                    agent_type="safety_monitor",
+                    confidence=0.5,
+                    warnings=[],
+                    suggestions=["Ví dụ: Paracetamol 500mg, Ibuprofen 400mg, Amoxicillin 500mg"],
+                    metadata={"rag_action": "needs_clarification", "original_query": message, "reason": "no_drug_found"},
+                )
         if early_decision.action == EvidenceAction.EMERGENCY:
             return await self._handle_emergency(message, early_decision, early_subtype, conversation, trace)
 
@@ -967,6 +1173,11 @@ class SafeRagService:
             },
             started_at=started_at,
         )
+
+        # Hướng 2: LLM planner bổ sung subtype khi keyword miss
+        if not early_subtype and planner_context.get("used"):
+            if planner_context.get("safety_notes") or planner_context.get("intent") == "high_risk_context":
+                early_subtype = "high_risk_context"
 
         interaction_fast_path = (
             early_decision.intent == QuestionIntent.INTERACTION
@@ -1045,96 +1256,18 @@ class SafeRagService:
             and _has_condition_otc_finding(otc_graph_result)
             and not fast_path_context_assessment.should_ask
         ):
-            selected_agents = list(
-                dict.fromkeys(
-                    [
-                        "triage_risk_agent",
-                        "semantic_rule_mapper_agent",
-                        "graph_safety_agent",
-                        "otc_recommendation_agent",
-                        "final_response_builder",
-                    ]
-                )
-            )
-            graph_citations = _renumber_citations(
-                _citations_from_graph_findings(otc_graph_result.get("findings") or [])
-            )
-            final_action = EvidenceAction.ALLOW_WITH_CAUTION
-            response_blocks = build_response_blocks(
-                action=final_action.value,
-                intent=QuestionIntent.OTC_RECOMMENDATION.value,
-                graph_result=otc_graph_result,
-                citations=graph_citations[:5],
-                selected_agents=selected_agents,
-                subtype=early_subtype,
-            )
-            answer = format_response_blocks(response_blocks)
-            confidence_score = compute_confidence(
-                action=final_action.value,
-                intent=QuestionIntent.OTC_RECOMMENDATION.value,
-                citations=_citation_dicts(graph_citations[:5]),
-                graph_result=otc_graph_result,
-                reranker_top_score=_reranker_top_score_from_trace(trace),
-                planner_confidence=planner_context.get("confidence"),
-            )
-            _add_trace_step(
+            return await self._handle_otc_graph_fast_path(
+                message,
+                conversation,
+                pre_context_message,
+                fast_path_patient_context,
+                rule_context,
+                otc_graph_result,
+                planner_context,
+                early_decision,
+                early_subtype,
                 trace,
-                "otc_graph_fast_path_bypass_clarification",
-                details={
-                    "retrieval_bypassed": True,
-                    "reason": "condition_otc_structured_warning",
-                    "citation_count": len(graph_citations),
-                    "selected_agents": selected_agents,
-                    "confidence_score": confidence_score,
-                },
-            )
-            _add_trace_step(
-                trace,
-                "final_response_builder",
-                details={
-                    "schema_version": response_blocks.get("schema_version"),
-                    "selected_agents": selected_agents,
-                    "llm_answer_used": False,
-                    "confidence_score": confidence_score,
-                },
-            )
-            warnings = ["CÃ³ bá»‡nh ná»n liÃªn quan Ä‘áº¿n lá»±a chá»n thuá»‘c OTC; nÃªn trÃ¡nh nhÃ³m thuá»‘c nguy cÆ¡ vÃ  há»i dÆ°á»£c sÄ© khi mua."]
-            warnings.extend(early_decision.warnings)
-            warnings.append(format_medical_disclaimer())
-            return ChatResponse(
-                message=answer,
-                conversation_id=conversation,
-                agent_type=AgentType.SAFETY_MONITOR,
-                confidence=confidence_score,
-                sources=graph_citations[:5],
-                suggestions=self._suggestions(final_action.value),
-                warnings=list(dict.fromkeys(warnings)),
-                metadata={
-                    "confidence": confidence_score,
-                    "rag_action": final_action.value,
-                    "intent": QuestionIntent.OTC_RECOMMENDATION.value,
-                    "subtype": early_subtype,
-                    "should_answer": True,
-                    "retrieval_bypassed": True,
-                    "retriever": "otc_graph_fast_path",
-                    "original_query": message,
-                    "context_augmented_query": pre_context_message,
-                    "effective_query": pre_context_message,
-                    "entity_alignment": {"used": False, "skipped": True, "reason": "otc_graph_fast_path_before_alignment"},
-                    "patient_context": fast_path_patient_context,
-                    "semantic_rule_context": rule_context,
-                    "llm_intent_planner": planner_context,
-                    "missing_context": [],
-                    "clarification_questions": [],
-                    "graph_safety": otc_graph_result,
-                    "selected_agents": selected_agents,
-                    "agent_pipeline": _agent_pipeline(trace),
-                    "llm_answer_enabled": self.llm_answer.enabled,
-                    "llm_answer_used": False,
-                    "llm_provider": self.llm_answer.provider if self.llm_answer.enabled else None,
-                    "response_blocks": response_blocks,
-                    "context_provided": bool(context),
-                },
+                context,
             )
 
         # Tai dung ket qua da danh gia o buoc fast_path phia tren
@@ -1151,26 +1284,45 @@ class SafeRagService:
             },
             started_at=started_at,
         )
-        if context_assessment.should_ask:
+        # Không block clarification khi đã có hard safety subtype — phải trả lời cảnh báo ngay
+        _hard_safety_subtypes = {"nsaid_gastric_risk", "paracetamol_overdose", "hypertensive_crisis"}
+        if context_assessment.should_ask and early_subtype not in _hard_safety_subtypes:
             return await self._handle_clarification(message, conversation, context_assessment, rule_context, planner_context, planned_intent, early_decision, early_subtype, trace, context)
         if early_decision.action == EvidenceAction.HANDOFF:
-            return await self._handle_handoff(
-                message, conversation, context_assessment,
-                planner_context, early_decision, 
-                early_subtype, trace)
+            pass  # tiếp tục pipeline — arbitration xảy ra sau retrieval trong _handle_rag_full_pipeline
 
         started_at = time.perf_counter()
         context_message = _augment_with_patient_context(message, context_assessment.patient_context)
         if planner_context.get("retrieval_focus"):
             context_message += "\nPlanner focus: " + str(planner_context["retrieval_focus"])
         context_message = _augment_with_rule_context(context_message, rule_context)
-        alignment = self.name_alignment.align(context_message)
+        # Inject 3 turns lịch sử gần nhất để RAG query có context multi-turn
+        from backend.services import get_chat_history_service as _get_hist
+        _hist = _get_hist().get_history(session_id, limit=6)  # 3 cặp user/assistant
+        _recent_turns = [m for m in _hist[-6:] if m.get("role") in ("user", "assistant")]
+        if len(_recent_turns) >= 2:
+            _turn_ctx = " | ".join(
+                m["content"][:120] for m in _recent_turns[-4:]  # tối đa 4 messages gần nhất
+                if m.get("role") == "user"
+            )
+            if _turn_ctx:
+                context_message = f"{context_message} [Hội thoại trước: {_turn_ctx}]"
+        hybrid_results = self.retrieve(context_message, rule_context=rule_context)
+        should_align = (
+            len(hybrid_results) < 2  # không đủ kết quả
+            or len(message.split()) <= 5  # query ngắn có thể là tên thuốc
+        )
+        if should_align:
+            alignment = self.name_alignment.align(context_message)
+        else:
+            alignment = {"used": False, "augmented_query": context_message, "canonical_terms": [], "matches": []}
         effective_message = alignment["augmented_query"] if alignment.get("used") else context_message
         _add_trace_step(
             trace,
             "drug_name_alignment_agent",
             details={
                 "used": alignment.get("used"),
+                "skipped": not should_align,
                 "canonical_terms": alignment.get("canonical_terms") or [],
                 "match_count": len(alignment.get("matches") or []),
             },
@@ -1195,12 +1347,19 @@ class SafeRagService:
             _citations_from_graph_findings(graph_result.get("findings") or [])
         )
         if graph_result.get("should_warn") and graph_citations:
-            return await self._handle_graph_fast_path(message, conversation, effective_message, context_message, context_assessment, rule_context, alignment, graph_result, planner_context, planned_intent, early_decision, early_subtype, trace, context)
+            _result = await self._handle_graph_fast_path(message, conversation, effective_message, context_message, context_assessment, rule_context, alignment, graph_result, planner_context, planned_intent, early_decision, early_subtype, trace, context, graph_citations)
+            if _result.metadata.get("rag_action") in ("allow", "allow_with_caution"):
+                _response_cache.set(message, _result, _patient_ctx)
+            return _result
 
-        return await self._handle_rag_full_pipeline(
+        _result = await self._handle_rag_full_pipeline(
             message, conversation, effective_message, context_message, context_assessment,
-            rule_context, alignment, graph_result, planner_context, planned_intent, early_decision, early_subtype, trace, context
+            rule_context, alignment, graph_result, planner_context, planned_intent, early_decision, early_subtype, trace, context,
+            pre_retrieved=hybrid_results,
         )
+        if _result.metadata.get("rag_action") in ("allow", "allow_with_caution"):
+            _response_cache.set(message, _result, _patient_ctx)
+        return _result
 
     def _allowed_answer(
         self,

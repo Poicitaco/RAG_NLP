@@ -34,7 +34,7 @@ def compute_confidence(
     if citation_count >= 5:
         score += 0.05
     if graph.get("should_warn") is True:
-        score += 0.08
+        score -= 0.08
     if reranker_score is not None and reranker_score > 0.7:
         score += 0.07
     if planner_score is not None and planner_score > 0.8:
@@ -43,7 +43,7 @@ def compute_confidence(
     if normalized_action == "allow_with_caution" and graph.get("highest_risk") == "high":
         score -= 0.10
     if citation_count == 0:
-        score -= 0.05
+        score = min(score, 0.40)
 
     return round(max(0.0, min(1.0, score)), 2)
 

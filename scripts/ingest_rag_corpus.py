@@ -94,36 +94,52 @@ def embed_texts_local_cpu(model_name: str, texts: List[str]) -> List[List[float]
     return embeddings.tolist() if hasattr(embeddings, "tolist") else embeddings
 
 
+def _reload_kaggle_url() -> str:
+    """Reload KAGGLE_API_URL từ .env để dùng URL mới khi cập nhật."""
+    load_dotenv(override=True)
+    return os.getenv("KAGGLE_API_URL", "").rstrip("/")
+
+
 def embed_texts(model: Any, provider: str, model_name: str, texts: List[str]) -> List[List[float]]:
     if provider == "sentence-transformers":
-        if not KAGGLE_API_URL:
+        kaggle_url = _reload_kaggle_url()
+        if not kaggle_url:
             print("KAGGLE_API_URL chua duoc cau hinh trong .env; fallback local CPU.")
             return embed_texts_local_cpu(model_name, texts)
-        endpoint = f"{KAGGLE_API_URL}/embed"
-        payload = json.dumps({"texts": texts}, ensure_ascii=False).encode("utf-8")
-        request = urllib.request.Request(
-            endpoint,
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        try:
-            with urllib.request.urlopen(request, timeout=180) as response:
-                data = json.loads(response.read().decode("utf-8"))
-            embeddings = data.get("embeddings")
-            if not isinstance(embeddings, list):
-                raise RuntimeError("Kaggle embedding API response is missing embeddings")
-            if len(embeddings) != len(texts):
-                raise RuntimeError(
-                    f"Kaggle embedding API returned {len(embeddings)} vectors for {len(texts)} texts"
+
+        import time
+        max_retries = 5
+        for attempt in range(max_retries):
+            kaggle_url = _reload_kaggle_url()  # reload mỗi lần retry để lấy URL mới
+            endpoint = f"{kaggle_url}/embed"
+            payload = json.dumps({"texts": texts}, ensure_ascii=False).encode("utf-8")
+            request = urllib.request.Request(
+                endpoint,
+                data=payload,
+                headers={"Content-Type": "application/json"},
+                method="POST",
             )
-            return embeddings
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
-            print("Lỗi kết nối API Kaggle GPU. Vui lòng kiểm tra lại link Cloudflare!")
-            print(f"Kaggle embedding API request failed: {exc}")
-        except RuntimeError as exc:
-            print("Lỗi phản hồi API Kaggle GPU qua link Cloudflare.")
-            print(str(exc))
+            try:
+                with urllib.request.urlopen(request, timeout=180) as response:
+                    data = json.loads(response.read().decode("utf-8"))
+                embeddings = data.get("embeddings")
+                if not isinstance(embeddings, list):
+                    raise RuntimeError("Kaggle embedding API response is missing embeddings")
+                if len(embeddings) != len(texts):
+                    raise RuntimeError(
+                        f"Kaggle embedding API returned {len(embeddings)} vectors for {len(texts)} texts"
+                    )
+                return embeddings
+            except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
+                print(f"[Attempt {attempt+1}/{max_retries}] Lỗi API Kaggle: {exc}")
+                if attempt < max_retries - 1:
+                    print("Đợi 100s... Cập nhật KAGGLE_API_URL trong .env nếu cần, script sẽ tự đọc lại.")
+                    time.sleep(100)
+                else:
+                    print("Hết retry. Fallback local CPU cho batch này.")
+            except RuntimeError as exc:
+                print(f"Lỗi phản hồi API Kaggle: {exc}")
+                break
 
         print("Fallback: dùng sentence-transformers local CPU để nhúng batch hiện tại.")
         return embed_texts_local_cpu(model_name, texts)

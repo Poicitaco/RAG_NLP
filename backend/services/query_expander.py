@@ -12,8 +12,27 @@ from backend.safety.evidence_guardrails import normalize_text
 
 logger = logging.getLogger(__name__)
 
+# Medical synonyms tĩnh cho thuật ngữ y khoa tiếng Việt thường bị miss bởi DAV expansion
+MEDICAL_SYNONYMS_VI: Dict[str, List[str]] = {
+    "sot": ["tang than nhiet", "ha sot", "sot cao", "nhiet do cao"],
+    "dau dau": ["nhuc dau", "dau cang dau"],
+    "ho": ["viem hong", "khan tieng"],
+    "tieu chay": ["roi loan tieu hoa", "phan long"],
+    "dau da day": ["dau bung", "viem loet da day", "trao nguoc"],
+    "tang huyet ap": ["cao huyet ap", "huyet ap cao", "tang ha", "hypertension"],
+    "tieu duong": ["dai thao duong", "glucose mau cao", "insulin", "diabetes"],
+    "hen suyen": ["hen phe quan", "kho tho", "con hen", "asthma"],
+    "suy than": ["benh than", "chuc nang than", "renal"],
+    "suy gan": ["benh gan", "viem gan", "xo gan", "hepatic"],
+    "paracetamol": ["acetaminophen", "tylenol", "efferalgan", "panadol"],
+    "ibuprofen": ["nurofen", "advil", "brufen"],
+    "aspirin": ["acid acetylsalicylic"],
+    "omeprazole": ["losec", "esomeprazole"],
+    "metformin": ["glucophage"],
+    "amoxicillin": ["amoxil", "augmentin"],
+}
+
 INGREDIENT_FIELDS = [
-    "active_ingredient",
     "active_ingredients",
     "main_ingredient",
     "hoat_chat",
@@ -79,7 +98,17 @@ class QueryExpander:
             for term in found
             if term and term not in normalized_query and self._is_clean_expansion(term)
         }
-        return sorted(found)[:8]
+        # Thêm medical synonyms tiếng Việt
+        for key, synonyms in MEDICAL_SYNONYMS_VI.items():
+            if key in normalized_query:
+                found.update(s for s in synonyms if s not in normalized_query)
+            else:
+                for syn in synonyms:
+                    if syn in normalized_query:
+                        found.add(key)
+                        found.update(s for s in synonyms if s != syn and s not in normalized_query)
+                        break
+        return sorted(found)[:12]
 
     def expand_query(self, query: str) -> str:
         expansions = self.expand(query)

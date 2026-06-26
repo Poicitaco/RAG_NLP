@@ -77,7 +77,7 @@ class TextService:
             self.conversation_context.update_from_response(
                 session_id=session_id,
                 user_message=processing_message,
-                response_metadata=response.metadata,
+                response_metadata={**response.metadata, "message": response.message},
             )
             
             duration = time.time() - start_time

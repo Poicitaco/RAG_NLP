@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     LLM_PROVIDER: str = Field(default="gemini", env="LLM_PROVIDER")
     LLM_MODEL: str = Field(default="gemini-2.5-flash", env="LLM_MODEL")
     LLM_TEMPERATURE: float = Field(default=0.1, env="LLM_TEMPERATURE")
-    LLM_MAX_OUTPUT_TOKENS: int = Field(default=700, env="LLM_MAX_OUTPUT_TOKENS")
+    LLM_MAX_OUTPUT_TOKENS: int = Field(default=2048, env="LLM_MAX_OUTPUT_TOKENS")
     LLM_TIMEOUT_SECONDS: int = Field(default=30, env="LLM_TIMEOUT_SECONDS")
     GEMINI_API_KEY: str = Field(default="", env="GEMINI_API_KEY")
     GEMINI_MODEL: str = Field(default="gemini-2.5-flash", env="GEMINI_MODEL")

@@ -1,127 +1,101 @@
-import React, { useState } from 'react';
-import { UserCircle, Activity, Heart, Edit3 } from 'lucide-react';
+'use client';
 
-interface PatientContextProps {
-  onSave: (context: any) => void;
+import React, { useState, useCallback, useEffect } from 'react';
+import { UserCircle, Heart, Activity } from 'lucide-react';
+import { JsonObject } from '@/lib/api';
+
+interface Props {
+  onSave: (ctx: JsonObject) => void;
   onReset?: () => void;
 }
 
-export default function PatientProfile({ onSave, onReset }: PatientContextProps) {
-  const [isOpen, setIsOpen] = useState(true);
+const CONDITIONS = [
+  { id: 'hypertension', label: 'Huyết áp cao' },
+  { id: 'diabetes', label: 'Tiểu đường' },
+  { id: 'stomach_ulcer', label: 'Đau dạ dày' },
+  { id: 'asthma', label: 'Hen suyễn' },
+  { id: 'kidney_disease', label: 'Suy thận/gan' },
+  { id: 'pregnancy', label: 'Mang thai' },
+];
+
+export default function PatientProfile({ onSave, onReset }: Props) {
   const [age, setAge] = useState('');
   const [weight, setWeight] = useState('');
   const [conditions, setConditions] = useState<string[]>([]);
-  
-  const commonConditions = [
-    { id: 'hypertension', label: 'Huyết áp cao' },
-    { id: 'diabetes', label: 'Tiểu đường' },
-    { id: 'stomach_ulcer', label: 'Đau dạ dày' },
-    { id: 'asthma', label: 'Hen suyễn' },
-    { id: 'kidney_disease', label: 'Suy thận/gan' },
-    { id: 'pregnancy', label: 'Đang mang thai' },
-  ];
 
-  const toggleCondition = (id: string) => {
-    setConditions(prev => 
-      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
-    );
-  };
-
-  React.useEffect(() => {
-    onSave({
-      age: age ? parseInt(age) : undefined,
-      weight_kg: weight ? parseInt(weight) : undefined,
-      conditions: conditions
-    });
+  const buildContext = useCallback((): JsonObject => {
+    const ctx: JsonObject = { conditions };
+    if (age) ctx.age = parseInt(age);
+    if (weight) ctx.weight_kg = parseInt(weight);
+    return ctx;
   }, [age, weight, conditions]);
 
+  useEffect(() => {
+    onSave(buildContext());
+  }, [buildContext, onSave]);
+
+  const toggle = (id: string) =>
+    setConditions(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+
   const handleSave = () => {
-    onSave({
-      age: age ? parseInt(age) : undefined,
-      weight_kg: weight ? parseInt(weight) : undefined,
-      conditions: conditions
-    });
-    if (onReset) onReset();
-    setIsOpen(false);
+    onSave(buildContext());
+    onReset?.();
   };
 
+  const inputCls = "w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 focus:outline-none focus:border-white/30 transition-colors";
+
   return (
-    <div className="bg-white rounded-3xl border border-gray-200 shadow-lg overflow-hidden h-fit">
-      <div 
-        className="bg-blue-600 p-4 text-white flex justify-between items-center cursor-pointer md:cursor-default"
-        onClick={() => setIsOpen(!isOpen)}
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 text-white/70">
+        <UserCircle className="w-4 h-4" />
+        <span className="text-xs font-semibold uppercase tracking-wider">Hồ sơ bệnh nhân</span>
+      </div>
+
+      <p className="text-xs text-white/40 leading-relaxed">
+        Cung cấp thông tin để nhận tư vấn an toàn và chính xác hơn.
+      </p>
+
+      <div className="space-y-3">
+        <div>
+          <label className="block text-xs text-white/50 mb-1.5">Độ tuổi</label>
+          <input type="number" value={age} onChange={e => setAge(e.target.value)}
+            placeholder="Ví dụ: 45" className={inputCls} />
+        </div>
+        <div>
+          <label className="block text-xs text-white/50 mb-1.5">Cân nặng (kg)</label>
+          <input type="number" value={weight} onChange={e => setWeight(e.target.value)}
+            placeholder="Ví dụ: 60" className={inputCls} />
+        </div>
+        <div>
+          <label className="flex items-center gap-1.5 text-xs text-white/50 mb-2">
+            <Heart className="w-3.5 h-3.5 text-red-400" />
+            Bệnh nền
+          </label>
+          <div className="flex flex-wrap gap-1.5">
+            {CONDITIONS.map(c => (
+              <button
+                key={c.id}
+                onClick={() => toggle(c.id)}
+                className={`text-xs px-2.5 py-1 rounded-lg border transition-colors ${
+                  conditions.includes(c.id)
+                    ? 'bg-red-500/20 border-red-500/40 text-red-300'
+                    : 'bg-white/5 border-white/10 text-white/50 hover:text-white/70 hover:border-white/20'
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={handleSave}
+        className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white text-sm font-medium py-2.5 rounded-xl transition-colors"
       >
-        <div className="flex items-center gap-2">
-          <UserCircle className="w-6 h-6" />
-          <h3 className="font-bold text-lg">Hồ sơ Bệnh nền</h3>
-        </div>
-        <button className="md:hidden">
-          <Edit3 className="w-5 h-5" />
-        </button>
-      </div>
-      
-      <div className={`p-5 transition-all ${isOpen ? 'block' : 'hidden md:block'}`}>
-        <p className="text-sm text-gray-500 mb-4">
-          Hãy cho AI biết một chút về bạn để có câu trả lời an toàn và chính xác nhất.
-        </p>
-
-        <div className="space-y-5">
-          {/* Tuổi */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Độ tuổi</label>
-            <input 
-              type="number" 
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-              placeholder="Ví dụ: 45"
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
-
-          {/* Cân nặng */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Cân nặng (kg)</label>
-            <input 
-              type="number" 
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              placeholder="Ví dụ: 60 (trẻ em: 15)"
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
-
-          {/* Bệnh nền */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-1.5">
-              <Heart className="w-4 h-4 text-red-500" />
-              Lưu ý y tế (Bệnh nền)
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {commonConditions.map((cond) => (
-                <button
-                  key={cond.id}
-                  onClick={() => toggleCondition(cond.id)}
-                  className={`px-3 py-1.5 text-sm rounded-lg border font-medium transition-colors ${
-                    conditions.includes(cond.id) 
-                      ? 'bg-red-50 border-red-200 text-red-700' 
-                      : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {cond.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <button 
-            onClick={handleSave}
-            className="w-full bg-gray-900 hover:bg-black text-white font-semibold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors mt-6"
-          >
-            <Activity className="w-5 h-5" />
-            Lưu & Bắt đầu tư vấn mới
-          </button>
-        </div>
-      </div>
+        <Activity className="w-4 h-4" />
+        Lưu & Bắt đầu mới
+      </button>
     </div>
   );
 }

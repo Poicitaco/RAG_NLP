@@ -1,197 +1,276 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MessageBubble from './MessageBubble';
-import ElicitationWidget from './ElicitationWidget';
-import { sendMessage, Message } from '@/lib/api';
-import { Send, Loader2 } from 'lucide-react';
+import QuickStartPanel from './QuickStartPanel';
+import AskUserInput from './AskUserInput';
+import { sendMessageStream, submitFeedback, Message, JsonObject } from '@/lib/api';
+import { Send, Square } from 'lucide-react';
 
 interface ChatWindowProps {
   sessionId: string;
-  patientContext?: any;
+  patientContext?: JsonObject | null;
 }
 
-export default function ChatWindow({ sessionId, patientContext }: ChatWindowProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: 'Xin chào! Tôi là Trợ lý Y tế ảo chuyên tư vấn về các loại thuốc phổ thông (OTC). Bạn đang gặp triệu chứng gì, hoặc muốn hỏi về loại thuốc nào hôm nay?',
-      timestamp: new Date().toISOString()
-    }
-  ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  // Tich luy patient_context qua cac turn de tranh mat thong tin giua cac luot hoi
-  const [accumulatedContext, setAccumulatedContext] = useState<Record<string, any>>({});
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+const GREETING: Message = {
+  role: 'assistant',
+  content: 'Xin chào! Tôi là trợ lý tư vấn dược phẩm dựa trên **Dược thư Quốc gia Việt Nam**.\n\nBạn muốn hỏi về thuốc gì, hoặc đang có triệu chứng nào cần tư vấn?',
+  timestamp: new Date().toISOString(),
+};
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+export default function ChatWindow({ sessionId, patientContext }: ChatWindowProps) {
+  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const [input, setInput] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [feedbackRatings, setFeedbackRatings] = useState<Record<number, number>>({});
+  const [accumulatedContext, setAccumulatedContext] = useState<JsonObject>({});
+  const abortRef = useRef<AbortController | null>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    scrollToBottom();
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Auto-resize textarea
   useEffect(() => {
-    setMessages([
-      {
-        role: 'assistant',
-        content: 'Xin chào! Tôi là Trợ lý Y tế ảo chuyên tư vấn về các loại thuốc phổ thông (OTC). Bạn đang gặp triệu chứng gì, hoặc muốn hỏi về loại thuốc nào hôm nay?',
-        timestamp: new Date().toISOString()
-      }
-    ]);
-    // Reset context khi doi session
-    setAccumulatedContext({});
-  }, [sessionId]);
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+  }, [input]);
 
-  const submitMessage = async (content: string) => {
+  const submitMessage = useCallback(async (content: string) => {
     const cleaned = content.trim();
-    if (!cleaned || isLoading) return;
+    if (!cleaned || isStreaming) return;
 
-    const userMessage: Message = {
-      role: 'user',
-      content: cleaned,
-      timestamp: new Date().toISOString()
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
+    const userMsg: Message = { role: 'user', content: cleaned, timestamp: new Date().toISOString() };
+    setMessages(prev => [...prev, userMsg]);
     setInput('');
-    setIsLoading(true);
+    setIsStreaming(true);
+
+    // Placeholder streaming message
+    const streamingMsg: Message = {
+      role: 'assistant',
+      content: '',
+      timestamp: new Date().toISOString(),
+      streaming: true,
+    };
+    setMessages(prev => [...prev, streamingMsg]);
+
+    const context: JsonObject = { ...accumulatedContext, ...(patientContext || {}) };
+    abortRef.current = new AbortController();
 
     try {
-      // Merge patientContext prop (neu co) voi accumulated context tu cac turn truoc
-      const contextGui = {
-        ...accumulatedContext,
-        ...(patientContext || {}),
-      };
-      const response = await sendMessage(userMessage.content, sessionId, Object.keys(contextGui).length ? contextGui : undefined);
-
-      // Cap nhat accumulated context neu backend tra ve patient_context moi
-      const patientContextMoi = response.metadata?.patient_context;
-      if (patientContextMoi && typeof patientContextMoi === 'object') {
-        setAccumulatedContext((prev) => ({ ...prev, ...patientContextMoi }));
+      await sendMessageStream(
+        cleaned,
+        sessionId,
+        Object.keys(context).length ? context : undefined,
+        {
+          onToken: (token) => {
+            setMessages(prev => {
+              const updated = [...prev];
+              const last = updated[updated.length - 1];
+              if (last?.role === 'assistant') {
+                updated[updated.length - 1] = { ...last, content: last.content + token };
+              }
+              return updated;
+            });
+          },
+          onDone: (meta) => {
+            if (meta.metadata?.patient_context && typeof meta.metadata.patient_context === 'object') {
+              setAccumulatedContext(prev => ({ ...prev, ...(meta.metadata!.patient_context as JsonObject) }));
+            }
+            setMessages(prev => {
+              const updated = [...prev];
+              const last = updated[updated.length - 1];
+              if (last?.role === 'assistant') {
+                updated[updated.length - 1] = {
+                  ...last,
+                  streaming: false,
+                  metadata: {
+                    warnings: meta.warnings,
+                    suggestions: meta.suggestions,
+                    sources: meta.sources,
+                    agentType: meta.agentType,
+                    confidence: meta.confidence,
+                    rawLog: meta.metadata as JsonObject,
+                  },
+                };
+              }
+              return updated;
+            });
+            setIsStreaming(false);
+          },
+          onError: (err) => {
+            setMessages(prev => {
+              const updated = [...prev];
+              updated[updated.length - 1] = {
+                role: 'assistant',
+                content: `Xin lỗi, đã xảy ra lỗi: ${err}`,
+                timestamp: new Date().toISOString(),
+                streaming: false,
+              };
+              return updated;
+            });
+            setIsStreaming(false);
+          },
+        },
+        abortRef.current.signal
+      );
+    } catch (err: unknown) {
+      if ((err as { name?: string }).name !== 'AbortError') {
+        setMessages(prev => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            role: 'assistant',
+            content: 'Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại.',
+            timestamp: new Date().toISOString(),
+            streaming: false,
+          };
+          return updated;
+        });
       }
+      setIsStreaming(false);
+    }
+  }, [isStreaming, sessionId, patientContext, accumulatedContext]);
 
-      const botMessage: Message = {
-        role: 'assistant',
-        content: response.message,
-        timestamp: new Date().toISOString(),
-        metadata: {
-          warnings: response.warnings,
-          suggestions: response.suggestions,
-          sources: response.sources,
-          agentType: response.agent_type,
-          rawLog: response.metadata
-        }
-      };
+  const handleStop = () => {
+    abortRef.current?.abort();
+    setIsStreaming(false);
+    setMessages(prev => {
+      const updated = [...prev];
+      const last = updated[updated.length - 1];
+      if (last?.streaming) {
+        updated[updated.length - 1] = { ...last, streaming: false };
+      }
+      return updated;
+    });
+  };
 
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error('Lỗi khi gửi tin nhắn:', error);
-      setMessages((prev) => [...prev, {
-        role: 'assistant',
-        content: 'Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại sau.',
-        timestamp: new Date().toISOString()
-      }]);
-    } finally {
-      setIsLoading(false);
+  const handleSend = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    submitMessage(input);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
     }
   };
 
-  const handleSend = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    await submitMessage(input);
+  const handleFeedback = async (messageIndex: number, rating: number) => {
+    const msg = messages[messageIndex];
+    if (!msg || msg.role !== 'assistant') return;
+    const prev = messages.slice(0, messageIndex).reverse().find(m => m.role === 'user');
+    try {
+      await submitFeedback({ query: prev?.content || '', response: msg.content, rating, feedback_type: 'thumbs' });
+      setFeedbackRatings(r => ({ ...r, [messageIndex]: rating }));
+    } catch { /* ignore */ }
   };
 
-  const latestAssistantIndex = messages.reduce((latest, msg, index) => (
-    msg.role === 'assistant' ? index : latest
-  ), -1);
+  const hasUserMsg = messages.some(m => m.role === 'user');
 
   return (
-    <div className="flex flex-col h-[calc(100vh-2rem)] max-h-[800px] bg-gray-50 rounded-3xl overflow-hidden border border-gray-200 shadow-xl">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-gray-800">Trợ lý Dược phẩm</h2>
-          <p className="text-sm text-gray-500">Tư vấn an toàn dựa trên Dược thư Quốc gia</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-          </span>
-          <span className="text-xs font-medium text-gray-600">Trực tuyến</span>
-        </div>
-      </div>
-
-      {/* Message List */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-2">
-        {messages.map((msg, index) => {
-          const rawLog = msg.metadata?.rawLog;
-          const showElicitation =
-            msg.role === 'assistant' &&
-            index === latestAssistantIndex &&
-            rawLog?.rag_action === 'needs_clarification' &&
-            ((rawLog?.missing_context || []).length > 0 || (rawLog?.clarification_questions || []).length > 0);
-
-          return (
-            <div key={index}>
-              <MessageBubble
-                role={msg.role}
-                content={msg.content}
-                warnings={msg.metadata?.warnings}
-                suggestions={msg.metadata?.suggestions}
-                sources={msg.metadata?.sources}
-                agentType={msg.metadata?.agentType}
-                rawLog={rawLog}
+    <div className="flex-1 flex flex-col min-h-0">
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto py-6">
+        <div className="max-w-3xl mx-auto px-4 space-y-1">
+          {messages.map((msg, i) => (
+            <MessageBubble
+              key={i}
+              role={msg.role}
+              content={msg.content}
+              streaming={msg.streaming}
+              warnings={msg.metadata?.warnings}
+              suggestions={msg.metadata?.suggestions}
+              sources={msg.metadata?.sources}
+              agentType={msg.metadata?.agentType}
+              confidence={msg.metadata?.confidence}
+              rawLog={msg.metadata?.rawLog}
+              onSuggestionClick={submitMessage}
+              feedbackRating={feedbackRatings[i]}
+              onFeedback={msg.role === 'assistant' && !msg.streaming ? (r) => handleFeedback(i, r) : undefined}
+            />
+          ))}
+          {/* AskUserInput — hiện sau tin nhắn cuối nếu needs_clarification và có triage_options */}
+          {(() => {
+            const last = [...messages].reverse().find(m => m.role === 'assistant');
+            const rawLog = last?.metadata?.rawLog as Record<string, unknown> | undefined;
+            if (!last || !rawLog || isStreaming) return null;
+            if (rawLog.rag_action !== 'needs_clarification') return null;
+            const question = (rawLog.clarification_questions as string[])?.[0] || '';
+            const options = (rawLog.triage_options as string[]) || [];
+            if (!question) return null;
+            return (
+              <AskUserInput
+                key={messages.length}
+                question={question}
+                options={options}
+                disabled={isStreaming}
+                onSubmit={submitMessage}
+                onSkip={() => submitMessage('Bỏ qua')}
               />
-              {showElicitation && (
-                <div className="flex justify-start -mt-4 mb-6">
-                  <ElicitationWidget
-                    missingContext={rawLog?.missing_context || []}
-                    questions={rawLog?.clarification_questions || []}
-                    disabled={isLoading}
-                    onSubmit={submitMessage}
-                  />
+            );
+          })()}
+          {!hasUserMsg && !isStreaming && (
+            <QuickStartPanel disabled={false} onSelect={submitMessage} />
+          )}
+          {/* Typing indicator — hiện khi đang xử lý, trước khi có token đầu tiên */}
+          {isStreaming && messages[messages.length - 1]?.role !== 'assistant' && (
+            <div className="flex justify-start mb-2">
+              <div className="flex items-center gap-3 bg-[#2f2f2f] rounded-2xl rounded-bl-sm px-4 py-3 max-w-[120px]">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-white/60 animate-bounce [animation-delay:0ms]" />
+                  <span className="w-2 h-2 rounded-full bg-white/60 animate-bounce [animation-delay:150ms]" />
+                  <span className="w-2 h-2 rounded-full bg-white/60 animate-bounce [animation-delay:300ms]" />
                 </div>
-              )}
+              </div>
             </div>
-          );
-        })}
-        {isLoading && (
-          <div className="flex justify-start mb-6">
-            <div className="bg-white border border-gray-100 rounded-2xl rounded-bl-none p-4 shadow-sm flex items-center gap-3">
-              <Loader2 className="w-5 h-5 text-blue-500 animate-spin" />
-              <span className="text-gray-500 font-medium">Đang tra cứu dữ liệu an toàn...</span>
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+          )}
+          <div ref={bottomRef} />
+        </div>
       </div>
 
-      {/* Input Area */}
-      <div className="bg-white border-t border-gray-200 p-4">
-        <form onSubmit={handleSend} className="relative flex items-center">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Bạn muốn hỏi về thuốc gì? (Ví dụ: Uống Panadol bị đau dạ dày không?)"
-            className="w-full bg-gray-50 border border-gray-200 text-gray-800 rounded-full pl-6 pr-14 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow text-base md:text-lg"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={!input.trim() || isLoading}
-            className="absolute right-2 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send className="w-5 h-5" />
-          </button>
+      {/* Input */}
+      <div className="border-t border-white/10 px-4 py-4">
+        <form onSubmit={handleSend} className="max-w-3xl mx-auto relative">
+          <div className="flex items-end gap-2 bg-[#2f2f2f] rounded-2xl border border-white/10 px-4 py-3 focus-within:border-white/30 transition-colors">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Hỏi về thuốc, liều dùng, tương tác... (Enter để gửi, Shift+Enter xuống dòng)"
+              rows={1}
+              disabled={isStreaming}
+              className="flex-1 bg-transparent resize-none outline-none text-white placeholder-white/30 text-sm leading-relaxed max-h-48 overflow-y-auto"
+            />
+            {isStreaming ? (
+              <button
+                type="button"
+                onClick={handleStop}
+                className="flex-shrink-0 p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+                aria-label="Dừng"
+              >
+                <Square className="w-4 h-4 fill-current" />
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={!input.trim()}
+                className="flex-shrink-0 p-2 rounded-lg bg-white text-black hover:bg-white/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Gửi"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          <p className="text-center text-xs text-white/25 mt-2">
+            SafeRAG chỉ mang tính tham khảo — không thay thế chẩn đoán bác sĩ
+          </p>
         </form>
-        <p className="text-center text-xs text-gray-400 mt-3">
-          Trợ lý AI chỉ mang tính chất tham khảo dựa trên dữ liệu chuẩn. Không thay thế chẩn đoán của Bác sĩ.
-        </p>
       </div>
     </div>
   );

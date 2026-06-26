@@ -1,4 +1,0 @@
-﻿from_id,to_id,reason,source
-otc:cold_flu,ingredient:pseudoephedrine,common OTC cold/flu ingredient requiring condition-aware screening,otc_condition_guardrail
-otc:cold_flu,ingredient:phenylephrine,common OTC cold/flu ingredient requiring condition-aware screening,otc_condition_guardrail
-otc:cold_flu,ingredient:ephedrine,common OTC cold/flu ingredient requiring condition-aware screening,otc_condition_guardrail

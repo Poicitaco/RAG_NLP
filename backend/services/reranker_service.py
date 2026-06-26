@@ -43,7 +43,7 @@ class RerankerService:
             self.fallback_used = True
             return results
 
-        candidates = results[:20]
+        candidates = results[:50]
         pairs = [(query, self._row_text(row)) for row in candidates]
         try:
             scores = self.model.predict(pairs)

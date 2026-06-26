@@ -744,8 +744,23 @@ def build_response_blocks(
     }
 
 
+def check_citation_coverage(response_text: str, citations: List[Any]) -> Dict[str, Any]:
+    """Kiểm tra bao nhiêu citation được dùng inline trong response text.
+    
+    Returns dict với coverage (0.0-1.0), used (list id dùng), missing (list id thiếu).
+    """
+    if not citations:
+        return {"coverage": 0.0, "used": [], "missing": []}
+    used_ids = set(re.findall(r'\[S(\d+)\]', response_text))
+    all_ids = {str(i + 1) for i in range(len(citations))}
+    used = sorted(used_ids & all_ids, key=int)
+    missing = sorted(all_ids - used_ids, key=int)
+    coverage = len(used) / len(all_ids) if all_ids else 0.0
+    return {"coverage": round(coverage, 2), "used": used, "missing": missing}
+
+
 def format_response_blocks(response_blocks: Dict[str, Any]) -> str:
-    '''Mô tả ngắn một dòng.
+    '''Format response blocks thành string hiển thị.
     
     Args:
         response_blocks: mô tả

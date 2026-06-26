@@ -1,6 +1,7 @@
 """Service luu tru va truy xuat lich su chat su dung file JSON don gian."""
 import json
 import os
+import threading
 from pathlib import Path
 from typing import Dict, List, Any
 from datetime import datetime
@@ -12,6 +13,7 @@ HISTORY_FILE = DATA_DIR / "chat_history.json"
 class ChatHistoryService:
     def __init__(self, file_path: Path = HISTORY_FILE):
         self.file_path = file_path
+        self._lock = threading.Lock()
         self._ensure_file_exists()
 
     def _ensure_file_exists(self) -> None:
@@ -43,27 +45,33 @@ class ChatHistoryService:
 
     def add_message(self, session_id: str, role: str, content: str, metadata: Dict[str, Any] = None) -> None:
         """Them mot tin nhan vao lich su cua session_id."""
-        history = self._load_history()
-        if session_id not in history:
-            history[session_id] = []
-        
-        message = {
-            "role": role,
-            "content": content,
-            "timestamp": datetime.now().isoformat(),
-            "metadata": metadata or {}
-        }
-        history[session_id].append(message)
-        self._save_history(history)
+        with self._lock:
+            history = self._load_history()
+            if session_id not in history:
+                history[session_id] = []
+            
+            message = {
+                "role": role,
+                "content": content,
+                "timestamp": datetime.now().isoformat(),
+                "metadata": metadata or {}
+            }
+            history[session_id].append(message)
+            # Giới hạn mỗi session tối đa 100 messages (50 turns)
+            MAX_MESSAGES_PER_SESSION = 100
+            if len(history[session_id]) > MAX_MESSAGES_PER_SESSION:
+                history[session_id] = history[session_id][-MAX_MESSAGES_PER_SESSION:]
+            self._save_history(history)
 
     def clear_session(self, session_id: str) -> bool:
         """Xoa lich su cua mot session_id."""
-        history = self._load_history()
-        if session_id in history:
-            del history[session_id]
-            self._save_history(history)
-            return True
-        return False
+        with self._lock:
+            history = self._load_history()
+            if session_id in history:
+                del history[session_id]
+                self._save_history(history)
+                return True
+            return False
 
 # Singleton instance
 _chat_history_service = None

@@ -86,6 +86,8 @@ app.include_router(drug.router, prefix="/api/v1/drug", tags=["Drug"])
 app.include_router(feedback.router, prefix="/api/v1", tags=["Feedback"])
 from backend.api.routes import metrics
 app.include_router(metrics.router, prefix="/api/v1/metrics", tags=["Metrics"])
+from backend.api.routes import admin
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
 
 
 # Xử lý lỗi

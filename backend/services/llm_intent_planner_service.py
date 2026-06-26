@@ -52,7 +52,13 @@ class LLMIntentPlanner:
         self.timeout = settings.LLM_TIMEOUT_SECONDS
 
     def is_available(self) -> bool:
-        return self.enabled and self.provider == "gemini" and bool(settings.GEMINI_API_KEY)
+        if not self.enabled:
+            return False
+        if self.provider == "gemini":
+            return bool(settings.GEMINI_API_KEY)
+        if self.provider == "groq":
+            return bool(settings.GROQ_API_KEY)
+        return False
 
     async def plan(
         self,
@@ -64,7 +70,10 @@ class LLMIntentPlanner:
         if not self.is_available():
             return fallback
         try:
-            llm_plan = await self._gemini_plan(question, fallback_intent, fallback_subtype)
+            if self.provider == "groq":
+                llm_plan = await self._groq_plan(question, fallback_intent, fallback_subtype)
+            else:
+                llm_plan = await self._gemini_plan(question, fallback_intent, fallback_subtype)
             return self._validated_plan(llm_plan, fallback)
         except Exception as exc:
             fallback["planner_error"] = exc.__class__.__name__
@@ -88,7 +97,7 @@ class LLMIntentPlanner:
                 "nhoc",
                 "so sinh",
             ],
-        ) or bool(re.search(r"\b(?:[0-9]{1,2})\s*tuoi\b", normalized) and contains_any(normalized, ["sot", "ho", "tieu chay", "dau"]))
+        ) or bool(re.search(r"\b(?:[0-9]{1,3})\s*(?:tuoi|thang tuoi|thang)\b", normalized) and contains_any(normalized, ["sot", "ho", "tieu chay", "dau"]))
         fever = contains_any(normalized, ["sot", "ha sot", "nong dau"])
         buying_otc = contains_any(normalized, ["mua thuoc", "thuoc gi", "nen uong", "ha sot", "thuoc cam", "thuoc ho"])
         interaction = contains_any(normalized, ["uong chung", "dung chung", "tuong tac", "ket hop"])
@@ -130,9 +139,39 @@ class LLMIntentPlanner:
             "confidence": 0.55,
         }
 
-    async def _gemini_plan(self, question: str, fallback_intent: str, fallback_subtype: str) -> Dict[str, Any]:
+    async def _groq_plan(self, question: str, fallback_intent: str, fallback_subtype: str) -> Dict[str, Any]:
         system_prompt = (
             "You are an intent planner for a Vietnamese medication-safety RAG system. "
+            "Return ONLY valid JSON with no markdown."
+        )
+        user_payload = json.dumps({
+            "question": question,
+            "fallback_intent": fallback_intent,
+            "allowed_intents": sorted(ALLOWED_INTENTS),
+            "schema": {"intent": "one allowed intent", "subject": "self|child|pregnant_or_breastfeeding|elderly|unknown",
+                       "is_pediatric": "boolean", "missing_context_focus": "array",
+                       "retrieval_focus": "string", "agents": "array", "safety_notes": "array", "confidence": "0..1"},
+        }, ensure_ascii=False)
+        text = await self._groq_generate(system_prompt, user_payload)
+        if not text:
+            return {}
+        match = re.search(r"\{.*\}", text, re.DOTALL)
+        return json.loads(match.group(0) if match else text)
+
+    async def _groq_generate(self, system_prompt: str, user_payload: str) -> Optional[str]:
+        import httpx
+        url = "https://api.groq.com/openai/v1/chat/completions"
+        body = {"model": self.model, "messages": [{"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_payload}], "temperature": 0.0, "max_tokens": 400}
+        headers = {"Authorization": f"Bearer {settings.GROQ_API_KEY}", "Content-Type": "application/json"}
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            resp = await client.post(url, headers=headers, json=body)
+            resp.raise_for_status()
+        choices = resp.json().get("choices") or []
+        return ((choices[0].get("message") or {}).get("content") or "").strip() or None
+
+    async def _gemini_plan(self, question: str, fallback_intent: str, fallback_subtype: str) -> Dict[str, Any]:
+        system_prompt = (
             "You must NOT answer the medical question and must NOT recommend medicine or dose. "
             "Return only valid JSON. Your task is to identify intent, subject, missing context, "
             "retrieval focus, safety notes, and agents to call. Hard safety rules and evidence "

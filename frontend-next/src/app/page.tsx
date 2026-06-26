@@ -1,64 +1,80 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import ChatWindow from '@/components/chat/ChatWindow';
 import PatientProfile from '@/components/patient/PatientProfile';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, SidebarOpen, SidebarClose } from 'lucide-react';
+import { JsonObject } from '@/lib/api';
 
 export default function Home() {
   const [sessionId, setSessionId] = useState(() => 'sess_' + Math.random().toString(36).substr(2, 9));
-  const [patientContext, setPatientContext] = useState<any>(null);
+  const [patientContext, setPatientContext] = useState<JsonObject | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const handleSavePatientContext = useCallback((ctx: JsonObject) => {
+    setPatientContext(ctx);
+  }, []);
+
+  const handleResetSession = useCallback(() => {
+    setSessionId('sess_' + Math.random().toString(36).substr(2, 9));
+  }, []);
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] text-gray-900 font-sans selection:bg-blue-200">
-      <div className="max-w-[1600px] mx-auto p-4 md:p-6 lg:p-8">
-        
-        {/* Header */}
-        <header className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-600 p-2.5 rounded-xl text-white shadow-md">
-              <ShieldCheck className="w-8 h-8" />
+    <div className="flex h-full bg-[#212121] text-white">
+      
+      {/* Sidebar */}
+      <aside className={`
+        flex-shrink-0 flex flex-col border-r border-white/10 transition-all duration-300 overflow-hidden
+        ${sidebarOpen ? 'w-72' : 'w-0'}
+      `}>
+        <div className="w-72 flex flex-col h-full p-4 gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-2.5 px-1 pt-1">
+            <div className="bg-blue-500 p-1.5 rounded-lg">
+              <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-gray-900">
-                SafeRAG <span className="text-blue-600">Pharma</span>
-              </h1>
-              <p className="text-sm md:text-base font-medium text-gray-500">Tra cứu An toàn Thuốc dựa trên Dược thư Quốc gia</p>
+              <div className="font-bold text-sm leading-tight">SafeRAG Pharma</div>
+              <div className="text-xs text-white/50">Dược thư Quốc gia</div>
             </div>
+          </div>
+
+          {/* Patient Profile */}
+          <div className="flex-1 overflow-y-auto">
+            <PatientProfile onSave={handleSavePatientContext} onReset={handleResetSession} />
+          </div>
+
+          {/* Disclaimer */}
+          <div className="text-xs text-white/40 leading-relaxed border-t border-white/10 pt-3">
+            Chỉ mang tính tham khảo. Không thay thế chẩn đoán chuyên khoa.
+          </div>
+        </div>
+      </aside>
+
+      {/* Main chat area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top bar */}
+        <header className="flex items-center gap-3 px-4 py-3 border-b border-white/10">
+          <button
+            onClick={() => setSidebarOpen(v => !v)}
+            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+            aria-label="Toggle sidebar"
+          >
+            {sidebarOpen ? <SidebarClose className="w-5 h-5" /> : <SidebarOpen className="w-5 h-5" />}
+          </button>
+          <span className="text-sm font-medium text-white/70">Trợ lý Dược phẩm An toàn</span>
+          <div className="ml-auto flex items-center gap-3">
+            <a href="/admin" className="text-xs text-white/30 hover:text-white/60 transition-colors">Admin</a>
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            <span className="text-xs text-white/50">Online</span>
           </div>
         </header>
 
-        {/* Layout Chính */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          
-          {/* Cột Trái: Hồ sơ & Thông tin */}
-          <div className="lg:col-span-1 space-y-6">
-            <PatientProfile 
-              onSave={(ctx) => setPatientContext(ctx)} 
-              onReset={() => setSessionId('sess_' + Math.random().toString(36).substr(2, 9))}
-            />
-            
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm hidden md:block">
-              <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span> 
-                Lưu ý quan trọng
-              </h4>
-              <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                Hệ thống chỉ cung cấp thông tin tham khảo từ các nguồn chính thống (Cục Quản Lý Dược, Dược thư Quốc gia). 
-              </p>
-              <div className="bg-amber-50 text-amber-800 text-xs font-semibold p-3 rounded-xl border border-amber-100">
-                Tuyệt đối không dùng AI để thay thế chẩn đoán của Bác sĩ chuyên khoa. Mọi quyết định dùng thuốc cần có sự đồng ý của chuyên gia y tế.
-              </div>
-            </div>
-          </div>
-
-          {/* Cột Phải: Chat Window */}
-          <div className="lg:col-span-3">
-            <ChatWindow sessionId={sessionId} patientContext={patientContext} />
-          </div>
-
-        </div>
+        <ChatWindow key={sessionId} sessionId={sessionId} patientContext={patientContext} />
       </div>
-    </main>
+    </div>
   );
 }

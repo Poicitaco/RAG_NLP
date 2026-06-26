@@ -1,123 +1,136 @@
+# ============================================================
 # Python
+# ============================================================
 __pycache__/
 *.py[cod]
-*$py.class
 *.so
 .Python
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
 *.egg
-MANIFEST
 
 # Virtual Environment
+.venv/
 venv/
 env/
 ENV/
-.venv
 
-# IDE
+# ============================================================
+# Environment & Secrets
+# ============================================================
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ============================================================
+# Data — large files không commit
+# ============================================================
+# Raw data
+data/raw/
+data/chunks/
+data/embeddings/
+data/processed/
+data/graph/neo4j_import/
+data/uploads/
+
+# Chat/session state (runtime generated)
+data/chat_history.json
+data/conversation_states.json
+data/feedback/
+
+# Evaluation results (lớn, tái tạo được)
+data/evaluation/
+
+# Giữ lại config
+!data/config/
+
+# ============================================================
+# Logs & Coverage
+# ============================================================
+logs/
+*.log
+log/
+.coverage
+htmlcov/
+
+# ============================================================
+# Frontend
+# ============================================================
+node_modules/
+frontend-next/.next/
+frontend-next/node_modules/
+frontend-next/.env.local
+
+# ============================================================
+# Testing
+# ============================================================
+.pytest_cache/
+.tox/
+test_results.json
+ket_qua_kiem_thu.json
+ket_qua_kiem_thu_api.md
+
+# ============================================================
+# IDE & OS
+# ============================================================
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 .DS_Store
+Thumbs.db
+*.code-workspace
 
-# Environment Variables
-.env
-.env.local
-.env.*.local
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-data/embeddings/chroma/
-data/embeddings/faiss/
-data/embeddings/bm25/
-
-# Logs
-logs/
-*.log
-log/
-
-# Testing
-.pytest_cache/
+# ============================================================
+# Temporary / Debug files ở root
+# ============================================================
+.playwright-cli/
+__missing_chroma*/
+output/
 .coverage
-htmlcov/
-.tox/
+.codex/
+.agents/
+nc_questions.json
+test_q.json
+demo_results.md
+kehoach.md
 
-# Jupyter Notebook
-.ipynb_checkpoints
-notebooks/.ipynb_checkpoints/
+# ============================================================
+# Tools
+# ============================================================
+tools/tessdata/
 
-# Data Files
-data/drugs/*.csv
-data/drugs/*.json
-data/drugs/*.xlsx
-data/uploads/
-data/raw/dav/all_raw.jsonl
-data/chunks/rag_corpus.jsonl
-data/chunks/dav_all_drugs_chunks.jsonl
-data/chunks/ddinter_interaction_chunks.jsonl
-*.jsonl
-data/chunks/**/*.jsonl
-*.pkl
-*.pickle
+# ============================================================
+# Report preview (lớn, không cần thiết)
+# ============================================================
+report/preview/
+report/*.pdf
+report/*.aux
+report/*.fdb_latexmk
+report/*.fls
+report/*.log
+report/*.out
+report/*.toc
+report/*.lof
+report/*.lot
+report/*.xdv
+report/*.formula
 
-# Model Files
-/models/
+# ============================================================
+# Model & Binary files
+# ============================================================
 *.pt
 *.pth
 *.bin
 *.h5
 *.onnx
+*.pkl
+*.pkl.gz
+*.pickle
 
-# Temporary Files
-tmp/
-temp/
-*.tmp
-data/debug/
-data/ocr_cache/
-tools/tessdata/
-data/evaluation/system_check_latest.json
-
-# OS
-Thumbs.db
-.DS_Store
-
-# Docker
-.dockerignore
-
-# MyPy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Frontend
-node_modules/
-frontend/node_modules/
-frontend/dist/
-.playwright-cli/
-
-# Missing chroma dirs
-__missing_chroma*/
-
-# Python cache
-__pycache__/
-*.pyc
-
-# Pytest cache
-.pytest_cache/
+# ============================================================
+# Kiro internal
+# ============================================================
+.kiro/specs/
